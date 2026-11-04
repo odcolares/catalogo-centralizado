@@ -1,0 +1,13 @@
+{
+  "name": "catalogo-centralizado",
+  "version": "1.0.0",
+  "description": "Catálogo centralizado de eletrônicos Manaus — fonte única em JSON que gera MD, HTML, API JSON e PDF.",
+  "private": true,
+  "scripts": {
+    "generate": "node generator.js",
+    "test": "node generator.js"
+  },
+  "dependencies": {
+    "puppeteer": "^23.0.0"
+  }
+}
