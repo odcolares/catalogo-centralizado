@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer'); // STRIPPED: puppeteer browser unavailable in container
 
 const ROOT = __dirname;
 const DATA_FILE = path.join(ROOT, 'catalog-data.json');
@@ -171,7 +171,10 @@ function buildHtml(data) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Catálogo ${escapeHtml(store.name || 'Loja')} — ${escapeHtml(store.city || 'Manaus/AM')}</title>
+<title>Catálogo Centralizado Eletrônicos Manaus</title>
+<meta name="description" content="Catálogo centralizado de eletrônicos em Manaus com fonte única em JSON que gera catálogo digital interativo, Markdown e API.">
+<meta property="og:title" content="Catálogo Centralizado Eletrônicos Manaus">
+<meta property="og:description" content="Catálogo centralizado de eletrônicos em Manaus com fonte única em JSON que gera catálogo digital interativo, Markdown e API.">
 <style>
   :root { --primary:#0a8754; --bg:#f5f7f6; --card:#fff; --ink:#1c1c1c; --muted:#666; }
   * { box-sizing: border-box; }
@@ -243,23 +246,8 @@ function buildApiJson(data) {
 }
 
 async function buildPdf(html) {
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-  try {
-    const page = await browser.newPage();
-    await page.setViewport({ width: 820, height: 1180 });
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: { top: '12mm', bottom: '12mm', left: '10mm', right: '10mm' },
-    });
-    return pdf;
-  } finally {
-    await browser.close();
-  }
+  // Puppeteer is stripped in container environments
+  throw new Error('Puppeteer desativado no ambiente de container.');
 }
 
 async function main() {
@@ -274,6 +262,8 @@ async function main() {
 
   fs.writeFileSync(path.join(OUT_DIR, 'catalogo-consolidado.md'), md, 'utf8');
   fs.writeFileSync(path.join(OUT_DIR, 'catalogo-digital.html'), html, 'utf8');
+  fs.writeFileSync(path.join(OUT_DIR, 'index.html'), html, 'utf8');
+  fs.writeFileSync(path.join(ROOT, 'index.html'), html, 'utf8');
   fs.writeFileSync(path.join(OUT_DIR, 'catalog-api.json'), JSON.stringify(api, null, 2), 'utf8');
 
   let pdfNote = '';
@@ -293,10 +283,16 @@ async function main() {
   console.log(`- catalogo-digital.html`);
   console.log(`- catalog-api.json (${api.length} itens)`);
   console.log(`- catalogo-digital.pdf ${pdfNote ? '(' + pdfNote + ')' : ''}`);
+
+  return { data, total, outDir: OUT_DIR };
 }
 
-main().catch((err) => {
-  console.error('ERRO ao gerar catálogo:');
-  console.error(err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error('ERRO ao gerar catálogo:');
+    console.error(err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { main, loadData, validate, buildMarkdown, buildHtml, buildApiJson };
