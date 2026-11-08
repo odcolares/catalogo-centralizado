@@ -1,1 +1,151 @@
 @import "tailwindcss";
+
+/* ── Tema tipográfico da marca (mesma do login: Archivo + IBM Plex Mono) ── */
+@theme {
+  --font-sans: "Archivo", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+}
+
+body {
+  font-family: "Archivo", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display: Archivo variável expandido (wdth) para preços e títulos */
+.display-text {
+  font-family: "Archivo", "Trebuchet MS", sans-serif;
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* LED de status (readout do header) */
+.led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7dffc2;
+  flex: none;
+  animation: led-pulse 2.6s ease-out infinite;
+}
+@keyframes led-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(125, 255, 194, 0.55); }
+  70% { box-shadow: 0 0 0 7px rgba(125, 255, 194, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(125, 255, 194, 0); }
+}
+
+/* ── Header atmosférico: gradiente + grid técnico + grão ── */
+.site-header {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgba(255, 255, 255, 0.15), transparent 55%),
+    linear-gradient(155deg, #0b9a5f 0%, #0a8754 48%, #056039 100%);
+}
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(130% 110% at 20% 0%, #000 30%, transparent 90%);
+  mask-image: radial-gradient(130% 110% at 20% 0%, #000 30%, transparent 90%);
+}
+.site-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+}
+
+/* ── Mídia dos cards: fundo de folha técnica ── */
+.card-media {
+  background-color: #f8faf9;
+  background-image: radial-gradient(rgba(10, 135, 84, 0.14) 1px, transparent 1.2px);
+  background-size: 14px 14px;
+}
+
+/* ── Footer bookend esmeralda escura ── */
+.site-footer {
+  position: relative;
+  background: linear-gradient(180deg, #06543a 0%, #04301f 100%);
+}
+
+/* ── Revealed orquestrado: apenas no primeiro render (data-reveal) ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+[data-reveal] {
+  animation: fade-up 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+main[data-reveal] {
+  animation-delay: 0.1s;
+}
+main[data-reveal] article {
+  animation: fade-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(180ms + var(--i, 0) * 45ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Impressão: relatório do pedido em A4 (Salvar como PDF) ── */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  /* Cores da marca (logo/tabela) saem na impressão */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ── Drawer do carrinho ── */
+@keyframes cart-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes cart-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cart-drawer-panel {
+  animation: cart-slide-in 0.25s ease-out;
+}
+
+.cart-drawer-overlay {
+  animation: cart-fade-in 0.18s ease-out;
+}

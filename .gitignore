@@ -26,3 +26,7 @@ npm-debug.log*
 # Session/state files
 .omo/
 .omc/
+# Build output
+dist/
+
+__pycache__/

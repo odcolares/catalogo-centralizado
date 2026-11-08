@@ -79,13 +79,20 @@ function escapeMd(s) {
   return String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 }
 
+// Products are shown only when explicitly enabled (enabled !== false)
+function isEnabled(p) {
+  return p.enabled !== false;
+}
+
 // ---------- Markdown output ----------
-function buildMarkdown(data) {
+// withCosts=false → versão pública (sem colunas Custo/Margem)
+// withCosts=true  → versão interna do lojista
+function buildMarkdown(data, { withCosts = true } = {}) {
   const store = data.store || {};
   const lines = [];
   lines.push(`# Catálogo Consolidado — ${store.name || '[Nome da Loja]'}`);
   lines.push('');
-  lines.push(`> **Fonte custo:** ${store.supplier || 'luizeletronicos.com.br'} | **Cidade:** ${store.city || 'Manaus/AM'}`);
+  lines.push(`> **Fornecedor:** ${store.supplier || 'luizeletronicos.com.br'} | **Cidade:** ${store.city || 'Manaus/AM'}`);
   lines.push(`> **Entrega:** ${store.delivery || ''}`);
   lines.push(`> **Garantia:** ${store.warranty || ''}`);
   lines.push(`> **Pagamento:** ${store.payment || ''}`);
@@ -95,7 +102,7 @@ function buildMarkdown(data) {
   let total = 0;
   const summary = ['| Categoria | Qtd Produtos | Faixa de Preço (venda) |', '|-----------|-------------|------------------------|'];
   for (const cat of data.categories) {
-    const prices = cat.products.map((p) => p.price);
+    const prices = cat.products.filter(isEnabled).map((p) => p.price);
     const min = Math.min(...prices);
     const max = Math.max(...prices);
     const range = min === max ? brl(min) : `${brl(min)} – ${brl(max)}`;
@@ -108,16 +115,27 @@ function buildMarkdown(data) {
   for (const cat of data.categories) {
     lines.push(`## ${cat.icon || ''} ${cat.name}`.trim());
     lines.push('');
-    lines.push('| Modelo | Código | Custo | Preço de Venda | Margem | Destaques |');
-    lines.push('|--------|--------|-------|----------------|--------|-----------|');
-    for (const p of cat.products) {
-      const margin = p.cost > 0 ? Math.round(((p.price - p.cost) / p.cost) * 100) : 0;
+    if (withCosts) {
+      lines.push('| Modelo | Código | Custo | Preço de Venda | Margem | Destaques |');
+      lines.push('|--------|--------|-------|----------------|--------|-----------|');
+    } else {
+      lines.push('| Modelo | Código | Preço de Venda | Destaques |');
+      lines.push('|--------|--------|----------------|-----------|');
+    }
+    for (const p of cat.products.filter(isEnabled)) {
       let priceCell = brl(p.price);
       if (p.price_max && p.price_max > p.price) priceCell += ` – ${brl(p.price_max)}`;
       const kit = (p.tags || []).includes('kit') ? ' 🎁 Kit' : '';
-      lines.push(
-        `| ${escapeMd(p.name)}${kit} | ${escapeMd(p.code)} | ${brl(p.cost)} | ${priceCell} | ${margin}% | ${escapeMd(p.highlights.join(', '))} |`
-      );
+      if (withCosts) {
+        const margin = p.cost > 0 ? Math.round(((p.price - p.cost) / p.cost) * 100) : 0;
+        lines.push(
+          `| ${escapeMd(p.name)}${kit} | ${escapeMd(p.code)} | ${brl(p.cost)} | ${priceCell} | ${margin}% | ${escapeMd(p.highlights.join(', '))} |`
+        );
+      } else {
+        lines.push(
+          `| ${escapeMd(p.name)}${kit} | ${escapeMd(p.code)} | ${priceCell} | ${escapeMd(p.highlights.join(', '))} |`
+        );
+      }
     }
     lines.push('');
   }
@@ -136,7 +154,7 @@ function buildHtml(data) {
   const waLink = `https://wa.me/${waNumber}`;
 
   const cards = data.categories.map((cat) => {
-    const items = cat.products.map((p) => {
+    const items = cat.products.filter(isEnabled).map((p) => {
       const isKit = (p.tags || []).includes('kit');
       const kitBadge = isKit ? '<span class="badge kit">🎁 Kit</span>' : '';
       let price = `<span class="price">${brl(p.price)}</span>`;
@@ -146,22 +164,32 @@ function buildHtml(data) {
       const highlights = p.highlights
         .map((h) => `<li>${escapeHtml(h)}</li>`)
         .join('');
-      const msg = encodeURIComponent(`Olá! Vi o catálogo da ${store.name || 'loja'} e tenho interesse no produto: ${p.name} (${p.code}).`);
+      const priceRange =
+        p.price_max && p.price_max > p.price ? ` (até ${brl(p.price_max)})` : '';
+      const msg = encodeURIComponent(
+        `Olá! Quero fazer um pedido:\n\n🛍️ Produto: ${p.name}\n📌 Código: ${p.code}\n💰 Preço: ${brl(p.price)}${priceRange}\n\nPode confirmar a disponibilidade e o prazo de entrega em Manaus?`
+      );
+      const media = `<div class="product-media">${
+        p.image
+          ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.remove()">`
+          : `<span class="product-media__fallback">${cat.icon || ''}</span>`
+      }</div>`;
       return `
         <article class="product">
+          ${media}
           <div class="product-head">
             <h3>${escapeHtml(p.name)} ${kitBadge}</h3>
             <div class="price-block">${price}</div>
           </div>
           <p class="code">Código: ${escapeHtml(p.code)}</p>
           <ul class="highlights">${highlights}</ul>
-          <a class="wa-btn" href="${waLink}?text=${msg}" target="_blank" rel="noopener">Pedir no WhatsApp</a>
+          <a class="wa-btn" href="${waLink}?text=${msg}" target="_blank" rel="noopener"><img class="wa-icon" src="images/whatsapp-label.jpg" alt="" onerror="this.remove()">Pedir no WhatsApp</a>
         </article>`;
     }).join('');
 
     return `
       <details class="category" open>
-        <summary>${cat.icon || ''} ${escapeHtml(cat.name)} <span class="count">${cat.products.length}</span></summary>
+        <summary>${cat.icon || ''} ${escapeHtml(cat.name)} <span class="count">${cat.products.filter(isEnabled).length}</span></summary>
         <div class="grid">${items}</div>
       </details>`;
   }).join('');
@@ -189,6 +217,9 @@ function buildHtml(data) {
   .count { background:var(--primary); color:#fff; border-radius:999px; padding:1px 9px; font-size:.8rem; margin-left:auto; }
   .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:12px; padding:0 16px 16px; }
   .product { border:1px solid #e6e6e6; border-radius:10px; padding:14px; display:flex; flex-direction:column; }
+  .product-media { height:150px; background:#fafafa; border-bottom:1px solid #f0f0f0; margin:-14px -14px 12px; border-radius:10px 10px 0 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .product-media img { max-width:100%; max-height:100%; object-fit:contain; padding:10px; }
+  .product-media__fallback { font-size:2.5rem; opacity:.5; }
   .product-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
   .product h3 { margin:0; font-size:1rem; line-height:1.3; }
   .price-block { text-align:right; white-space:nowrap; }
@@ -198,12 +229,14 @@ function buildHtml(data) {
   .highlights { margin:0 0 12px; padding-left:18px; font-size:.85rem; color:#333; flex:1; }
   .badge.kit { background:#ffe7b3; color:#8a5a00; border-radius:6px; padding:1px 6px; font-size:.7rem; font-weight:600; margin-left:6px; }
   .wa-btn { display:block; text-align:center; background:#25D366; color:#fff; text-decoration:none; padding:10px; border-radius:8px; font-weight:600; font-size:.9rem; }
+  .wa-icon { width:16px; height:16px; border-radius:50%; object-fit:cover; vertical-align:-3px; margin-right:6px; }
+  .header-avatar { width:32px; height:32px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-right:10px; border:2px solid rgba(255,255,255,.5); }
   footer { text-align:center; color:var(--muted); font-size:.8rem; padding:24px 16px; }
 </style>
 </head>
 <body>
 <header>
-  <h1>${escapeHtml(store.name || '[Nome da Loja]')}</h1>
+  <h1><img class="header-avatar" src="images/whatsapp-label.jpg" alt="WhatsApp" onerror="this.remove()">${escapeHtml(store.name || '[Nome da Loja]')}</h1>
   <p>📍 ${escapeHtml(store.city || 'Manaus/AM')}</p>
   <p>🚚 ${escapeHtml(store.delivery || '')}</p>
   <p>✅ ${escapeHtml(store.warranty || '')}</p>
@@ -218,11 +251,12 @@ ${cards}
 }
 
 // ---------- API JSON output ----------
-function buildApiJson(data) {
+// withCosts=true → versão interna do lojista (inclui cost)
+function buildApiJson(data, { withCosts = false } = {}) {
   const STOPWORDS = new Set(['de', 'da', 'do', 'para', 'com', 'sem', 'em', 'no', 'na', 'e']);
   const out = [];
   for (const cat of data.categories) {
-    for (const p of cat.products) {
+    for (const p of cat.products.filter(isEnabled)) {
       const tags = new Set(p.tags || []);
       tags.add(cat.id);
       if (p.code) tags.add(p.code.toLowerCase().replace(/\s+/g, '-'));
@@ -231,7 +265,7 @@ function buildApiJson(data) {
         if (t.length >= 2 && !STOPWORDS.has(t)) tags.add(t);
       }
       if (p.price_max && p.price_max > p.price) tags.add('com-faixa');
-      out.push({
+      const item = {
         id: p.id,
         name: p.name,
         price: p.price,
@@ -239,10 +273,28 @@ function buildApiJson(data) {
         category: cat.id,
         categoryName: cat.name,
         tags: Array.from(tags),
-      });
+        image: p.image || null,
+        sourceUrl: p.sourceUrl || null,
+      };
+      if (withCosts) item.cost = p.cost;
+      out.push(item);
     }
   }
   return out;
+}
+
+// ---------- Catálogo público (fonte do app cliente, SEM custo) ----------
+function buildCatalogPublic(data) {
+  return {
+    ...data,
+    categories: data.categories.map((cat) => ({
+      ...cat,
+      products: cat.products.map((p) => {
+        const { cost, ...rest } = p;
+        return rest;
+      }),
+    })),
+  };
 }
 
 async function buildPdf(html) {
@@ -255,16 +307,53 @@ async function main() {
   validate(data);
 
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
+  const PUBLIC_DIR = path.join(ROOT, 'public');
+  const INTERNO_DIR = path.join(ROOT, 'interno');
+  fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+  fs.mkdirSync(INTERNO_DIR, { recursive: true });
 
-  const md = buildMarkdown(data);
   const html = buildHtml(data);
-  const api = buildApiJson(data);
+  const mdPublic = buildMarkdown(data, { withCosts: false });
+  const mdInterno = buildMarkdown(data, { withCosts: true });
+  const apiPublic = buildApiJson(data, { withCosts: false });
+  const apiInterno = buildApiJson(data, { withCosts: true });
+  const catalogPublic = buildCatalogPublic(data);
 
-  fs.writeFileSync(path.join(OUT_DIR, 'catalogo-consolidado.md'), md, 'utf8');
+  // ── Públicos (servidos por HTTP) ──
+  fs.writeFileSync(path.join(OUT_DIR, 'catalogo-consolidado.md'), mdPublic, 'utf8');
   fs.writeFileSync(path.join(OUT_DIR, 'catalogo-digital.html'), html, 'utf8');
   fs.writeFileSync(path.join(OUT_DIR, 'index.html'), html, 'utf8');
-  fs.writeFileSync(path.join(ROOT, 'index.html'), html, 'utf8');
-  fs.writeFileSync(path.join(OUT_DIR, 'catalog-api.json'), JSON.stringify(api, null, 2), 'utf8');
+  // NOTA: não escrever index.html na raiz — esse é o entry do Vite (app src/main.ts)
+  fs.writeFileSync(path.join(OUT_DIR, 'catalog-api.json'), JSON.stringify(apiPublic, null, 2), 'utf8');
+
+  // Cópias frescas em public/ (o Vite copia para dist/ a cada build).
+  // NÃO escrever public/index.html nem public/catalog-data.json (vazaria custos).
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'catalogo-digital.html'), html, 'utf8');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'catalogo-consolidado.md'), mdPublic, 'utf8');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'catalog-api.json'), JSON.stringify(apiPublic, null, 2), 'utf8');
+  const stalePublicIndex = path.join(PUBLIC_DIR, 'index.html');
+  if (fs.existsSync(stalePublicIndex)) fs.rmSync(stalePublicIndex);
+  const stalePublicData = path.join(PUBLIC_DIR, 'catalog-data.json');
+  if (fs.existsSync(stalePublicData)) fs.rmSync(stalePublicData);
+
+  // ── Interno do lojista (com custo — NUNCA servido por HTTP) ──
+  fs.writeFileSync(path.join(INTERNO_DIR, 'catalogo-consolidado.md'), mdInterno, 'utf8');
+  fs.writeFileSync(path.join(INTERNO_DIR, 'catalog-api.json'), JSON.stringify(apiInterno, null, 2), 'utf8');
+
+  // ── Fonte do app cliente (importada pelo entry Vite, sem custo) ──
+  fs.writeFileSync(path.join(ROOT, 'catalog-public.json'), JSON.stringify(catalogPublic, null, 2), 'utf8');
+
+  // Remove artefatos antigos com custo na raiz (servidos pelo express.static da raiz)
+  const staleRootMd = path.join(ROOT, 'catalogo-consolidado.md');
+  if (fs.existsSync(staleRootMd)) fs.rmSync(staleRootMd);
+
+  // Copia imagens dos produtos para generated/ (torna a pasta auto-suficiente)
+  const imgSrc = path.join(ROOT, 'public', 'images');
+  const imgDest = path.join(OUT_DIR, 'images');
+  if (fs.existsSync(imgSrc)) {
+    fs.rmSync(imgDest, { recursive: true, force: true });
+    fs.cpSync(imgSrc, imgDest, { recursive: true });
+  }
 
   let pdfNote = '';
   try {
@@ -276,13 +365,11 @@ async function main() {
     console.warn(pdfNote);
   }
 
-  const total = data.categories.reduce((n, c) => n + c.products.length, 0);
-  console.log(`OK. ${data.categories.length} categorias, ${total} produtos.`);
-  console.log(`Arquivos em: ${OUT_DIR}`);
-  console.log(`- catalogo-consolidado.md`);
-  console.log(`- catalogo-digital.html`);
-  console.log(`- catalog-api.json (${api.length} itens)`);
-  console.log(`- catalogo-digital.pdf ${pdfNote ? '(' + pdfNote + ')' : ''}`);
+  const total = data.categories.reduce((n, c) => n + c.products.filter(isEnabled).length, 0);
+  console.log(`OK. ${data.categories.length} categorias, ${total} produtos ativos.`);
+  console.log(`Público (sem custo): ${OUT_DIR} + public/ — md, html, api (${apiPublic.length} itens)`);
+  console.log(`Interno (com custo): ${INTERNO_DIR} — md + api (${apiInterno.length} itens)`);
+  console.log(`App cliente: catalog-public.json (sem cost)`);
 
   return { data, total, outDir: OUT_DIR };
 }
@@ -295,4 +382,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { main, loadData, validate, buildMarkdown, buildHtml, buildApiJson };
+module.exports = { main, loadData, validate, buildMarkdown, buildHtml, buildApiJson, buildCatalogPublic };

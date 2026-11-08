@@ -5,7 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node generator.cjs",
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "prebuild": "node generator.cjs",
     "build": "vite build",
     "generate": "node generator.cjs",
     "test": "node generator.cjs"
