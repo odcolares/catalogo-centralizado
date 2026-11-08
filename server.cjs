@@ -29,10 +29,16 @@ function parseEnvFile() {
 function ensureEnv() {
   const env = parseEnvFile();
   let created = false;
+  // fallback: variáveis de ambiente do processo (Render, containers) — arquivo .env tem prioridade
+  if (!env.LOJISTA_USER && process.env.LOJISTA_USER) env.LOJISTA_USER = process.env.LOJISTA_USER;
+  if (!env.LOJISTA_PASS && process.env.LOJISTA_PASS) env.LOJISTA_PASS = process.env.LOJISTA_PASS;
+  if (!env.SESSION_SECRET && process.env.SESSION_SECRET) env.SESSION_SECRET = process.env.SESSION_SECRET;
   if (!env.LOJISTA_USER) { env.LOJISTA_USER = 'admin'; created = true; }
   if (!env.LOJISTA_PASS) { env.LOJISTA_PASS = '1234'; created = true; }
   if (!env.SESSION_SECRET) { env.SESSION_SECRET = crypto.randomBytes(32).toString('hex'); created = true; }
-  if (created) {
+  if (created && process.env.RENDER) {
+    console.error('[ENV] Credenciais ausentes no Render! Defina LOJISTA_USER, LOJISTA_PASS e SESSION_SECRET no painel.');
+  } else if (created) {
     const content =
       Object.entries(env)
         .map(([k, v]) => `${k}=${v}`)

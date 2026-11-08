@@ -23,6 +23,9 @@ npm-debug.log*
 .env.local
 .env.*.local
 
+# Deploy credentials (NEVER commit)
+CREDENCIAIS-DEPLOY.md
+
 # Session/state files
 .omo/
 .omc/
