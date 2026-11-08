@@ -15,24 +15,9 @@
       "d20",
       "bluetooth",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "d18s",
-    "name": "Smartwatch D18s Bluetooth",
-    "price": 49.9,
-    "price_max": 129.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "entrada",
-      "smartwatches",
-      "v13-smart-d18s",
-      "smartwatch",
-      "d18s",
-      "bluetooth",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/d20.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/relogio-inteligente-smartwatch-d20-bluetooth-diversas-cores-caxia-fechado-d20-caxia100pc-12-1200reais"
   },
   {
     "id": "s11mini",
@@ -50,112 +35,9 @@
       "s11",
       "mini",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "cu10ultra",
-    "name": "Smartwatch CU10 Ultra",
-    "price": 99.9,
-    "price_max": 119.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "intermediario",
-      "smartwatches",
-      "reloja5-2",
-      "smartwatch",
-      "cu10",
-      "ultra",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "gl09",
-    "name": "Smartwatch GL09",
-    "price": 129.9,
-    "price_max": 149.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "intermediario",
-      "smartwatches",
-      "reloja20-1",
-      "smartwatch",
-      "gl09",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "sw2-6",
-    "name": "Smart Watch 2 + 6 Pulseiras",
-    "price": 149.9,
-    "price_max": 169.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "kit",
-      "intermediario",
-      "smartwatches",
-      "reloja15",
-      "smart",
-      "watch",
-      "pulseiras",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "w29s",
-    "name": "Smartwatch W29s Series 9",
-    "price": 189.9,
-    "price_max": 229.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "intermediario",
-      "smartwatches",
-      "reloja17-2",
-      "smartwatch",
-      "w29s",
-      "series",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "treinoip68",
-    "name": "Smartwatch Treino IP68",
-    "price": 199.9,
-    "price_max": 219.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "intermediario",
-      "esportivo",
-      "smartwatches",
-      "reloja6-1",
-      "smartwatch",
-      "treino",
-      "ip68",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "s11pro",
-    "name": "Smartwatch S11 Pro Série 11",
-    "price": 219.9,
-    "price_max": 229.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "premium",
-      "smartwatches",
-      "reloja17-1",
-      "smartwatch",
-      "s11",
-      "pro",
-      "rie",
-      "11",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/s11mini.png",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/smart-watch-relogio-s11-mini-inteligente-39mm-series-10-2025-2-pulseiras"
   },
   {
     "id": "imeson",
@@ -175,24 +57,9 @@
       "ims",
       "757a",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "pro5",
-    "name": "Pro5 Fone Bluetooth TWS 5.4",
-    "price": 39.9,
-    "price_max": null,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "entrada",
-      "tws",
-      "fones",
-      "k33-a-607-p",
-      "pro5",
-      "fone",
-      "bluetooth"
-    ]
+    ],
+    "image": null,
+    "sourceUrl": null
   },
   {
     "id": "m19",
@@ -212,85 +79,9 @@
       "visor",
       "digital",
       "led"
-    ]
-  },
-  {
-    "id": "agoldv54",
-    "name": "Fone AGOLD V5.4 Longa Duração",
-    "price": 79.9,
-    "price_max": 89.9,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "intermediario",
-      "tws",
-      "fones",
-      "k13-fn-bj3",
-      "fone",
-      "agold",
-      "v5",
-      "longa",
-      "dura",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "onex",
-    "name": "Fone ONEX Bluetooth 5.4",
-    "price": 79.9,
-    "price_max": 89.9,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "intermediario",
-      "tws",
-      "fones",
-      "k117-fon-2321",
-      "fone",
-      "onex",
-      "bluetooth",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "agoldpro8",
-    "name": "Fone AGOLD Pro8 Nova V6.0",
-    "price": 79.9,
-    "price_max": 89.9,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "intermediario",
-      "tws",
-      "fones",
-      "k70-fn-b58",
-      "fone",
-      "agold",
-      "pro8",
-      "nova",
-      "v6",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "imenso-v6",
-    "name": "IMENSO Fone V6.0 TWS In-Ear",
-    "price": 79.9,
-    "price_max": 89.9,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "intermediario",
-      "tws",
-      "fones",
-      "k103-ims-818-a",
-      "imenso",
-      "fone",
-      "v6",
-      "in",
-      "ear",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/m19.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-sem-fio-m19-com-visor-digital-led-em-compativel-fones-microfone-para-sistema-android-ios-windows"
   },
   {
     "id": "imenso-52",
@@ -308,26 +99,9 @@
       "bluetooth",
       "original",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "ganchobt53",
-    "name": "Fone Gancho Auricular BT 5.3",
-    "price": 59.9,
-    "price_max": 79.9,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "esportivo",
-      "intermediario",
-      "fones",
-      "k118-j-85-pro",
-      "fone",
-      "gancho",
-      "auricular",
-      "bt",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/imenso-52.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-imenso-bluetooth-5-ponto-2-original"
   },
   {
     "id": "st15",
@@ -344,127 +118,9 @@
       "fone",
       "st",
       "15"
-    ]
-  },
-  {
-    "id": "hsgamerp2",
-    "name": "Headset Gamer P2",
-    "price": 99.9,
-    "price_max": null,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "gamer",
-      "headset",
-      "fones",
-      "j140-bm216",
-      "p2"
-    ]
-  },
-  {
-    "id": "hslehmoxusb",
-    "name": "Headset Gamer USB Lehmox",
-    "price": 119.9,
-    "price_max": 159,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "gamer",
-      "headset",
-      "intermediario",
-      "fones",
-      "lehmox",
-      "usb",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "hssemfio",
-    "name": "Headset Gamer Sem Fio BT",
-    "price": 139.9,
-    "price_max": 159,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "gamer",
-      "headset",
-      "premium",
-      "fones",
-      "j141-lef-1031a",
-      "fio",
-      "bt",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "hslehmoxrgb",
-    "name": "Headset Lehmox LED RGB",
-    "price": 139.9,
-    "price_max": null,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "gamer",
-      "headset",
-      "rgb",
-      "fones",
-      "j81-ley-2304",
-      "lehmox",
-      "led"
-    ]
-  },
-  {
-    "id": "hsrgbmulti",
-    "name": "Headset LED RGB Multiplataforma",
-    "price": 149.9,
-    "price_max": 159,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "gamer",
-      "headset",
-      "rgb",
-      "premium",
-      "fones",
-      "j201-on-fn636",
-      "led",
-      "multiplataforma",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "fonep2mic",
-    "name": "Fone P2 com Microfone",
-    "price": 19.9,
-    "price_max": null,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "entrada",
-      "com-fio",
-      "fones",
-      "j182-le-0202",
-      "fone",
-      "p2",
-      "microfone"
-    ]
-  },
-  {
-    "id": "hsmoto-y10",
-    "name": "Headset Capacete Moto Y10",
-    "price": 99.9,
-    "price_max": null,
-    "category": "fones",
-    "categoryName": "Fones de Ouvido",
-    "tags": [
-      "moto",
-      "headset",
-      "intermediario",
-      "fones",
-      "r256-y10",
-      "capacete",
-      "y10"
-    ]
+    ],
+    "image": "images/st15.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-bluetooth-esportivo-st-15-com-60h-de-musica-som-hi-fi-leve-e-resistente-5-ponto-3"
   },
   {
     "id": "mouse-kapbom",
@@ -484,40 +140,9 @@
       "ka",
       "611",
       "4g"
-    ]
-  },
-  {
-    "id": "mouse-t03",
-    "name": "Mouse BT 5.0 + USB 2.4G",
-    "price": 39.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "entrada",
-      "mouse",
-      "informatica",
-      "t03-vt-05",
-      "bt",
-      "usb",
-      "4g"
-    ]
-  },
-  {
-    "id": "mouse-t24",
-    "name": "Mouse Bluetooth 2.4 Wireless",
-    "price": 39.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "entrada",
-      "mouse",
-      "informatica",
-      "t24",
-      "bluetooth",
-      "wireless"
-    ]
+    ],
+    "image": "images/mouse-kapbom.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/mouse-sem-fio-kapbom-ka-611-2-ponto-4g-gamer-ergonomico-alta-precisao-usb"
   },
   {
     "id": "tec-rgb-bmax",
@@ -537,98 +162,9 @@
       "nico",
       "max",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "tec-android",
-    "name": "Teclado Android/PC BT Sem Fio",
-    "price": 99.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "intermediario",
-      "teclado",
-      "informatica",
-      "l174-ka-689",
-      "android",
-      "pc",
-      "bt",
-      "fio"
-    ]
-  },
-  {
-    "id": "tec-touchpad",
-    "name": "Teclado BT Touchpad Slim",
-    "price": 99.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "intermediario",
-      "teclado",
-      "informatica",
-      "t112-tcd-05",
-      "bt",
-      "touchpad",
-      "slim"
-    ]
-  },
-  {
-    "id": "tec-fio-sup",
-    "name": "Teclado Com Fio + Suporte Smartphone",
-    "price": 109.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "intermediario",
-      "teclado",
-      "informatica",
-      "t27-kp-te132",
-      "fio",
-      "suporte",
-      "smartphone"
-    ]
-  },
-  {
-    "id": "tec-mec-rgb",
-    "name": "Teclado Mecânico RGB Original",
-    "price": 199.9,
-    "price_max": 249,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "premium",
-      "teclado",
-      "rgb",
-      "gamer",
-      "informatica",
-      "t40-ley-2092",
-      "mec",
-      "nico",
-      "original",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "combo-tm",
-    "name": "Combo Teclado + Mouse Sem Fio USB",
-    "price": 99.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "kit",
-      "intermediario",
-      "combo",
-      "informatica",
-      "ley",
-      "teclado",
-      "mouse",
-      "fio",
-      "usb"
-    ]
+    ],
+    "image": "images/tec-rgb-bmax.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/teclado-semi-mecanico-rgb-b-max"
   },
   {
     "id": "tablet-101",
@@ -647,100 +183,9 @@
       "5g",
       "teclado",
       "mouse"
-    ]
-  },
-  {
-    "id": "hub-usb3-4p",
-    "name": "Hub USB 3.0 4 Portas 5 Gbps",
-    "price": 24.9,
-    "price_max": 34.9,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "entrada",
-      "hub",
-      "mais-vendido",
-      "informatica",
-      "c60-aj-9037",
-      "usb",
-      "portas",
-      "gbps",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "hub-usb7-2p",
-    "name": "Hub USB 7 Portas 2.0",
-    "price": 29.9,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "entrada",
-      "hub",
-      "informatica",
-      "r233-bm-8638",
-      "usb",
-      "portas"
-    ]
-  },
-  {
-    "id": "tvbox-tomate",
-    "name": "Smart TV Box Tomate Android 4K",
-    "price": 129.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "tv-box",
-      "sob-consulta",
-      "eletronicos",
-      "mcd-121",
-      "smart",
-      "tv",
-      "box",
-      "tomate",
-      "android",
-      "4k"
-    ]
-  },
-  {
-    "id": "tvbox-tx9",
-    "name": "TV Box TX9 Android 13.0 4K",
-    "price": 139.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "tv-box",
-      "sob-consulta",
-      "eletronicos",
-      "tx9-tvbox",
-      "tv",
-      "box",
-      "tx9",
-      "android",
-      "13",
-      "4k"
-    ]
-  },
-  {
-    "id": "controle-tvbox",
-    "name": "Controle Remoto TV Box Universal",
-    "price": 19.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "entrada",
-      "controle",
-      "eletronicos",
-      "x49-/-x58",
-      "remoto",
-      "tv",
-      "box",
-      "universal"
-    ]
+    ],
+    "image": "images/tablet-101.png",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/tablet-10-ponto-1-5g-com-teclado-mais-mouse-16gb-ram-512gb-android-camera-50mp"
   },
   {
     "id": "proj-astro",
@@ -758,81 +203,9 @@
       "astronauta",
       "gal",
       "xia"
-    ]
-  },
-  {
-    "id": "proj-astro-eco",
-    "name": "Projetor Astronauta (Econômico)",
-    "price": 79.9,
-    "price_max": 99.9,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "entrada",
-      "projetor",
-      "decor",
-      "eletronicos",
-      "l144-ny-40",
-      "astronauta",
-      "econ",
-      "mico",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "proj-magic",
-    "name": "Projetor Magic Smart Wifi 4K",
-    "price": 399.9,
-    "price_max": 499,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "premium",
-      "projetor",
-      "eletronicos",
-      "hy300",
-      "magic",
-      "smart",
-      "wifi",
-      "4k",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "proj-hy320",
-    "name": "Projetor HY320 Full HD Nativo",
-    "price": 449.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "premium",
-      "projetor",
-      "eletronicos",
-      "pgt-hy320",
-      "hy320",
-      "full",
-      "hd",
-      "nativo"
-    ]
-  },
-  {
-    "id": "proj-hy330",
-    "name": "Projetor HY330 4K Ultra HD",
-    "price": 469.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "premium",
-      "projetor",
-      "eletronicos",
-      "pgt-hy330",
-      "hy330",
-      "4k",
-      "ultra",
-      "hd"
-    ]
+    ],
+    "image": "images/proj-astro.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/projetor-night-light-astronauta-galaxy-starry-sky-star-light"
   },
   {
     "id": "caixa-mini",
@@ -850,45 +223,9 @@
       "mini",
       "colorida",
       "5w"
-    ]
-  },
-  {
-    "id": "caixa-karaoke",
-    "name": "Caixa Karaokê LED + 1 Microfone",
-    "price": 99.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "intermediario",
-      "caixa-som",
-      "karaoke",
-      "eletronicos",
-      "r25-ka-8195",
-      "caixa",
-      "karaok",
-      "led",
-      "microfone"
-    ]
-  },
-  {
-    "id": "caixa-100w",
-    "name": "Caixa 100W Bluetooth Portátil",
-    "price": 219.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "premium",
-      "caixa-som",
-      "eletronicos",
-      "r71-el-1132",
-      "caixa",
-      "100w",
-      "bluetooth",
-      "port",
-      "til"
-    ]
+    ],
+    "image": "images/caixa-mini.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/caixa-som-mini-clorido-qualidade"
   },
   {
     "id": "caixa-bass20",
@@ -907,112 +244,9 @@
       "extra",
       "bass",
       "20w"
-    ]
-  },
-  {
-    "id": "caixa-300w",
-    "name": "Caixa 300W + 2 Mics + FM + USB",
-    "price": 799,
-    "price_max": 899,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "premium",
-      "caixa-som",
-      "kit",
-      "eletronicos",
-      "r87-el-1144",
-      "caixa",
-      "300w",
-      "mics",
-      "fm",
-      "usb",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "vent-mesa",
-    "name": "Mini Ventilador USB de Mesa",
-    "price": 29.9,
-    "price_max": 39.9,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "entrada",
-      "ventilador",
-      "eletronicos",
-      "s122-fs45",
-      "mini",
-      "usb",
-      "mesa",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "vent-mao",
-    "name": "Mini Ventilador de Mão Turbo",
-    "price": 59.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "intermediario",
-      "ventilador",
-      "eletronicos",
-      "s213-vtl-363",
-      "mini",
-      "turbo"
-    ]
-  },
-  {
-    "id": "clim-umi",
-    "name": "Mini Climatizador Umidificador",
-    "price": 119.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "intermediario",
-      "climatizador",
-      "eletronicos",
-      "s148-fs-30-2",
-      "mini",
-      "umidificador"
-    ]
-  },
-  {
-    "id": "lamp-vent",
-    "name": "Lâmpada Ventilador Teto 60W",
-    "price": 109.9,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "intermediario",
-      "ventilador",
-      "eletronicos",
-      "s182-aj-m11-b",
-      "mpada",
-      "teto",
-      "60w"
-    ]
-  },
-  {
-    "id": "vent-teto42",
-    "name": "Ventilador Teto 42\" Industrial",
-    "price": 499,
-    "price_max": null,
-    "category": "eletronicos",
-    "categoryName": "Eletrônicos",
-    "tags": [
-      "premium",
-      "ventilador",
-      "eletronicos",
-      "h79",
-      "teto",
-      "42",
-      "industrial"
-    ]
+    ],
+    "image": "images/caixa-bass20.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/caixa-de-som-bluetooth-grande-extra-bass-20w-com-led-rgb-p-pro-10-tem-um-video-por-tras-disso"
   },
   {
     "id": "webcam1",
@@ -1032,26 +266,9 @@
       "1080p",
       "usb",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "webcam2",
-    "name": "Webcam Full HD 1080p USB 2.0",
-    "price": 69.9,
-    "price_max": 79.9,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "entrada",
-      "webcam",
-      "cameras",
-      "l193-webcam-1080p",
-      "full",
-      "hd",
-      "1080p",
-      "usb",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/webcam1.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/webcam-camera-full-hd-computador-1080p-usb-visao-360o-videoconferencia-videos-pc-notebook"
   },
   {
     "id": "cam-seg-noite",
@@ -1070,85 +287,9 @@
       "seguran",
       "vis",
       "noturna"
-    ]
-  },
-  {
-    "id": "cam-ip-ptz",
-    "name": "Câmera IP PTZ Varredura Automática",
-    "price": 149.9,
-    "price_max": null,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "intermediario",
-      "camera-seguranca",
-      "cameras",
-      "j07-aj-a06-b",
-      "mera",
-      "ip",
-      "ptz",
-      "varredura",
-      "autom",
-      "tica"
-    ]
-  },
-  {
-    "id": "cam-tomada",
-    "name": "Câmera Tomada Wi-Fi",
-    "price": 139.9,
-    "price_max": 169,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "intermediario",
-      "camera-seguranca",
-      "cameras",
-      "j33-aj-a15-b",
-      "mera",
-      "tomada",
-      "wi",
-      "fi",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "cam-seg-ext",
-    "name": "Câmera Segurança Externa 4K Wi-Fi",
-    "price": 399.9,
-    "price_max": 499,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "premium",
-      "camera-seguranca",
-      "cameras",
-      "j41-p20-sp3",
-      "mera",
-      "seguran",
-      "externa",
-      "4k",
-      "wi",
-      "fi",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "cam-digital",
-    "name": "Câmera Digital 4K com Zoom",
-    "price": 199.9,
-    "price_max": null,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "premium",
-      "camera-digital",
-      "cameras",
-      "estudante",
-      "mera",
-      "digital",
-      "4k",
-      "zoom"
-    ]
+    ],
+    "image": "images/cam-seg-noite.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/camera-de-seguranca-visao-noturna-lampada-facil-instalacao"
   },
   {
     "id": "cam-acao",
@@ -1166,100 +307,9 @@
       "mera",
       "esportes",
       "4k"
-    ]
-  },
-  {
-    "id": "filmadora",
-    "name": "Filmadora Digital Handycam Vintage",
-    "price": 279.9,
-    "price_max": null,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "premium",
-      "filmadora",
-      "cameras",
-      "j05-ka-s270",
-      "digital",
-      "handycam",
-      "vintage"
-    ]
-  },
-  {
-    "id": "dashcam",
-    "name": "Dashcam DVR HD 1080P 3 Lentes",
-    "price": 169.9,
-    "price_max": null,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "intermediario",
-      "dashcam",
-      "moto",
-      "cameras",
-      "l111-ka-2490",
-      "dvr",
-      "hd",
-      "1080p",
-      "lentes"
-    ]
-  },
-  {
-    "id": "carreg-veic-120w",
-    "name": "Carregador Veicular Turbo 120W",
-    "price": 49.9,
-    "price_max": null,
-    "category": "cameras",
-    "categoryName": "Câmeras e Webcams",
-    "tags": [
-      "entrada",
-      "carregador-veicular",
-      "cameras",
-      "v67-ka-c205",
-      "carregador",
-      "veicular",
-      "turbo",
-      "120w"
-    ]
-  },
-  {
-    "id": "fonte-turbo1usb",
-    "name": "Fonte Carregador Universal Turbo 1 USB",
-    "price": 19.9,
-    "price_max": 25,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "fonte",
-      "mais-vendido",
-      "acessorios",
-      "d205-y02-7",
-      "carregador",
-      "universal",
-      "turbo",
-      "usb",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "fonte-gan20w",
-    "name": "Fonte Carregador Tipo C Turbo GAN 20W",
-    "price": 39.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "fonte",
-      "acessorios",
-      "d182-kd-662",
-      "carregador",
-      "tipo",
-      "turbo",
-      "gan",
-      "20w"
-    ]
+    ],
+    "image": "images/cam-acao.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/camera-de-acao-filmadora-esportes-4k-mergulho-trilha-moto-cor-preto"
   },
   {
     "id": "carreg-20w-cabo",
@@ -1280,70 +330,9 @@
       "20w",
       "cabo",
       "1m"
-    ]
-  },
-  {
-    "id": "carreg-40w-lig",
-    "name": "Carregador Turbo 40W PD + Cabo Lightning",
-    "price": 49.9,
-    "price_max": 55,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "intermediario",
-      "kit",
-      "carregador",
-      "acessorios",
-      "j169-ca40-6",
-      "turbo",
-      "40w",
-      "pd",
-      "cabo",
-      "lightning",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "carreg-40w-tc",
-    "name": "Carregador Turbo 40W PD + Cabo Type-C",
-    "price": 49.9,
-    "price_max": 55,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "intermediario",
-      "kit",
-      "carregador",
-      "acessorios",
-      "j170-ca40-7",
-      "turbo",
-      "40w",
-      "pd",
-      "cabo",
-      "type",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "carreg-veic-2usb",
-    "name": "Carregador Veicular Turbo 2 USB 4.8A",
-    "price": 24.9,
-    "price_max": 29.9,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "carregador-veicular",
-      "mais-vendido",
-      "acessorios",
-      "d225-l11-4",
-      "carregador",
-      "veicular",
-      "turbo",
-      "usb",
-      "8a",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/carreg-20w-cabo.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/carregador-celular-tipo-c-turbo-20w-com-cabo-1m"
   },
   {
     "id": "carreg-2ent-20w",
@@ -1361,7 +350,9 @@
       "entradas",
       "20w",
       "gan"
-    ]
+    ],
+    "image": "images/carreg-2ent-20w.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/carregador-turbo-2-entradas-usb-e-tipo-c-kaidi-cq-1501cl-cube-pro-20w-gan-com-cabo-tipo-c-para-lightning"
   },
   {
     "id": "cabo-v8-3a",
@@ -1381,325 +372,9 @@
       "turbo",
       "pido",
       "3a"
-    ]
-  },
-  {
-    "id": "cabo-tc-light",
-    "name": "Cabo Tipo-C para Lightning Super Rápido",
-    "price": 39.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "cabo",
-      "acessorios",
-      "z20-kd-104cl",
-      "tipo",
-      "lightning",
-      "super",
-      "pido"
-    ]
-  },
-  {
-    "id": "cabo-120w",
-    "name": "Cabo 120W Liga Alumínio Carga Rápida 6A (2M)",
-    "price": 19.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "cabo",
-      "acessorios",
-      "2m-cabo-turbo-120w",
-      "120w",
-      "liga",
-      "alum",
-      "nio",
-      "carga",
-      "pida",
-      "6a",
-      "2m"
-    ]
-  },
-  {
-    "id": "cabo-otg-v8",
-    "name": "Cabo Adaptador Micro USB OTG",
-    "price": 9.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "cabo",
-      "otg",
-      "acessorios",
-      "c50-otg-v8",
-      "adaptador",
-      "micro",
-      "usb"
-    ]
-  },
-  {
-    "id": "cabo-retra",
-    "name": "Cabo Retrátil USB-C/Lightning Display LED",
-    "price": 39.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "cabo",
-      "acessorios",
-      "vários",
-      "retr",
-      "til",
-      "usb",
-      "lightning",
-      "display",
-      "led"
-    ]
-  },
-  {
-    "id": "sup-brac",
-    "name": "Braçadeira Suporte Celular 7\"",
-    "price": 19.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "suporte",
-      "acessorios",
-      "s137-bt001",
-      "bra",
-      "adeira",
-      "celular"
-    ]
-  },
-  {
-    "id": "sup-mesa",
-    "name": "Suporte Universal Mesa Dobrável",
-    "price": 14.9,
-    "price_max": 19.9,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "suporte",
-      "mais-vendido",
-      "acessorios",
-      "f24",
-      "universal",
-      "mesa",
-      "dobr",
-      "vel",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "sup-carro",
-    "name": "Suporte Universal Carro/Moto/GPS",
-    "price": 34.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "suporte",
-      "moto",
-      "acessorios",
-      "s71-sp-165",
-      "universal",
-      "carro",
-      "gps"
-    ]
-  },
-  {
-    "id": "capa-imper",
-    "name": "Capa Bolsa Celular Impermeável",
-    "price": 19.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "capa",
-      "acessorios",
-      "s125-al-2737",
-      "bolsa",
-      "celular",
-      "imperme",
-      "vel"
-    ]
-  },
-  {
-    "id": "capa-pass",
-    "name": "Capa Passaporte Couro RFID",
-    "price": 34.9,
-    "price_max": null,
-    "category": "acessorios",
-    "categoryName": "Acessórios para Celular",
-    "tags": [
-      "entrada",
-      "capa",
-      "acessorios",
-      "v104-bm-f4124",
-      "passaporte",
-      "couro",
-      "rfid"
-    ]
-  },
-  {
-    "id": "pendrive-metal-4",
-    "name": "NOVA Mini Pendrive Metal 4GB",
-    "price": 34.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "pendrive",
-      "armazenamento",
-      "a01-1",
-      "nova",
-      "mini",
-      "metal",
-      "4gb"
-    ]
-  },
-  {
-    "id": "pendrive-metal-8",
-    "name": "NOVA Mini Pendrive Metal 8GB",
-    "price": 39.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "pendrive",
-      "armazenamento",
-      "a01-2",
-      "nova",
-      "mini",
-      "metal",
-      "8gb"
-    ]
-  },
-  {
-    "id": "pendrive-metal-16",
-    "name": "NOVA Mini Pendrive Metal 16GB",
-    "price": 39.9,
-    "price_max": 40,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "pendrive",
-      "armazenamento",
-      "a01-3",
-      "nova",
-      "mini",
-      "metal",
-      "16gb",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "pendrive-metal-128",
-    "name": "NOVA Mini Pendrive Metal 128GB",
-    "price": 99.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "premium",
-      "pendrive",
-      "armazenamento",
-      "agold",
-      "nova",
-      "mini",
-      "metal",
-      "128gb"
-    ]
-  },
-  {
-    "id": "pendrive-16gb",
-    "name": "Pen Drive USB 2.0 16GB Original",
-    "price": 39.9,
-    "price_max": 40,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "pendrive",
-      "armazenamento",
-      "a28",
-      "pen",
-      "drive",
-      "usb",
-      "16gb",
-      "original",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "pendrive-64gb",
-    "name": "Pen Drive USB 2.0 64GB Original",
-    "price": 59.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "intermediario",
-      "pendrive",
-      "armazenamento",
-      "a30",
-      "pen",
-      "drive",
-      "usb",
-      "64gb",
-      "original"
-    ]
-  },
-  {
-    "id": "pendrive-2em1-8",
-    "name": "Pendrive 2 em 1 Type-C USB 3.0 8GB",
-    "price": 59.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "intermediario",
-      "pendrive",
-      "type-c",
-      "armazenamento",
-      "a41-ka-r-8g",
-      "type",
-      "usb",
-      "8gb"
-    ]
-  },
-  {
-    "id": "sd-4gb",
-    "name": "Cartão Micro SD 4GB + Adaptador",
-    "price": 29.9,
-    "price_max": 39.9,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "cartao-sd",
-      "armazenamento",
-      "a50-hm-m04",
-      "cart",
-      "micro",
-      "sd",
-      "4gb",
-      "adaptador",
-      "com-faixa"
-    ]
+    ],
+    "image": null,
+    "sourceUrl": null
   },
   {
     "id": "sd-8gb-onex",
@@ -1721,142 +396,9 @@
       "one",
       "adaptador",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "sd-8gb-hmaston",
-    "name": "Cartão Micro SD 8GB HMASTON + Adaptador",
-    "price": 29.9,
-    "price_max": 39.9,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "cartao-sd",
-      "armazenamento",
-      "a51-hm-m08",
-      "cart",
-      "micro",
-      "sd",
-      "8gb",
-      "hmaston",
-      "adaptador",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "sd-16gb",
-    "name": "Cartão Micro SD 16GB Original",
-    "price": 49.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "intermediario",
-      "cartao-sd",
-      "armazenamento",
-      "a34",
-      "cart",
-      "micro",
-      "sd",
-      "16gb",
-      "original"
-    ]
-  },
-  {
-    "id": "sd-32gb",
-    "name": "Cartão Micro SD 32GB Original",
-    "price": 89.9,
-    "price_max": 109,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "intermediario",
-      "cartao-sd",
-      "armazenamento",
-      "a35",
-      "cart",
-      "micro",
-      "sd",
-      "32gb",
-      "original",
-      "com-faixa"
-    ]
-  },
-  {
-    "id": "leitor-sd-15",
-    "name": "Leitor Cartão Micro SD 15 em 1",
-    "price": 14.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "leitor",
-      "armazenamento",
-      "j212",
-      "cart",
-      "micro",
-      "sd",
-      "15"
-    ]
-  },
-  {
-    "id": "otg-light-sd",
-    "name": "Adaptador OTG Lightning para Micro SD",
-    "price": 39.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "otg",
-      "adaptador",
-      "armazenamento",
-      "c47-pei-ct09",
-      "lightning",
-      "micro",
-      "sd"
-    ]
-  },
-  {
-    "id": "hub-c-3.0-4p",
-    "name": "Hub USB Type-C 3.0 Extensor 4 Portas LED",
-    "price": 29.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "entrada",
-      "hub",
-      "type-c",
-      "armazenamento",
-      "c125-ncb-507",
-      "usb",
-      "type",
-      "extensor",
-      "portas",
-      "led"
-    ]
-  },
-  {
-    "id": "adap-tc-hdmi",
-    "name": "Adaptador Tipo-C para HDMI 4K + USB 3.0",
-    "price": 49.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "intermediario",
-      "adaptador",
-      "type-c",
-      "armazenamento",
-      "c73-au-578",
-      "tipo",
-      "hdmi",
-      "4k",
-      "usb"
-    ]
+    ],
+    "image": "images/sd-8gb-onex.png",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/cartao-micro-sd-8gb-original-100-porcento"
   },
   {
     "id": "hub-c-6em1",
@@ -1877,26 +419,9 @@
       "rj45",
       "hdmi",
       "com-faixa"
-    ]
-  },
-  {
-    "id": "hub-c-8em1",
-    "name": "Adaptador Hub USB Tipo-C 8 em 1",
-    "price": 89.9,
-    "price_max": 119,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "intermediario",
-      "hub",
-      "type-c",
-      "armazenamento",
-      "c29-hub-8in1",
-      "adaptador",
-      "usb",
-      "tipo",
-      "com-faixa"
-    ]
+    ],
+    "image": "images/hub-c-6em1.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/hub-3-ponto-0-de-porta-usb-tipo-c-6-em-1-rj45-adaptador-hdmi-para-laptop-adequado-laptops-e-computadores"
   },
   {
     "id": "hub-ugreen-4",
@@ -1914,6 +439,8 @@
       "bm-8640",
       "usb",
       "4x"
-    ]
+    ],
+    "image": "images/hub-ugreen-4.jpg",
+    "sourceUrl": "https://www.luizeletronicos.com.br/products/hub-4em-1-ugreen-usb-c-para-4-estrela-usb-3-ponto-0"
   }
 ]

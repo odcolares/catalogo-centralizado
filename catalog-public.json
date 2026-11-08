@@ -1,0 +1,1837 @@
+{
+  "store": {
+    "name": "[Nome da Loja]",
+    "city": "Manaus/AM",
+    "delivery": "Motoboy mesmo dia — R$ 15 a 20",
+    "warranty": "Garantia local 30 dias — troca na hora",
+    "payment": "PIX ou dinheiro na entrega",
+    "whatsapp": "559281240562",
+    "supplier": "luizeletronicos.com.br",
+    "minOrder": 500
+  },
+  "categories": [
+    {
+      "id": "smartwatches",
+      "name": "Smartwatches",
+      "icon": "⌚",
+      "products": [
+        {
+          "id": "d20",
+          "name": "Smartwatch D20 Bluetooth",
+          "code": "V18 Smart D20",
+          "price": 49.9,
+          "price_max": 149.9,
+          "highlights": [
+            "Diversas cores",
+            "Notificações no pulso",
+            "Bateria dura o dia todo"
+          ],
+          "tags": [
+            "entrada",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/d20.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/relogio-inteligente-smartwatch-d20-bluetooth-diversas-cores-caxia-fechado-d20-caxia100pc-12-1200reais"
+        },
+        {
+          "id": "d18s",
+          "name": "Smartwatch D18s Bluetooth",
+          "code": "V13 Smart D18s",
+          "price": 49.9,
+          "price_max": 129.9,
+          "highlights": [
+            "Design clássico",
+            "Diversas cores",
+            "Notificações básicas"
+          ],
+          "tags": [
+            "entrada"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "s11mini",
+          "name": "Smart Watch S11 Mini",
+          "code": "Reloja1-2",
+          "price": 109.9,
+          "price_max": 119.9,
+          "highlights": [
+            "39mm Série 10",
+            "2 pulseiras",
+            "Alto valor percebido"
+          ],
+          "tags": [
+            "intermediario"
+          ],
+          "enabled": true,
+          "image": "images/s11mini.png",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/smart-watch-relogio-s11-mini-inteligente-39mm-series-10-2025-2-pulseiras"
+        },
+        {
+          "id": "cu10ultra",
+          "name": "Smartwatch CU10 Ultra",
+          "code": "Reloja5-2",
+          "price": 99.9,
+          "price_max": 119.9,
+          "highlights": [
+            "Design Ultra",
+            "2 pulseiras",
+            "Estilo premium"
+          ],
+          "tags": [
+            "intermediario"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "gl09",
+          "name": "Smartwatch GL09",
+          "code": "Reloja20-1",
+          "price": 129.9,
+          "price_max": 149.9,
+          "highlights": [
+            "Conexão Celular + Bluetooth",
+            "Chamadas",
+            "Design moderno"
+          ],
+          "tags": [
+            "intermediario"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sw2-6",
+          "name": "Smart Watch 2 + 6 Pulseiras",
+          "code": "Reloja15",
+          "price": 149.9,
+          "price_max": 169.9,
+          "highlights": [
+            "Kit 2 relógios",
+            "6 pulseiras",
+            "Presente completo"
+          ],
+          "tags": [
+            "kit",
+            "intermediario"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "w29s",
+          "name": "Smartwatch W29s Series 9",
+          "code": "Reloja17-2",
+          "price": 189.9,
+          "price_max": 229.9,
+          "highlights": [
+            "ChatGPT integrado",
+            "Chamadas",
+            "Série 9"
+          ],
+          "tags": [
+            "intermediario"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "treinoip68",
+          "name": "Smartwatch Treino IP68",
+          "code": "Reloja6-1",
+          "price": 199.9,
+          "price_max": 219.9,
+          "highlights": [
+            "Esportivo",
+            "Resistência IP68",
+            "Para treino"
+          ],
+          "tags": [
+            "intermediario",
+            "esportivo"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "s11pro",
+          "name": "Smartwatch S11 Pro Série 11",
+          "code": "Reloja17-1",
+          "price": 219.9,
+          "price_max": 229.9,
+          "highlights": [
+            "47mm",
+            "GPS",
+            "NFC",
+            "ChatGPT"
+          ],
+          "tags": [
+            "premium"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "imeson",
+          "name": "Relógio Imeson IMS-757A",
+          "code": "IMS-757A",
+          "price": 299.9,
+          "price_max": 349.9,
+          "highlights": [
+            "7-9 dias de bateria",
+            "3ATM à prova d'água",
+            "Chamada"
+          ],
+          "tags": [
+            "premium",
+            "topo-de-linha"
+          ],
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "id": "fones",
+      "name": "Fones de Ouvido",
+      "icon": "🎧",
+      "products": [
+        {
+          "id": "pro5",
+          "name": "Pro5 Fone Bluetooth TWS 5.4",
+          "code": "K33 A-607-P",
+          "price": 39.9,
+          "highlights": [
+            "Premium sem fio",
+            "Estilo Air",
+            "Bluetooth 5.4"
+          ],
+          "tags": [
+            "entrada",
+            "tws"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "m19",
+          "name": "Fone M19 com Visor Digital LED",
+          "code": "K39 Fone Bt M19",
+          "price": 39.9,
+          "highlights": [
+            "Visor de bateria na case",
+            "Android/iOS",
+            "Compra por impulso"
+          ],
+          "tags": [
+            "entrada",
+            "mais-vendido",
+            "visor-led"
+          ],
+          "enabled": true,
+          "image": "images/m19.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-sem-fio-m19-com-visor-digital-led-em-compativel-fones-microfone-para-sistema-android-ios-windows"
+        },
+        {
+          "id": "agoldv54",
+          "name": "Fone AGOLD V5.4 Longa Duração",
+          "code": "K13 FN-BJ3",
+          "price": 79.9,
+          "price_max": 89.9,
+          "highlights": [
+            "Marca AGOLD",
+            "Bateria longa",
+            "Bluetooth V5.4"
+          ],
+          "tags": [
+            "intermediario",
+            "tws"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "onex",
+          "name": "Fone ONEX Bluetooth 5.4",
+          "code": "K117 FON-2321",
+          "price": 79.9,
+          "price_max": 89.9,
+          "highlights": [
+            "Conexão estável",
+            "V5.4",
+            "Bom custo-benefício"
+          ],
+          "tags": [
+            "intermediario",
+            "tws"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "agoldpro8",
+          "name": "Fone AGOLD Pro8 Nova V6.0",
+          "code": "K70 FN-B58",
+          "price": 79.9,
+          "price_max": 89.9,
+          "highlights": [
+            "Bluetooth V6.0",
+            "Lançamento",
+            "Marca AGOLD"
+          ],
+          "tags": [
+            "intermediario",
+            "tws"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "imenso-v6",
+          "name": "IMENSO Fone V6.0 TWS In-Ear",
+          "code": "K103 IMS-818-A",
+          "price": 79.9,
+          "price_max": 89.9,
+          "highlights": [
+            "In-Ear",
+            "Longa duração",
+            "Bluetooth V6.0"
+          ],
+          "tags": [
+            "intermediario",
+            "tws"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "imenso-52",
+          "name": "IMENSO Bluetooth 5.2 Original",
+          "code": "K06 IMS-821",
+          "price": 119.9,
+          "price_max": 139.9,
+          "highlights": [
+            "Qualidade superior",
+            "IMENSO original",
+            "Som limpo"
+          ],
+          "tags": [
+            "premium",
+            "tws"
+          ],
+          "enabled": true,
+          "image": "images/imenso-52.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-imenso-bluetooth-5-ponto-2-original"
+        },
+        {
+          "id": "ganchobt53",
+          "name": "Fone Gancho Auricular BT 5.3",
+          "code": "K118 J-85 Pro",
+          "price": 59.9,
+          "price_max": 79.9,
+          "highlights": [
+            "Fixação segura",
+            "Estojo carregamento",
+            "Para esporte"
+          ],
+          "tags": [
+            "esportivo",
+            "intermediario"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "st15",
+          "name": "Fone Esportivo ST-15",
+          "code": "K113 ST-15",
+          "price": 99.9,
+          "highlights": [
+            "60h de música",
+            "Hi-Fi",
+            "Bluetooth 5.3"
+          ],
+          "tags": [
+            "esportivo",
+            "intermediario"
+          ],
+          "enabled": true,
+          "image": "images/st15.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-bluetooth-esportivo-st-15-com-60h-de-musica-som-hi-fi-leve-e-resistente-5-ponto-3"
+        },
+        {
+          "id": "hsgamerp2",
+          "name": "Headset Gamer P2",
+          "code": "J140 BM216",
+          "price": 99.9,
+          "highlights": [
+            "PS4/PC/Xbox",
+            "Conexão P2",
+            "Microfone"
+          ],
+          "tags": [
+            "gamer",
+            "headset"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hslehmoxusb",
+          "name": "Headset Gamer USB Lehmox",
+          "code": "Lehmox",
+          "price": 119.9,
+          "price_max": 159,
+          "highlights": [
+            "USB",
+            "Microfone",
+            "Marca Lehmox"
+          ],
+          "tags": [
+            "gamer",
+            "headset",
+            "intermediario"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hssemfio",
+          "name": "Headset Gamer Sem Fio BT",
+          "code": "J141 LEF-1031A",
+          "price": 139.9,
+          "price_max": 159,
+          "highlights": [
+            "Bluetooth",
+            "Microfone",
+            "Sem fio"
+          ],
+          "tags": [
+            "gamer",
+            "headset",
+            "premium"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hslehmoxrgb",
+          "name": "Headset Lehmox LED RGB",
+          "code": "J81 LEY-2304",
+          "price": 139.9,
+          "highlights": [
+            "LED RGB",
+            "Microfone",
+            "Design gamer"
+          ],
+          "tags": [
+            "gamer",
+            "headset",
+            "rgb"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hsrgbmulti",
+          "name": "Headset LED RGB Multiplataforma",
+          "code": "J201 ON-FN636",
+          "price": 149.9,
+          "price_max": 159,
+          "highlights": [
+            "PC/Celular/Xbox/PS4/PS5",
+            "RGB",
+            "Microfone"
+          ],
+          "tags": [
+            "gamer",
+            "headset",
+            "rgb",
+            "premium"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "fonep2mic",
+          "name": "Fone P2 com Microfone",
+          "code": "J182 LE-0202",
+          "price": 19.9,
+          "highlights": [
+            "Com fio",
+            "Básico",
+            "Microfone"
+          ],
+          "tags": [
+            "entrada",
+            "com-fio"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hsmoto-y10",
+          "name": "Headset Capacete Moto Y10",
+          "code": "R256 Y10",
+          "price": 99.9,
+          "highlights": [
+            "Bluetooth 5.3",
+            "IPX6",
+            "Redução de ruído"
+          ],
+          "tags": [
+            "moto",
+            "headset",
+            "intermediario"
+          ],
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "id": "informatica",
+      "name": "Informática",
+      "icon": "🖱️",
+      "products": [
+        {
+          "id": "mouse-kapbom",
+          "name": "Mouse Sem Fio KAPBOM KA-611 2.4G",
+          "code": "KAPBOM KA-611",
+          "price": 39.9,
+          "highlights": [
+            "Gamer",
+            "Ergonômico",
+            "USB 2.4G"
+          ],
+          "tags": [
+            "entrada",
+            "mouse",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/mouse-kapbom.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/mouse-sem-fio-kapbom-ka-611-2-ponto-4g-gamer-ergonomico-alta-precisao-usb"
+        },
+        {
+          "id": "mouse-t03",
+          "name": "Mouse BT 5.0 + USB 2.4G",
+          "code": "T03 VT-05",
+          "price": 39.9,
+          "highlights": [
+            "Dupla conectividade",
+            "Bluetooth + 2.4G",
+            "Ergonômico"
+          ],
+          "tags": [
+            "entrada",
+            "mouse"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "mouse-t24",
+          "name": "Mouse Bluetooth 2.4 Wireless",
+          "code": "T24",
+          "price": 39.9,
+          "highlights": [
+            "Alcance 10m",
+            "Preço varia por lote",
+            "Sem fio"
+          ],
+          "tags": [
+            "entrada",
+            "mouse"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "tec-rgb-bmax",
+          "name": "Teclado Semi-mecânico RGB B-Max",
+          "code": "T18 BM-T10",
+          "price": 89.9,
+          "price_max": 120,
+          "highlights": [
+            "RGB",
+            "Estilo gamer",
+            "Semi-mecânico"
+          ],
+          "tags": [
+            "intermediario",
+            "teclado",
+            "rgb"
+          ],
+          "enabled": true,
+          "image": "images/tec-rgb-bmax.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/teclado-semi-mecanico-rgb-b-max"
+        },
+        {
+          "id": "tec-android",
+          "name": "Teclado Android/PC BT Sem Fio",
+          "code": "L174 KA-689",
+          "price": 99.9,
+          "highlights": [
+            "Wireless",
+            "Android + PC",
+            "Compacto"
+          ],
+          "tags": [
+            "intermediario",
+            "teclado"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "tec-touchpad",
+          "name": "Teclado BT Touchpad Slim",
+          "code": "T112 TCD-05",
+          "price": 99.9,
+          "highlights": [
+            "Touchpad integrado",
+            "Slim",
+            "Bluetooth"
+          ],
+          "tags": [
+            "intermediario",
+            "teclado"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "tec-fio-sup",
+          "name": "Teclado Com Fio + Suporte Smartphone",
+          "code": "T27 KP-TE132",
+          "price": 109.9,
+          "highlights": [
+            "Silencioso",
+            "Suporte celular",
+            "Com fio"
+          ],
+          "tags": [
+            "intermediario",
+            "teclado"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "tec-mec-rgb",
+          "name": "Teclado Mecânico RGB Original",
+          "code": "T40 LEY-2092",
+          "price": 199.9,
+          "price_max": 249,
+          "highlights": [
+            "Switch RGB",
+            "PC/PS4/Xbox",
+            "Mecânico original"
+          ],
+          "tags": [
+            "premium",
+            "teclado",
+            "rgb",
+            "gamer"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "combo-tm",
+          "name": "Combo Teclado + Mouse Sem Fio USB",
+          "code": "Ley",
+          "price": 99.9,
+          "highlights": [
+            "Combo completo",
+            "2.4GHz",
+            "Pronto pra uso"
+          ],
+          "tags": [
+            "kit",
+            "intermediario",
+            "combo"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "tablet-101",
+          "name": "Tablet 10.1\" 5G + Teclado + Mouse",
+          "code": "MM-PB101",
+          "price": 899,
+          "highlights": [
+            "16GB RAM",
+            "512GB",
+            "Android",
+            "50MP",
+            "Kit completo"
+          ],
+          "tags": [
+            "premium",
+            "tablet",
+            "kit"
+          ],
+          "enabled": true,
+          "image": "images/tablet-101.png",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/tablet-10-ponto-1-5g-com-teclado-mais-mouse-16gb-ram-512gb-android-camera-50mp"
+        },
+        {
+          "id": "hub-usb3-4p",
+          "name": "Hub USB 3.0 4 Portas 5 Gbps",
+          "code": "C60 AJ-9037",
+          "price": 24.9,
+          "price_max": 34.9,
+          "highlights": [
+            "Super rápido",
+            "4 portas",
+            "USB 3.0"
+          ],
+          "tags": [
+            "entrada",
+            "hub",
+            "mais-vendido"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hub-usb7-2p",
+          "name": "Hub USB 7 Portas 2.0",
+          "code": "R233 BM-8638",
+          "price": 29.9,
+          "highlights": [
+            "Para TV",
+            "Pendrive",
+            "Periféricos"
+          ],
+          "tags": [
+            "entrada",
+            "hub"
+          ],
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "id": "eletronicos",
+      "name": "Eletrônicos",
+      "icon": "🔊",
+      "products": [
+        {
+          "id": "tvbox-tomate",
+          "name": "Smart TV Box Tomate Android 4K",
+          "code": "MCD-121",
+          "price": 129.9,
+          "highlights": [
+            "2GB+16GB",
+            "Wi-Fi",
+            "Android 4K"
+          ],
+          "tags": [
+            "tv-box",
+            "sob-consulta"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "tvbox-tx9",
+          "name": "TV Box TX9 Android 13.0 4K",
+          "code": "TX9 TVBOX",
+          "price": 139.9,
+          "highlights": [
+            "2GB+16GB",
+            "Rápido",
+            "Android 13"
+          ],
+          "tags": [
+            "tv-box",
+            "sob-consulta"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "controle-tvbox",
+          "name": "Controle Remoto TV Box Universal",
+          "code": "X49 / X58",
+          "price": 19.9,
+          "highlights": [
+            "Compatível maioria TV Box",
+            "Universal",
+            "Android"
+          ],
+          "tags": [
+            "entrada",
+            "controle"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "proj-astro",
+          "name": "Projetor Astronauta Galáxia",
+          "code": "L142 NY-32",
+          "price": 89.9,
+          "highlights": [
+            "Estrelas/galáxia",
+            "Quarto/infantil",
+            "Presente"
+          ],
+          "tags": [
+            "intermediario",
+            "projetor",
+            "decor"
+          ],
+          "enabled": true,
+          "image": "images/proj-astro.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/projetor-night-light-astronauta-galaxy-starry-sky-star-light"
+        },
+        {
+          "id": "proj-astro-eco",
+          "name": "Projetor Astronauta (Econômico)",
+          "code": "L144 NY-40",
+          "price": 79.9,
+          "price_max": 99.9,
+          "highlights": [
+            "Versão compacta",
+            "Galáxia",
+            "Custo-benefício"
+          ],
+          "tags": [
+            "entrada",
+            "projetor",
+            "decor"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "proj-magic",
+          "name": "Projetor Magic Smart Wifi 4K",
+          "code": "HY300",
+          "price": 399.9,
+          "price_max": 499,
+          "highlights": [
+            "Android",
+            "Wi-Fi",
+            "BT",
+            "Estilo Magcubic"
+          ],
+          "tags": [
+            "premium",
+            "projetor"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "proj-hy320",
+          "name": "Projetor HY320 Full HD Nativo",
+          "code": "PGT-HY320",
+          "price": 449.9,
+          "highlights": [
+            "Full HD",
+            "4K suporte",
+            "AGOLD"
+          ],
+          "tags": [
+            "premium",
+            "projetor"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "proj-hy330",
+          "name": "Projetor HY330 4K Ultra HD",
+          "code": "PGT-HY330",
+          "price": 469.9,
+          "highlights": [
+            "Até 150\"",
+            "AGOLD",
+            "4K Ultra HD"
+          ],
+          "tags": [
+            "premium",
+            "projetor"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "caixa-mini",
+          "name": "Caixa Mini Colorida 5W",
+          "code": "Atacado 100un",
+          "price": 24.9,
+          "highlights": [
+            "Compacta",
+            "Brindes",
+            "Venda rápida"
+          ],
+          "tags": [
+            "entrada",
+            "caixa-som"
+          ],
+          "enabled": true,
+          "image": "images/caixa-mini.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/caixa-som-mini-clorido-qualidade"
+        },
+        {
+          "id": "caixa-karaoke",
+          "name": "Caixa Karaokê LED + 1 Microfone",
+          "code": "R25 KA-8195",
+          "price": 99.9,
+          "highlights": [
+            "LED",
+            "Microfone",
+            "Portátil"
+          ],
+          "tags": [
+            "intermediario",
+            "caixa-som",
+            "karaoke"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "caixa-100w",
+          "name": "Caixa 100W Bluetooth Portátil",
+          "code": "R71 EL-1132",
+          "price": 219.9,
+          "highlights": [
+            "Alta potência",
+            "Festas/externo",
+            "Bluetooth"
+          ],
+          "tags": [
+            "premium",
+            "caixa-som"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "caixa-bass20",
+          "name": "Caixa Extra Bass 20W RGB",
+          "code": "R32 JBL P PRO 7",
+          "price": 249.9,
+          "highlights": [
+            "Estilo JBL",
+            "Grave potente",
+            "RGB"
+          ],
+          "tags": [
+            "premium",
+            "caixa-som",
+            "rgb"
+          ],
+          "enabled": true,
+          "image": "images/caixa-bass20.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/caixa-de-som-bluetooth-grande-extra-bass-20w-com-led-rgb-p-pro-10-tem-um-video-por-tras-disso"
+        },
+        {
+          "id": "caixa-300w",
+          "name": "Caixa 300W + 2 Mics + FM + USB",
+          "code": "R87 EL-1144",
+          "price": 799,
+          "price_max": 899,
+          "highlights": [
+            "Alta potência",
+            "2 mics sem fio",
+            "FM + USB"
+          ],
+          "tags": [
+            "premium",
+            "caixa-som",
+            "kit"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "vent-mesa",
+          "name": "Mini Ventilador USB de Mesa",
+          "code": "S122 FS45",
+          "price": 29.9,
+          "price_max": 39.9,
+          "highlights": [
+            "3 velocidades",
+            "USB",
+            "Mesa"
+          ],
+          "tags": [
+            "entrada",
+            "ventilador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "vent-mao",
+          "name": "Mini Ventilador de Mão Turbo",
+          "code": "S213 VTL-363",
+          "price": 59.9,
+          "highlights": [
+            "Recarregável",
+            "Portátil",
+            "Turbo"
+          ],
+          "tags": [
+            "intermediario",
+            "ventilador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "clim-umi",
+          "name": "Mini Climatizador Umidificador",
+          "code": "S148 FS-30-2",
+          "price": 119.9,
+          "highlights": [
+            "Umidificação",
+            "Dupla camada",
+            "Compacto"
+          ],
+          "tags": [
+            "intermediario",
+            "climatizador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "lamp-vent",
+          "name": "Lâmpada Ventilador Teto 60W",
+          "code": "S182 AJ-M11-B",
+          "price": 109.9,
+          "highlights": [
+            "6 pás",
+            "Controle remoto",
+            "Bivolt"
+          ],
+          "tags": [
+            "intermediario",
+            "ventilador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "vent-teto42",
+          "name": "Ventilador Teto 42\" Industrial",
+          "code": "H79",
+          "price": 499,
+          "highlights": [
+            "6 velocidades",
+            "Controle remoto",
+            "Industrial"
+          ],
+          "tags": [
+            "premium",
+            "ventilador"
+          ],
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "id": "cameras",
+      "name": "Câmeras e Webcams",
+      "icon": "📸",
+      "products": [
+        {
+          "id": "webcam1",
+          "name": "Webcam Full HD 1080p USB",
+          "code": "L210 AL-ZP209",
+          "price": 59.9,
+          "price_max": 79.9,
+          "highlights": [
+            "Visão 360º",
+            "Videoconferência",
+            "Plug and play"
+          ],
+          "tags": [
+            "entrada",
+            "webcam",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/webcam1.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/webcam-camera-full-hd-computador-1080p-usb-visao-360o-videoconferencia-videos-pc-notebook"
+        },
+        {
+          "id": "webcam2",
+          "name": "Webcam Full HD 1080p USB 2.0",
+          "code": "L193 Webcam 1080P",
+          "price": 69.9,
+          "price_max": 79.9,
+          "highlights": [
+            "Plug and play",
+            "Windows/Mac",
+            "Full HD"
+          ],
+          "tags": [
+            "entrada",
+            "webcam"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cam-seg-noite",
+          "name": "Câmera Segurança Visão Noturna",
+          "code": "J23 LEY-90-v380",
+          "price": 129.9,
+          "highlights": [
+            "App Yoosee/V380",
+            "Lâmpada integrada",
+            "Visão noturna"
+          ],
+          "tags": [
+            "intermediario",
+            "camera-seguranca",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/cam-seg-noite.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/camera-de-seguranca-visao-noturna-lampada-facil-instalacao"
+        },
+        {
+          "id": "cam-ip-ptz",
+          "name": "Câmera IP PTZ Varredura Automática",
+          "code": "J07 AJ-A06-B",
+          "price": 149.9,
+          "highlights": [
+            "Pan/Tilt remoto",
+            "Visão noturna",
+            "IP"
+          ],
+          "tags": [
+            "intermediario",
+            "camera-seguranca"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cam-tomada",
+          "name": "Câmera Tomada Wi-Fi",
+          "code": "J33 AJ-A15-B",
+          "price": 139.9,
+          "price_max": 169,
+          "highlights": [
+            "Disfarçada de tomada",
+            "App Yoosee",
+            "Wi-Fi"
+          ],
+          "tags": [
+            "intermediario",
+            "camera-seguranca"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cam-seg-ext",
+          "name": "Câmera Segurança Externa 4K Wi-Fi",
+          "code": "J41 P20-SP3",
+          "price": 399.9,
+          "price_max": 499,
+          "highlights": [
+            "3 lentes",
+            "360°",
+            "Zoom óptico",
+            "IA"
+          ],
+          "tags": [
+            "premium",
+            "camera-seguranca"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cam-digital",
+          "name": "Câmera Digital 4K com Zoom",
+          "code": "Estudante",
+          "price": 199.9,
+          "highlights": [
+            "48MP",
+            "Zoom",
+            "Tela flip 180°"
+          ],
+          "tags": [
+            "premium",
+            "camera-digital"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cam-acao",
+          "name": "Câmera de Ação Esportes 4K",
+          "code": "J10 D800",
+          "price": 199.9,
+          "highlights": [
+            "À prova d'água",
+            "Mergulho/trilha/moto",
+            "4K"
+          ],
+          "tags": [
+            "premium",
+            "camera-acao",
+            "esportivo"
+          ],
+          "enabled": true,
+          "image": "images/cam-acao.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/camera-de-acao-filmadora-esportes-4k-mergulho-trilha-moto-cor-preto"
+        },
+        {
+          "id": "filmadora",
+          "name": "Filmadora Digital Handycam Vintage",
+          "code": "J05 KA-S270",
+          "price": 279.9,
+          "highlights": [
+            "Zoom 16x",
+            "Full HD",
+            "Até 128GB"
+          ],
+          "tags": [
+            "premium",
+            "filmadora"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "dashcam",
+          "name": "Dashcam DVR HD 1080P 3 Lentes",
+          "code": "L111 KA-2490",
+          "price": 169.9,
+          "highlights": [
+            "3 vias",
+            "Gravação contínua",
+            "1080p"
+          ],
+          "tags": [
+            "intermediario",
+            "dashcam",
+            "moto"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "carreg-veic-120w",
+          "name": "Carregador Veicular Turbo 120W",
+          "code": "V67 KA-C205",
+          "price": 49.9,
+          "highlights": [
+            "3 soquetes",
+            "PD + QC 3.0",
+            "Carro"
+          ],
+          "tags": [
+            "entrada",
+            "carregador-veicular"
+          ],
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "id": "acessorios",
+      "name": "Acessórios para Celular",
+      "icon": "📱",
+      "products": [
+        {
+          "id": "fonte-turbo1usb",
+          "name": "Fonte Carregador Universal Turbo 1 USB",
+          "code": "D205 Y02-7",
+          "price": 19.9,
+          "price_max": 25,
+          "highlights": [
+            "2.1A",
+            "Básico",
+            "Universal"
+          ],
+          "tags": [
+            "entrada",
+            "fonte",
+            "mais-vendido"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "fonte-gan20w",
+          "name": "Fonte Carregador Tipo C Turbo GAN 20W",
+          "code": "D182 KD-662",
+          "price": 39.9,
+          "highlights": [
+            "Tecnologia GAN",
+            "20W",
+            "Tipo C"
+          ],
+          "tags": [
+            "entrada",
+            "fonte"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "carreg-20w-cabo",
+          "name": "Carregador Tipo C Turbo 20W + Cabo 1m",
+          "code": "D70 KD-108C",
+          "price": 49.9,
+          "highlights": [
+            "Kit completo Type-C",
+            "20W",
+            "Cabo 1m"
+          ],
+          "tags": [
+            "intermediario",
+            "kit",
+            "carregador",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/carreg-20w-cabo.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/carregador-celular-tipo-c-turbo-20w-com-cabo-1m"
+        },
+        {
+          "id": "carreg-40w-lig",
+          "name": "Carregador Turbo 40W PD + Cabo Lightning",
+          "code": "J169 CA40-6",
+          "price": 49.9,
+          "price_max": 55,
+          "highlights": [
+            "PD",
+            "Cabo Lightning 1m",
+            "40W"
+          ],
+          "tags": [
+            "intermediario",
+            "kit",
+            "carregador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "carreg-40w-tc",
+          "name": "Carregador Turbo 40W PD + Cabo Type-C",
+          "code": "J170 CA40-7",
+          "price": 49.9,
+          "price_max": 55,
+          "highlights": [
+            "PD",
+            "Cabo Type-C 1m",
+            "40W"
+          ],
+          "tags": [
+            "intermediario",
+            "kit",
+            "carregador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "carreg-veic-2usb",
+          "name": "Carregador Veicular Turbo 2 USB 4.8A",
+          "code": "D225 L11-4",
+          "price": 24.9,
+          "price_max": 29.9,
+          "highlights": [
+            "Universal",
+            "Carro/moto",
+            "2 USB"
+          ],
+          "tags": [
+            "entrada",
+            "carregador-veicular",
+            "mais-vendido"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "carreg-2ent-20w",
+          "name": "Carregador Turbo 2 Entradas 20W GAN",
+          "code": "Z63 CQ-1501CL",
+          "price": 49.9,
+          "highlights": [
+            "KAIDI Cube Pro",
+            "Compacto",
+            "20W GAN"
+          ],
+          "tags": [
+            "intermediario",
+            "carregador"
+          ],
+          "enabled": true,
+          "image": "images/carreg-2ent-20w.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/carregador-turbo-2-entradas-usb-e-tipo-c-kaidi-cq-1501cl-cube-pro-20w-gan-com-cabo-tipo-c-para-lightning"
+        },
+        {
+          "id": "cabo-v8-3a",
+          "name": "Cabo USB V8 Turbo Rápido 3A",
+          "code": "Z52 KD-355M",
+          "price": 17.9,
+          "highlights": [
+            "Micro-USB",
+            "Reforçado",
+            "Carga rápida 3A"
+          ],
+          "tags": [
+            "entrada",
+            "cabo",
+            "mais-vendido"
+          ],
+          "enabled": true
+        },
+        {
+          "id": "cabo-tc-light",
+          "name": "Cabo Tipo-C para Lightning Super Rápido",
+          "code": "Z20 KD-104CL",
+          "price": 39.9,
+          "highlights": [
+            "KAIDI",
+            "iPhone com fonte Type-C",
+            "Super rápido"
+          ],
+          "tags": [
+            "entrada",
+            "cabo"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cabo-120w",
+          "name": "Cabo 120W Liga Alumínio Carga Rápida 6A (2M)",
+          "code": "2M Cabo Turbo 120W",
+          "price": 19.9,
+          "highlights": [
+            "V8",
+            "2 metros",
+            "Alumínio"
+          ],
+          "tags": [
+            "entrada",
+            "cabo"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cabo-otg-v8",
+          "name": "Cabo Adaptador Micro USB OTG",
+          "code": "C50 OTG V8",
+          "price": 9.9,
+          "highlights": [
+            "Conecta pendrive/mouse no celular",
+            "OTG",
+            "Micro USB"
+          ],
+          "tags": [
+            "entrada",
+            "cabo",
+            "otg"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "cabo-retra",
+          "name": "Cabo Retrátil USB-C/Lightning Display LED",
+          "code": "Vários",
+          "price": 39.9,
+          "highlights": [
+            "120W",
+            "Retrátil",
+            "Display LED"
+          ],
+          "tags": [
+            "entrada",
+            "cabo"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sup-brac",
+          "name": "Braçadeira Suporte Celular 7\"",
+          "code": "S137 BT001",
+          "price": 19.9,
+          "highlights": [
+            "Corrida",
+            "Treino",
+            "Academia",
+            "Bike"
+          ],
+          "tags": [
+            "entrada",
+            "suporte"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sup-mesa",
+          "name": "Suporte Universal Mesa Dobrável",
+          "code": "F24",
+          "price": 14.9,
+          "price_max": 19.9,
+          "highlights": [
+            "Tablet e celular",
+            "Ajustável",
+            "Dobrável"
+          ],
+          "tags": [
+            "entrada",
+            "suporte",
+            "mais-vendido"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sup-carro",
+          "name": "Suporte Universal Carro/Moto/GPS",
+          "code": "S71 SP-165",
+          "price": 34.9,
+          "highlights": [
+            "Painel ou parabrisa",
+            "Universal",
+            "Carro/moto"
+          ],
+          "tags": [
+            "entrada",
+            "suporte",
+            "moto"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "capa-imper",
+          "name": "Capa Bolsa Celular Impermeável",
+          "code": "S125 AL-2737",
+          "price": 19.9,
+          "highlights": [
+            "Mergulho",
+            "Piscina",
+            "Praia"
+          ],
+          "tags": [
+            "entrada",
+            "capa"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "capa-pass",
+          "name": "Capa Passaporte Couro RFID",
+          "code": "V104 BM-F4124",
+          "price": 34.9,
+          "highlights": [
+            "Proteção contra fraude",
+            "Couro",
+            "RFID"
+          ],
+          "tags": [
+            "entrada",
+            "capa"
+          ],
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "id": "armazenamento",
+      "name": "Armazenamento de Dados",
+      "icon": "💾",
+      "products": [
+        {
+          "id": "pendrive-metal-4",
+          "name": "NOVA Mini Pendrive Metal 4GB",
+          "code": "A01-1",
+          "price": 34.9,
+          "highlights": [
+            "Chaveiro metal",
+            "AGOLD",
+            "Compacto"
+          ],
+          "tags": [
+            "entrada",
+            "pendrive"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "pendrive-metal-8",
+          "name": "NOVA Mini Pendrive Metal 8GB",
+          "code": "A01-2",
+          "price": 39.9,
+          "highlights": [
+            "Chaveiro metal",
+            "AGOLD",
+            "8GB"
+          ],
+          "tags": [
+            "entrada",
+            "pendrive"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "pendrive-metal-16",
+          "name": "NOVA Mini Pendrive Metal 16GB",
+          "code": "A01-3",
+          "price": 39.9,
+          "price_max": 40,
+          "highlights": [
+            "Chaveiro metal",
+            "AGOLD",
+            "16GB"
+          ],
+          "tags": [
+            "entrada",
+            "pendrive"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "pendrive-metal-128",
+          "name": "NOVA Mini Pendrive Metal 128GB",
+          "code": "AGOLD",
+          "price": 99.9,
+          "highlights": [
+            "Alta capacidade",
+            "Metal",
+            "128GB"
+          ],
+          "tags": [
+            "premium",
+            "pendrive"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "pendrive-16gb",
+          "name": "Pen Drive USB 2.0 16GB Original",
+          "code": "A28",
+          "price": 39.9,
+          "price_max": 40,
+          "highlights": [
+            "Lacrado",
+            "GRANIA/KUP",
+            "Original"
+          ],
+          "tags": [
+            "entrada",
+            "pendrive"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "pendrive-64gb",
+          "name": "Pen Drive USB 2.0 64GB Original",
+          "code": "A30",
+          "price": 59.9,
+          "highlights": [
+            "3 anos garantia",
+            "GRANIA",
+            "Original"
+          ],
+          "tags": [
+            "intermediario",
+            "pendrive"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "pendrive-2em1-8",
+          "name": "Pendrive 2 em 1 Type-C USB 3.0 8GB",
+          "code": "A41 KA-R-8G",
+          "price": 59.9,
+          "highlights": [
+            "Conector duplo USB-A + Type-C",
+            "8GB",
+            "Celular e PC"
+          ],
+          "tags": [
+            "intermediario",
+            "pendrive",
+            "type-c"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sd-4gb",
+          "name": "Cartão Micro SD 4GB + Adaptador",
+          "code": "A50 HM-M04",
+          "price": 29.9,
+          "price_max": 39.9,
+          "highlights": [
+            "AGOLD/HMASTON",
+            "Com adaptador SD",
+            "4GB"
+          ],
+          "tags": [
+            "entrada",
+            "cartao-sd"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sd-8gb-onex",
+          "name": "Cartão Micro SD 8GB ONE X + Adaptador",
+          "code": "A62 X-M-8GB",
+          "price": 29.9,
+          "price_max": 39.9,
+          "highlights": [
+            "ONE X",
+            "Custo-benefício",
+            "8GB"
+          ],
+          "tags": [
+            "entrada",
+            "cartao-sd",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/sd-8gb-onex.png",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/cartao-micro-sd-8gb-original-100-porcento"
+        },
+        {
+          "id": "sd-8gb-hmaston",
+          "name": "Cartão Micro SD 8GB HMASTON + Adaptador",
+          "code": "A51 HM-M08",
+          "price": 29.9,
+          "price_max": 39.9,
+          "highlights": [
+            "HMASTON",
+            "Original",
+            "8GB"
+          ],
+          "tags": [
+            "entrada",
+            "cartao-sd"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sd-16gb",
+          "name": "Cartão Micro SD 16GB Original",
+          "code": "A34",
+          "price": 49.9,
+          "highlights": [
+            "100% original",
+            "2 anos garantia",
+            "16GB"
+          ],
+          "tags": [
+            "intermediario",
+            "cartao-sd"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "sd-32gb",
+          "name": "Cartão Micro SD 32GB Original",
+          "code": "A35",
+          "price": 89.9,
+          "price_max": 109,
+          "highlights": [
+            "3 anos garantia",
+            "Alta confiabilidade",
+            "32GB"
+          ],
+          "tags": [
+            "intermediario",
+            "cartao-sd"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "leitor-sd-15",
+          "name": "Leitor Cartão Micro SD 15 em 1",
+          "code": "J212",
+          "price": 14.9,
+          "highlights": [
+            "Universal",
+            "15 em 1",
+            "Compacto"
+          ],
+          "tags": [
+            "entrada",
+            "leitor"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "otg-light-sd",
+          "name": "Adaptador OTG Lightning para Micro SD",
+          "code": "C47 PEI-CT09",
+          "price": 39.9,
+          "highlights": [
+            "Lê cartão SD no iPhone",
+            "OTG",
+            "Lightning"
+          ],
+          "tags": [
+            "entrada",
+            "otg",
+            "adaptador"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hub-c-3.0-4p",
+          "name": "Hub USB Type-C 3.0 Extensor 4 Portas LED",
+          "code": "C125 NCB-507",
+          "price": 29.9,
+          "highlights": [
+            "Design compacto",
+            "LED",
+            "4 portas"
+          ],
+          "tags": [
+            "entrada",
+            "hub",
+            "type-c"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "adap-tc-hdmi",
+          "name": "Adaptador Tipo-C para HDMI 4K + USB 3.0",
+          "code": "C73 AU-578",
+          "price": 49.9,
+          "highlights": [
+            "MacBook Air/Pro",
+            "Saída 4K",
+            "USB 3.0"
+          ],
+          "tags": [
+            "intermediario",
+            "adaptador",
+            "type-c"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hub-c-6em1",
+          "name": "Hub USB 3.0 Tipo-C 6 em 1 (RJ45 + HDMI)",
+          "code": "C134 BM-8642",
+          "price": 89.9,
+          "price_max": 119,
+          "highlights": [
+            "Laptop",
+            "Porta de rede + vídeo",
+            "6 em 1"
+          ],
+          "tags": [
+            "intermediario",
+            "hub",
+            "type-c",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/hub-c-6em1.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/hub-3-ponto-0-de-porta-usb-tipo-c-6-em-1-rj45-adaptador-hdmi-para-laptop-adequado-laptops-e-computadores"
+        },
+        {
+          "id": "hub-c-8em1",
+          "name": "Adaptador Hub USB Tipo-C 8 em 1",
+          "code": "C29 HUB 8IN1",
+          "price": 89.9,
+          "price_max": 119,
+          "highlights": [
+            "HDMI 4K",
+            "RJ45",
+            "USB 3.0",
+            "SD/TF",
+            "PD"
+          ],
+          "tags": [
+            "intermediario",
+            "hub",
+            "type-c"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "hub-ugreen-4",
+          "name": "Hub 4 em 1 Ugreen USB-C 4x USB 3.0",
+          "code": "BM-8640",
+          "price": 119.9,
+          "highlights": [
+            "Marca Ugreen",
+            "Alta velocidade",
+            "4x USB 3.0"
+          ],
+          "tags": [
+            "premium",
+            "hub",
+            "ugreen",
+            "sob-consulta"
+          ],
+          "enabled": true,
+          "image": "images/hub-ugreen-4.jpg",
+          "sourceUrl": "https://www.luizeletronicos.com.br/products/hub-4em-1-ugreen-usb-c-para-4-estrela-usb-3-ponto-0"
+        }
+      ]
+    }
+  ]
+}
