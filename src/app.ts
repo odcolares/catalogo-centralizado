@@ -103,7 +103,7 @@ function getWhatsAppUrl(product: Product): string {
       ? ` (até ${brl(product.price_max)})`
       : '';
   const msg = encodeURIComponent(
-    `Olá! Quero fazer um pedido:\n\nProduto: ${product.name}\nCódigo: ${product.code}\nPreço: ${brl(product.price)}${priceRange}\n\nPode confirmar a disponibilidade e o prazo de entrega em Manaus?`
+    `Olá! Quero fazer um pedido:\n\n🛍️ Produto: ${product.name}\n📌 Código: ${product.code}\n💰 Preço: ${brl(product.price)}${priceRange}\n\nPode confirmar a disponibilidade e o prazo de entrega em Manaus?`
   );
   return `https://wa.me/${waNumber}?text=${msg}`;
 }
@@ -1022,7 +1022,7 @@ function buildOrderMessage(): string | null {
   const lines: string[] = [
     'Olá! Quero fazer um pedido:',
     '',
-    `Pedido: ${formatOrderNo()} — ${dateStr}`,
+    `📋 Pedido: ${formatOrderNo()} — ${dateStr}`,
     '',
   ];
 
@@ -1031,24 +1031,24 @@ function buildOrderMessage(): string | null {
     const name = found ? found.product.name : it.id;
     const code = found ? found.product.code : '—';
     lines.push(
-      `${it.qty}x ${name} (${code}) — ${brl(it.price)} → ${brl(it.price * it.qty)}`
+      `🛍️ ${it.qty}x ${name} (${code}) — ${brl(it.price)} → ${brl(it.price * it.qty)}`
     );
   }
 
   lines.push(
     '',
-    `Subtotal: ${brl(cartSubtotal())}`,
-    `Entrega: ${entrega}`,
+    `💰 Subtotal: ${brl(cartSubtotal())}`,
+    `🚚 Entrega: ${entrega}`,
     '',
-    `Cliente: ${clientInfo.nome.trim()}`,
-    `Telefone: ${clientInfo.telefone.trim()}`
+    `👤 Cliente: ${clientInfo.nome.trim()}`,
+    `📱 Telefone: ${clientInfo.telefone.trim()}`
   );
 
   if (clientInfo.bairro.trim()) {
-    lines.push(`Bairro/endereço: ${clientInfo.bairro.trim()}`);
+    lines.push(`📍 Bairro/endereço: ${clientInfo.bairro.trim()}`);
   }
   if (clientInfo.obs.trim()) {
-    lines.push(`Obs: ${clientInfo.obs.trim()}`);
+    lines.push(`📝 Obs: ${clientInfo.obs.trim()}`);
   }
 
   lines.push(
