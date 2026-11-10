@@ -457,24 +457,8 @@ function renderApp() {
           </div>
 
           <div class="flex flex-col sm:flex-row gap-2">
-            <button type="button" id="open-cart-btn"
-                    class="relative inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <span>🛒 Carrinho${cartQty > 0 ? ` (${cartQty})` : ''}</span>
-              ${
-                cartQty > 0
-                  ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[10px] font-black min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center ring-2 ring-[#0a8754]">${cartQty}</span>`
-                  : ''
-              }
-            </button>
-            <a href="https://wa.me/${(store.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Vi o catálogo e quero fazer um pedido — pode me atender?')}"
-               target="_blank" rel="noopener"
-               class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
-              <span>Atendimento WhatsApp</span>
-            </a>
-            ${
-              perfil === 'lojista'
-                ? `
+            ${perfil === 'lojista'
+              ? `
             <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg border border-emerald-300 whitespace-nowrap">
               🟢 MODO LOJISTA
             </span>
@@ -501,11 +485,27 @@ function renderApp() {
               ${showCostMargins ? '👁️ Ocultar Custos/Margens' : '📈 Exibir Custos/Margens'}
             </button>
             <button id="logout-btn"
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-emerald-400/40 hover:bg-emerald-700/50 transition">
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-red-600/40 text-red-600 hover:bg-red-600 hover:text-white transition">
               🔒 Sair
             </button>`
-                : ''
+              : `
+            <button type="button" id="open-cart-btn"
+                    class="relative inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
+              <span>🛒 Carrinho${cartQty > 0 ? ` (${cartQty})` : ''}</span>
+              ${
+                cartQty > 0
+                  ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[10px] font-black min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center ring-2 ring-[#0a8754]">${cartQty}</span>`
+                  : ''
+              }
+            </button>
+            <a href="https://wa.me/${(store.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Vi o catálogo e quero fazer um pedido — pode me atender?')}"
+               target="_blank" rel="noopener"
+               class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
+              <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+              <span>Atendimento WhatsApp</span>
+            </a>`
             }
+          </div>
           </div>
         </div>
 
