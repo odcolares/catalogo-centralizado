@@ -48,7 +48,7 @@ let perfil: Perfil = 'cliente';
 let firstRender = true;
 
 // State
-let activeTab: 'catalog' | 'table' | 'markdown' | 'api' = 'catalog';
+let activeTab: 'catalog' | 'table' = 'catalog';
 let searchQuery = '';
 let selectedCategory = 'all';
 let selectedTag = 'all';
@@ -478,6 +478,24 @@ function renderApp() {
             <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg border border-emerald-300 whitespace-nowrap">
               🟢 MODO LOJISTA
             </span>
+            <div class="inline-flex items-center gap-1 bg-white border border-zinc-300 rounded-lg p-0.5 shadow-sm" role="segmented-control">
+              <button type="button"
+                      class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
+                        activeTab === 'catalog'
+                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
+                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+                      }" data-tab="catalog">
+                🛍️ Vitrine
+              </button>
+              <button type="button"
+                      class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
+                        activeTab === 'table'
+                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
+                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+                      }" data-tab="table">
+                📊 Tabela &amp; Margens
+              </button>
+            </div>
             <button id="toggle-margins-btn"
                     class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-emerald-400/40 hover:bg-emerald-700/50 transition">
               ${showCostMargins ? '👁️ Ocultar Custos/Margens' : '📈 Exibir Custos/Margens'}
@@ -508,41 +526,6 @@ function renderApp() {
         </div>
       </div>
     </header>
-
-    <!-- Main Navigation Tabs (exclusivo do lojista) -->
-    ${perfil === 'lojista' ? `
-    <nav class="bg-white border-b border-zinc-200 sticky top-0 z-30 shadow-xs print:hidden">
-      <div class="max-w-6xl mx-auto px-4 flex overflow-x-auto gap-2 py-2">
-        <button class="nav-tab px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition ${
-          activeTab === 'catalog'
-            ? 'bg-emerald-50 text-[#0a8754] font-bold border border-emerald-200'
-            : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-        }" data-tab="catalog">
-          🛍️ Vitrine
-        </button>
-        <button class="nav-tab px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition ${
-          activeTab === 'table'
-            ? 'bg-emerald-50 text-[#0a8754] font-bold border border-emerald-200'
-            : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-        }" data-tab="table">
-          📊 Tabela & Margens
-        </button>
-        <button class="nav-tab px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition ${
-          activeTab === 'markdown'
-            ? 'bg-emerald-50 text-[#0a8754] font-bold border border-emerald-200'
-            : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-        }" data-tab="markdown">
-          📄 Markdown Consolidado
-        </button>
-        <button class="nav-tab px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition ${
-          activeTab === 'api'
-            ? 'bg-emerald-50 text-[#0a8754] font-bold border border-emerald-200'
-            : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-        }" data-tab="api">
-          🔌 API JSON
-        </button>
-      </div>
-    </nav>` : ''}
 
     ${perfil === 'lojista' ? renderFinanceSummary() : ''}
 
@@ -576,12 +559,6 @@ function renderApp() {
 function renderTabContent(filtered: { category: Category; product: Product }[]): string {
   if (activeTab === 'table' && perfil === 'lojista') {
     return renderTableView();
-  }
-  if (activeTab === 'markdown' && perfil === 'lojista') {
-    return renderMarkdownView();
-  }
-  if (activeTab === 'api') {
-    return renderApiView();
   }
   return renderCatalogView(filtered);
 }
