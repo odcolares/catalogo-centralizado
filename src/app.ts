@@ -93,7 +93,7 @@ function getEngagementSessionId(): string {
 
 async function trackEvent(productId: string, eventType: 'view' | 'whatsapp_click' | 'cart_add' | 'cart_remove' | 'order_wa'): Promise<void> {
   try {
-    await fetch('/api/engagement', {
+    const res = await fetch('/api/engagement', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -102,7 +102,13 @@ async function trackEvent(productId: string, eventType: 'view' | 'whatsapp_click
         session_id: getEngagementSessionId(),
       }),
     });
-  } catch {
+    if (!res.ok) {
+      console.warn(`[Engajamento] Falha ao rastrear ${eventType} para ${productId}: HTTP ${res.status}`);
+    } else {
+      console.log(`[Engajamento] Evento rastreado: ${eventType} - ${productId}`);
+    }
+  } catch (err) {
+    console.error(`[Engajamento] Erro de rede ao rastrear ${eventType} para ${productId}:`, err);
     // Silencioso — não quebra a UX se o endpoint estiver indisponível
   }
 }
