@@ -24,8 +24,6 @@ try {
   console.log('[Supabase] Pacote não instalado — usando fallback JSON local');
 }
 
-const ENGAGEMENT_FILE = path.join(ROOT, 'data', 'engagement.json');
-
 function ensureEngagementDir() {
   const dir = path.dirname(ENGAGEMENT_FILE);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -155,6 +153,7 @@ const HOST = '0.0.0.0';
 const ROOT = __dirname;
 const OUT_DIR = path.join(ROOT, 'generated');
 const DIST_DIR = path.join(ROOT, 'dist');
+const ENGAGEMENT_FILE = path.join(ROOT, 'data', 'engagement.json');
 
 // ── .env: credenciais do lojista (fora de qualquer bundle, bloqueado no HTTP) ──
 const ENV_FILE = path.join(ROOT, '.env');
