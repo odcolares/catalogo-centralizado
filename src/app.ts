@@ -1799,15 +1799,33 @@ function attachEventListeners() {
         const res = await fetch(
           `/api/engagement/stats?period=${period}&category=${encodeURIComponent(category)}`
         );
-        if (!res.ok) throw new Error('Falha ao carregar estatísticas');
+
+        // Verifica se a resposta é JSON (evita quebrar se o servidor retornar HTML/404)
+        const contentType = res.headers.get('content-type') || '';
+        if (!res.ok || !contentType.includes('application/json')) {
+          const text = await res.text();
+          console.error('[Engajamento] Resposta não-JSON do servidor:', res.status, text.substring(0, 200));
+          throw new Error(`Endpoint não disponível (HTTP ${res.status}). Verifique se o servidor foi redeployado.`);
+        }
+
         const { stats, periodDays } = await res.json();
         renderEngagementData(stats || [], parseInt(period, 10));
       } catch (err) {
-        console.error('[Engajamento] Erro:', err);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error('[Engajamento] Erro:', msg);
         const tableBody = document.getElementById('eng-table-body');
+        const metrics = ['eng-metric-views', 'eng-metric-wa', 'eng-metric-cart', 'eng-metric-orders'];
         if (tableBody) {
           tableBody.innerHTML =
-            '<tr><td colspan="8" class="p-4 text-center text-red-500">Erro ao carregar estatísticas</td></tr>';
+            `<tr><td colspan="8" class="p-4 text-center text-red-500">${escapeHtml(msg)}</td></tr>`;
+        }
+        metrics.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '—';
+        });
+        const chartContainer = document.getElementById('eng-chart-container');
+        if (chartContainer) {
+          chartContainer.innerHTML = '<div class="text-center text-red-500 text-sm">Erro ao carregar gráfico</div>';
         }
       }
     }
