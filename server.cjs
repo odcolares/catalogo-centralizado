@@ -6,6 +6,149 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { main: runGenerator } = require('./generator.cjs');
 
+// ── Supabase (opcional; se não configurado, usa arquivo JSON local como fallback) ──
+let supabase = null;
+let supabaseEnabled = false;
+try {
+  const { createClient } = require('@supabase/supabase-js');
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    supabaseEnabled = true;
+    console.log('[Supabase] Conectado para rastreamento de engajamento');
+  } else {
+    console.log('[Supabase] Credenciais não encontradas — usando fallback JSON local');
+  }
+} catch {
+  console.log('[Supabase] Pacote não instalado — usando fallback JSON local');
+}
+
+const ENGAGEMENT_FILE = path.join(ROOT, 'data', 'engagement.json');
+
+function ensureEngagementDir() {
+  const dir = path.dirname(ENGAGEMENT_FILE);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+}
+
+function readEngagementFallback() {
+  try {
+    if (!fs.existsSync(ENGAGEMENT_FILE)) return [];
+    return JSON.parse(fs.readFileSync(ENGAGEMENT_FILE, 'utf8'));
+  } catch {
+    return [];
+  }
+}
+
+function writeEngagementFallback(data) {
+  ensureEngagementDir();
+  fs.writeFileSync(ENGAGEMENT_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+
+async function trackEngagementEvent({ productId, eventType, sessionId }) {
+  const record = {
+    product_id: productId,
+    event_type: eventType,
+    session_id: sessionId || null,
+    created_at: new Date().toISOString(),
+  };
+
+  if (supabaseEnabled && supabase) {
+    try {
+      await supabase.from('product_engagement').insert([record]);
+      return;
+    } catch (err) {
+      console.error('[Supabase] Erro ao inserir engajamento:', err.message);
+      // Fallback para JSON local
+    }
+  }
+
+  const data = readEngagementFallback();
+  data.push(record);
+  writeEngagementFallback(data);
+}
+
+async function getEngagementStats({ periodDays = 30, category = null } = {}) {
+  const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000).toISOString();
+
+  if (supabaseEnabled && supabase) {
+    try {
+      let query = supabase
+        .from('product_engagement')
+        .select('product_id, event_type, created_at')
+        .gte('created_at', cutoff);
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return aggregateEngagement(data || [], category);
+    } catch (err) {
+      console.error('[Supabase] Erro ao ler engajamento:', err.message);
+      // Fallback para JSON local
+    }
+  }
+
+  const data = readEngagementFallback().filter((r) => r.created_at >= cutoff);
+  return aggregateEngagement(data, category);
+}
+
+function aggregateEngagement(events, categoryFilter) {
+  // Monta mapa de produto → contagens por tipo de evento
+  const map = {};
+  const catalog = loadCatalogForStats();
+
+  for (const ev of events) {
+    if (!map[ev.product_id]) {
+      map[ev.product_id] = { views: 0, whatsapp_clicks: 0, cart_adds: 0, orders: 0, last_interaction: ev.created_at };
+    }
+    map[ev.product_id][ev.event_type] = (map[ev.product_id][ev.event_type] || 0) + 1;
+    if (ev.created_at > map[ev.product_id].last_interaction) {
+      map[ev.product_id].last_interaction = ev.created_at;
+    }
+  }
+
+  const result = [];
+  for (const [productId, counts] of Object.entries(map)) {
+    const product = findProductInCatalog(catalog, productId);
+    if (!product) continue;
+    if (categoryFilter && product.category !== categoryFilter) continue;
+
+    const ctr = counts.views > 0 ? Math.round((counts.whatsapp_clicks / counts.views) * 100) : 0;
+    result.push({
+      product_id: productId,
+      product_name: product.name,
+      category: product.category,
+      category_id: product.categoryId,
+      views: counts.views,
+      whatsapp_clicks: counts.whatsapp_clicks,
+      cart_adds: counts.cart_adds,
+      orders: counts.orders,
+      ctr,
+      last_interaction: counts.last_interaction,
+    });
+  }
+
+  // Ordena por visualizações decrescente
+  result.sort((a, b) => b.views - a.views);
+  return result;
+}
+
+function loadCatalogForStats() {
+  try {
+    const data = JSON.parse(fs.readFileSync(path.join(ROOT, 'catalog-data.json'), 'utf8'));
+    return data.categories || [];
+  } catch {
+    return [];
+  }
+}
+
+function findProductInCatalog(categories, productId) {
+  for (const cat of categories) {
+    const p = (cat.products || []).find((x) => x.id === productId);
+    if (p) return { name: p.name, category: cat.name, categoryId: cat.id };
+  }
+  return null;
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
@@ -382,6 +525,37 @@ app.post('/api/login', (req, res) => {
 app.post('/api/logout', (req, res) => {
   res.clearCookie('lojista', { path: '/' });
   res.redirect('/');
+});
+
+// ── Engajamento de produtos ──
+app.use(express.json());
+
+app.post('/api/engagement', async (req, res) => {
+  try {
+    const { product_id, event_type, session_id } = req.body || {};
+    if (!product_id || !event_type) {
+      return res.status(400).json({ error: 'product_id and event_type are required' });
+    }
+    await trackEngagementEvent({ productId: product_id, eventType: event_type, sessionId: session_id });
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/engagement/stats', async (req, res) => {
+  try {
+    // Apenas lojista autenticado pode ler estatísticas
+    if (!getSessionUser(req)) {
+      return res.status(401).json({ error: 'Não autorizado' });
+    }
+    const periodDays = parseInt(req.query.period || '30', 10);
+    const category = req.query.category || null;
+    const stats = await getEngagementStats({ periodDays, category });
+    return res.json({ stats, periodDays });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 });
 
 // ── App cliente (público) ──

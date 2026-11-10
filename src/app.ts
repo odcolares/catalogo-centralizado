@@ -47,8 +47,11 @@ let catalog: CatalogData = {
 let perfil: Perfil = 'cliente';
 let firstRender = true;
 
+// Produtos já visualizados nesta sessão (evita eventos "view" duplicados)
+const viewedProducts = new Set<string>();
+
 // State
-let activeTab: 'catalog' | 'table' = 'catalog';
+let activeTab: 'catalog' | 'table' | 'engagement' = 'catalog';
 let searchQuery = '';
 let selectedCategory = 'all';
 let selectedTag = 'all';
@@ -75,6 +78,33 @@ function escapeHtml(s: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+// ── Engajamento de produtos ──
+let engagementSessionId: string;
+
+function getEngagementSessionId(): string {
+  if (!engagementSessionId) {
+    engagementSessionId = localStorage.getItem('eng-session-v1') || crypto.randomUUID();
+    localStorage.setItem('eng-session-v1', engagementSessionId);
+  }
+  return engagementSessionId;
+}
+
+async function trackEvent(productId: string, eventType: 'view' | 'whatsapp_click' | 'cart_add' | 'cart_remove' | 'order_wa'): Promise<void> {
+  try {
+    await fetch('/api/engagement', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        product_id: productId,
+        event_type: eventType,
+        session_id: getEngagementSessionId(),
+      }),
+    });
+  } catch {
+    // Silencioso — não quebra a UX se o endpoint estiver indisponível
+  }
 }
 
 function showToast(message: string) {
@@ -225,6 +255,8 @@ function addToCart(id: string): void {
   } else {
     if (cart.length === 0) assignOrderNumber();
     cart.push({ id, qty: 1, price: found.product.price });
+    // Rastreamento: primeiro adiciono do produto no carrinho
+    trackEvent(id, 'cart_add');
   }
   persistCart();
   showToast(`${found.product.name} adicionado ao carrinho!`);
@@ -243,6 +275,8 @@ function removeCartItem(id: string): void {
   cart = cart.filter((it) => it.id !== id);
   if (cart.length === 0) releaseOrderNumber();
   persistCart();
+  // Rastreamento: remoção do carrinho
+  trackEvent(id, 'cart_remove');
   renderApp();
 }
 
@@ -479,6 +513,14 @@ function renderApp() {
                       }" data-tab="table">
                 📊 Tabela &amp; Margens
               </button>
+              <button type="button"
+                      class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
+                        activeTab === 'engagement'
+                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
+                          : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+                      }" data-tab="engagement">
+                📈 Engajamento
+              </button>
             </div>
             <button id="toggle-margins-btn"
                     class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-emerald-400/40 hover:bg-emerald-700/50 transition">
@@ -559,6 +601,9 @@ function renderApp() {
 function renderTabContent(filtered: { category: Category; product: Product }[]): string {
   if (activeTab === 'table' && perfil === 'lojista') {
     return renderTableView();
+  }
+  if (activeTab === 'engagement' && perfil === 'lojista') {
+    return renderEngagementView();
   }
   return renderCatalogView(filtered);
 }
@@ -670,7 +715,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
             const profit = p.price - cost;
 
             return `
-              <article style="--i:${idx}" class="bg-white rounded-xl border border-zinc-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden">
+              <article style="--i:${idx}" class="bg-white rounded-xl border border-zinc-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden" data-product-id="${p.id}" data-track-view="${p.id}">
                 <div class="card-media relative h-44 border-b border-zinc-100 flex items-center justify-center overflow-hidden">
                   <span class="text-5xl opacity-40 select-none">${category.icon}</span>
                   ${
@@ -689,6 +734,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                     <div class="flex gap-1">
                       ${isTop ? '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">🔥 TOP</span>' : ''}
                       ${isKit ? '<span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-1.5 py-0.5 rounded">🎁 KIT</span>' : ''}
+                      ${perfil !== 'lojista' ? `<span class="eng-badge" data-eng-badge="${p.id}" style="display:none">💬 <span class="eng-count">0</span></span>` : ''}
                     </div>
                   </div>
 
@@ -758,6 +804,14 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                           class="w-full inline-flex items-center justify-center gap-2 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
                     <span>🛒 Adicionar no carrinho</span>
                   </button>
+
+                  <!-- WhatsApp do produto -->
+                  <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
+                     data-track-wa="${p.id}"
+                     class="w-full inline-flex items-center justify-center gap-2 mt-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2 px-4 rounded-lg text-sm shadow-xs transition">
+                    <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+                    <span>WhatsApp</span>
+                  </a>
                 </div>
               </article>
             `;
@@ -919,6 +973,115 @@ function renderTableView(): string {
             </thead>
             <tbody>
               ${rows.join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Engajamento (lojista) ──────────────────────────────────────────────
+
+function renderEngagementView(): string {
+  const categories = catalog.categories.map((c) => c.id);
+  const categoryOptions = categories
+    .map((id) => {
+      const cat = catalog.categories.find((c) => c.id === id);
+      return `<option value="${escapeHtml(id)}">${escapeHtml(cat?.name || id)}</option>`;
+    })
+    .join('');
+
+  return `
+    <div class="space-y-6">
+      <!-- Header -->
+      <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-xs">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-black text-zinc-900 mb-1">📈 Engajamento de Produtos</h2>
+            <p class="text-zinc-500 text-sm">Acompanhe visualizações, cliques no WhatsApp, carrinho e pedidos.</p>
+          </div>
+          <button id="eng-refresh" class="bg-[#0a8754] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2">
+            🔄 Atualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold text-zinc-500">Período:</span>
+            <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+              <option value="7">Últimos 7 dias</option>
+              <option value="30" selected>Últimos 30 dias</option>
+              <option value="90">Últimos 90 dias</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <span class="text-xs font-semibold text-zinc-500">Categoria:</span>
+            <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754] flex-1 sm:flex-auto">
+              <option value="">Todas as categorias</option>
+              ${categoryOptions}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas resumo -->
+      <div id="eng-metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
+          <span class="text-xs text-zinc-400 uppercase font-semibold">Total Visualizações</span>
+          <p id="eng-metric-views" class="text-2xl font-black text-zinc-900 mt-1">—</p>
+        </div>
+        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
+          <span class="text-xs text-zinc-400 uppercase font-semibold">Cliques WhatsApp</span>
+          <p id="eng-metric-wa" class="text-2xl font-black text-emerald-700 mt-1">—</p>
+        </div>
+        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
+          <span class="text-xs text-zinc-400 uppercase font-semibold">Adicionou Carrinho</span>
+          <p id="eng-metric-cart" class="text-2xl font-black text-amber-700 mt-1">—</p>
+        </div>
+        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
+          <span class="text-xs text-zinc-400 uppercase font-semibold">Pedidos via WA</span>
+          <p id="eng-metric-orders" class="text-2xl font-black text-indigo-700 mt-1">—</p>
+        </div>
+      </div>
+
+      <!-- Gráfico de tendência -->
+      <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-xs">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-zinc-900">📊 Tendência de Interações</h3>
+          <span id="eng-chart-period" class="text-xs text-zinc-500 font-mono"></span>
+        </div>
+        <div id="eng-chart-container" class="h-64 w-full flex items-end justify-between gap-2 px-4 pb-6">
+          <div class="text-center text-zinc-400 text-sm">Carregando…</div>
+        </div>
+      </div>
+
+      <!-- Tabela de ranking -->
+      <div class="bg-white rounded-xl border border-zinc-200 shadow-xs overflow-hidden">
+        <div class="p-4 border-b border-zinc-200 bg-zinc-50">
+          <h3 class="text-lg font-bold text-zinc-900">🏆 Ranking de Produtos</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table id="eng-table" class="w-full text-sm">
+            <thead class="bg-zinc-50 border-b border-zinc-200 text-[11px] uppercase font-bold text-zinc-500">
+              <tr>
+                <th class="p-3 text-left">Produto</th>
+                <th class="p-3 text-left">Categoria</th>
+                <th class="p-3 text-right">Visualizações</th>
+                <th class="p-3 text-right">Cliques WA</th>
+                <th class="p-3 text-right">Carrinho</th>
+                <th class="p-3 text-right">Pedidos</th>
+                <th class="p-3 text-right">CTR %</th>
+                <th class="p-3 text-right">Última Interação</th>
+              </tr>
+            </thead>
+            <tbody id="eng-table-body">
+              <tr>
+                <td colspan="8" class="p-4 text-center text-zinc-400">Carregando…</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1361,6 +1524,24 @@ function attachEventListeners() {
     });
   });
 
+  // ── Rastreamento de engajamento ──
+  // View: dispara uma vez por produto na sessão
+  document.querySelectorAll<HTMLElement>('[data-track-view]').forEach((el) => {
+    const pid = el.dataset.trackView || '';
+    if (pid && !viewedProducts.has(pid)) {
+      viewedProducts.add(pid);
+      trackEvent(pid, 'view');
+    }
+  });
+
+  // WhatsApp do produto
+  document.querySelectorAll<HTMLElement>('[data-track-wa]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const pid = el.dataset.trackWa || '';
+      if (pid) trackEvent(pid, 'whatsapp_click');
+    });
+  });
+
   // Toggle margins
   const toggleBtn = document.getElementById('toggle-margins-btn');
   if (toggleBtn) {
@@ -1553,6 +1734,10 @@ function attachEventListeners() {
       if (msg === null) return;
       const store = catalog.store || {};
       const waNumber = (store.whatsapp || '').replace(/\D/g, '');
+      // Rastreamento: pedido via WhatsApp (um evento por produto no carrinho)
+      for (const item of cart) {
+        trackEvent(item.id, 'order_wa');
+      }
       window.open(
         `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`,
         '_blank',
@@ -1594,6 +1779,147 @@ function attachEventListeners() {
         showToast('Carrinho esvaziado.');
       }
     });
+  }
+
+  // ── Engajamento: buscar e renderizar dados da aba Engajamento ──
+  if (activeTab === 'engagement' && perfil === 'lojista') {
+    const periodSelect = document.getElementById('eng-period') as HTMLSelectElement | null;
+    const categorySelect = document.getElementById('eng-category') as HTMLSelectElement | null;
+    const refreshBtn = document.getElementById('eng-refresh') as HTMLButtonElement | null;
+
+    async function loadEngagementStats() {
+      const period = periodSelect?.value || '30';
+      const category = categorySelect?.value || '';
+      const chartPeriodEl = document.getElementById('eng-chart-period');
+      if (chartPeriodEl) {
+        chartPeriodEl.textContent = `Período: últimos ${period} dias`;
+      }
+
+      try {
+        const res = await fetch(
+          `/api/engagement/stats?period=${period}&category=${encodeURIComponent(category)}`
+        );
+        if (!res.ok) throw new Error('Falha ao carregar estatísticas');
+        const { stats, periodDays } = await res.json();
+        renderEngagementData(stats || [], parseInt(period, 10));
+      } catch (err) {
+        console.error('[Engajamento] Erro:', err);
+        const tableBody = document.getElementById('eng-table-body');
+        if (tableBody) {
+          tableBody.innerHTML =
+            '<tr><td colspan="8" class="p-4 text-center text-red-500">Erro ao carregar estatísticas</td></tr>';
+        }
+      }
+    }
+
+    function renderEngagementData(stats: any[], periodDays: number) {
+      // Métricas resumo
+      const totals = stats.reduce(
+        (acc, s) => ({
+          views: acc.views + (s.views || 0),
+          wa: acc.wa + (s.whatsapp_clicks || 0),
+          cart: acc.cart + (s.cart_adds || 0),
+          orders: acc.orders + (s.orders || 0),
+        }),
+        { views: 0, wa: 0, cart: 0, orders: 0 }
+      );
+
+      const elViews = document.getElementById('eng-metric-views');
+      const elWa = document.getElementById('eng-metric-wa');
+      const elCart = document.getElementById('eng-metric-cart');
+      const elOrders = document.getElementById('eng-metric-orders');
+      if (elViews) elViews.textContent = totals.views.toLocaleString();
+      if (elWa) elWa.textContent = totals.wa.toLocaleString();
+      if (elCart) elCart.textContent = totals.cart.toLocaleString();
+      if (elOrders) elOrders.textContent = totals.orders.toLocaleString();
+
+      // Tabela de ranking
+      const tableBody = document.getElementById('eng-table-body');
+      if (tableBody) {
+        tableBody.innerHTML = stats
+          .map(
+            (s) => `
+            <tr class="hover:bg-zinc-50 border-b border-zinc-100 text-xs">
+              <td class="p-3 font-medium text-zinc-900">${escapeHtml(
+                s.product_name || s.product_id
+              )}</td>
+              <td class="p-3 text-zinc-600">${escapeHtml(s.category || '-')}</td>
+              <td class="p-3 text-right font-mono text-zinc-700">${(s.views || 0).toLocaleString()}</td>
+              <td class="p-3 text-right font-mono text-zinc-700">${(s.whatsapp_clicks || 0).toLocaleString()}</td>
+              <td class="p-3 text-right font-mono text-zinc-700">${(s.cart_adds || 0).toLocaleString()}</td>
+              <td class="p-3 text-right font-mono text-zinc-700">${(s.orders || 0).toLocaleString()}</td>
+              <td class="p-3 text-right font-mono text-zinc-700">${(s.ctr || 0)}%</td>
+              <td class="p-3 text-right font-mono text-zinc-500">${new Date(
+                s.last_interaction || 0
+              ).toLocaleDateString('pt-BR')}</td>
+            </tr>
+          `
+          )
+          .join('');
+      }
+
+      // Gráfico de barras (top produtos por visualizações)
+      renderEngagementChart(stats, periodDays);
+    }
+
+    function renderEngagementChart(stats: any[], periodDays: number) {
+      const container = document.getElementById('eng-chart-container');
+      if (!container) return;
+
+      const topStats = stats.slice(0, 10);
+      if (topStats.length === 0) {
+        container.innerHTML =
+          '<div class="text-center text-zinc-400 text-sm">Sem dados no período</div>';
+        return;
+      }
+
+      const maxViews = Math.max(...topStats.map((s) => s.views || 0), 1);
+      const chartHeight = 260;
+      const padding = { top: 30, right: 20, bottom: 50, left: 60 };
+      const barWidth = 34;
+      const gap = 12;
+
+      let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 900 ${chartHeight}" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <defs>
+          <linearGradient id="gradViews" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a8754" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#0a8754" stop-opacity="0.25"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Eixo Y -->
+        <text x="15" y="24" class="text-[10px] text-zinc-500 font-mono">${maxViews}</text>
+        <text x="15" y="${chartHeight - 12}" class="text-[10px] text-zinc-500 font-mono">0</text>
+
+        <!-- Barras -->
+        ${topStats
+          .map((s, i) => {
+            const x = padding.left + i * (barWidth + gap);
+            const h = ((s.views || 0) / maxViews) * (chartHeight - padding.top - padding.bottom);
+            const y = chartHeight - padding.bottom - h;
+            const label = escapeHtml(String(s.product_name || s.product_id).substring(0, 14));
+            return `
+              <rect x="${x}" y="${y}" width="${barWidth - 4}" height="${h}" fill="url(#gradViews)" rx="2"/>
+              <text x="${x + (barWidth - 4) / 2}" y="${chartHeight - padding.bottom + 18}" 
+                    class="text-[10px] text-zinc-500 font-mono" text-anchor="middle" transform="rotate(-45 ${x + (barWidth - 4) / 2},${chartHeight - padding.bottom + 18})">${label}</text>
+              <text x="${x + (barWidth - 4) / 2}" y="${y - 6}" 
+                    class="text-[10px] text-[#0a8754] font-bold font-mono" text-anchor="middle">${s.views || 0}</text>
+            `;
+          })
+          .join('')
+        }
+      </svg>`;
+
+      container.innerHTML = svg;
+    }
+
+    // Carregar dados iniciais
+    loadEngagementStats();
+
+    // Wire filtros
+    periodSelect?.addEventListener('change', loadEngagementStats);
+    categorySelect?.addEventListener('change', loadEngagementStats);
+    refreshBtn?.addEventListener('click', loadEngagementStats);
   }
 }
 
