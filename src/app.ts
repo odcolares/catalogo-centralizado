@@ -253,7 +253,7 @@ function clearCart(): void {
   renderApp();
 }
 
-// 559281240562 → +55 (92) 8124-0562
+// 559285617019 → +55 (92) 8561-7019
 function formatWhatsAppNumber(digits: string): string {
   const d = (digits || '').replace(/\D/g, '');
   if (d.length < 12) return d ? `+${d}` : '';

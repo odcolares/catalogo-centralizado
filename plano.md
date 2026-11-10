@@ -166,7 +166,7 @@ Smoke test do servidor (script temporário, padrão já usado no projeto):
 - Carrinho, drawer, pedido WhatsApp, PDF (`@media print`) — já implementados e validados, inalterados
 - `scripts/fetch-images.cjs` (scraper de imagens) — intocado
 - HTML estático continua com "Pedir no WhatsApp" direto (decisão anterior)
-- Número do WhatsApp: `559281240562` · label: `public/images/whatsapp-label.jpg`
+- Número do WhatsApp: `559285617019` · label: `public/images/whatsapp-label.jpg`
 
 ## Riscos e notas
 
