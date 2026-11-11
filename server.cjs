@@ -51,9 +51,12 @@ async function trackEngagementEvent({ productId, eventType, sessionId }) {
     created_at: new Date().toISOString(),
   };
 
+  console.log(`[Engajamento] Recebido evento: ${eventType} - ${productId} - session: ${sessionId}`);
+
   if (supabaseEnabled && supabase) {
     try {
       await supabase.from('product_engagement').insert([record]);
+      console.log(`[Engajamento] Salvo no Supabase: ${eventType} - ${productId}`);
       return;
     } catch (err) {
       console.error('[Supabase] Erro ao inserir engajamento:', err.message);
@@ -61,13 +64,20 @@ async function trackEngagementEvent({ productId, eventType, sessionId }) {
     }
   }
 
-  const data = readEngagementFallback();
-  data.push(record);
-  writeEngagementFallback(data);
+  try {
+    const data = readEngagementFallback();
+    data.push(record);
+    writeEngagementFallback(data);
+    console.log(`[Engajamento] Salvo em JSON local: ${eventType} - ${productId} (total: ${data.length})`);
+  } catch (err) {
+    console.error('[Engajamento] Erro ao salvar em JSON local:', err.message);
+  }
 }
 
 async function getEngagementStats({ periodDays = 30, category = null } = {}) {
   const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000).toISOString();
+
+  console.log(`[Engajamento] Buscando stats: period=${periodDays}d, category=${category}, cutoff=${cutoff}`);
 
   if (supabaseEnabled && supabase) {
     try {
@@ -78,6 +88,7 @@ async function getEngagementStats({ periodDays = 30, category = null } = {}) {
 
       const { data, error } = await query;
       if (error) throw error;
+      console.log(`[Engajamento] Supabase retornou ${data?.length || 0} eventos`);
       return aggregateEngagement(data || [], category);
     } catch (err) {
       console.error('[Supabase] Erro ao ler engajamento:', err.message);
@@ -85,8 +96,10 @@ async function getEngagementStats({ periodDays = 30, category = null } = {}) {
     }
   }
 
-  const data = readEngagementFallback().filter((r) => r.created_at >= cutoff);
-  return aggregateEngagement(data, category);
+  const allData = readEngagementFallback();
+  const filtered = allData.filter((r) => r.created_at >= cutoff);
+  console.log(`[Engajamento] JSON local: ${allData.length} total, ${filtered.length} no período`);
+  return aggregateEngagement(filtered, category);
 }
 
 function aggregateEngagement(events, categoryFilter) {
@@ -538,21 +551,27 @@ app.post('/api/engagement', async (req, res) => {
     await trackEngagementEvent({ productId: product_id, eventType: event_type, sessionId: session_id });
     return res.json({ ok: true });
   } catch (err) {
+    console.error('[Engajamento] Erro no POST /api/engagement:', err.message);
     return res.status(500).json({ error: err.message });
   }
 });
 
 app.get('/api/engagement/stats', async (req, res) => {
   try {
+    const sessionUser = getSessionUser(req);
+    console.log(`[Engajamento] GET /api/engagement/stats - usuário autenticado: ${sessionUser ? 'sim' : 'não'}`);
+
     // Apenas lojista autenticado pode ler estatísticas
-    if (!getSessionUser(req)) {
+    if (!sessionUser) {
       return res.status(401).json({ error: 'Não autorizado' });
     }
     const periodDays = parseInt(req.query.period || '30', 10);
     const category = req.query.category || null;
     const stats = await getEngagementStats({ periodDays, category });
+    console.log(`[Engajamento] GET /api/engagement/stats retornando ${stats.length} produtos`);
     return res.json({ stats, periodDays });
   } catch (err) {
+    console.error('[Engajamento] Erro no GET /api/engagement/stats:', err.message);
     return res.status(500).json({ error: err.message });
   }
 });
