@@ -1992,6 +1992,15 @@ function attachEventListeners() {
       const period = periodSelect?.value || '30';
       const category = categorySelect?.value || '';
       const chartPeriodEl = document.getElementById('eng-chart-period');
+      const btn = document.getElementById('eng-refresh') as HTMLButtonElement | null;
+      const originalBtnHtml = btn?.innerHTML || '🔄 Atualizar';
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="inline-block animate-spin">↻</span><span>Atualizando...</span>';
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+      }
+
       if (chartPeriodEl) {
         chartPeriodEl.textContent = `Período: últimos ${period} dias`;
       }
@@ -2027,6 +2036,12 @@ function attachEventListeners() {
         const chartContainer = document.getElementById('eng-chart-container');
         if (chartContainer) {
           chartContainer.innerHTML = '<div class="text-center text-red-500 text-sm">Erro ao carregar gráfico</div>';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
+          btn.classList.remove('opacity-70', 'cursor-not-allowed');
         }
       }
     }
