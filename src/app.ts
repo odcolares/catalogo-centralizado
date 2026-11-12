@@ -47,8 +47,14 @@ let catalog: CatalogData = {
 let perfil: Perfil = 'cliente';
 let firstRender = true;
 
-// Produtos já visualizados nesta sessão (evita eventos "view" duplicados)
-const viewedProducts = new Set<string>();
+// Produtos já visualizados em detalhe nesta sessão (evita eventos "view" duplicados)
+const viewedDetailProducts = new Set<string>();
+// Produtos já contabilizados como impressão nesta sessão
+const impressedProducts = new Set<string>();
+
+// Drawer de detalhes do produto
+let detailProductId: string | null = null;
+let detailOpen = false;
 
 // State
 let activeTab: 'catalog' | 'table' | 'engagement' = 'catalog';
@@ -91,7 +97,7 @@ function getEngagementSessionId(): string {
   return engagementSessionId;
 }
 
-async function trackEvent(productId: string, eventType: 'view' | 'whatsapp_click' | 'cart_add' | 'cart_remove' | 'order_wa'): Promise<void> {
+async function trackEvent(productId: string, eventType: 'view' | 'impression' | 'whatsapp_click' | 'cart_add' | 'cart_remove' | 'order_wa'): Promise<void> {
   try {
     const res = await fetch('/api/engagement', {
       method: 'POST',
@@ -286,6 +292,23 @@ function removeCartItem(id: string): void {
   renderApp();
 }
 
+function openProductDetail(id: string): void {
+  detailProductId = id;
+  detailOpen = true;
+  // View = abertura do detalhe (1x por produto por sessão)
+  if (!viewedDetailProducts.has(id)) {
+    viewedDetailProducts.add(id);
+    trackEvent(id, 'view');
+  }
+  renderApp();
+}
+
+function closeProductDetail(): void {
+  detailOpen = false;
+  detailProductId = null;
+  renderApp();
+}
+
 function clearCart(): void {
   cart = [];
   releaseOrderNumber();
@@ -469,9 +492,11 @@ function renderApp() {
   const revealAttr = firstRender ? ' data-reveal' : '';
   firstRender = false;
 
-  // Preserva a rolagem do drawer entre re-renders
+  // Preserva a rolagem dos drawers entre re-renders
   const prevDrawerBody = document.getElementById('cart-drawer-body');
   const drawerScroll = prevDrawerBody ? prevDrawerBody.scrollTop : 0;
+  const prevDetailBody = document.getElementById('product-detail-body');
+  const detailScroll = prevDetailBody ? prevDetailBody.scrollTop : 0;
 
   const cartQty = cartCount();
 
@@ -591,6 +616,7 @@ function renderApp() {
     </footer>
 
     ${renderCartDrawer()}
+    ${renderProductDrawer()}
 
     <!-- Relatório do pedido (só aparece na impressão → Salvar como PDF) -->
     <div id="order-report" class="hidden print:block">${cart.length > 0 ? buildOrderReportInner() : ''}</div>
@@ -598,8 +624,10 @@ function renderApp() {
 
   const nextDrawerBody = document.getElementById('cart-drawer-body');
   if (nextDrawerBody) nextDrawerBody.scrollTop = drawerScroll;
+  const nextDetailBody = document.getElementById('product-detail-body');
+  if (nextDetailBody) nextDetailBody.scrollTop = detailScroll;
 
-  document.body.style.overflow = cartOpen ? 'hidden' : '';
+  document.body.style.overflow = cartOpen || detailOpen ? 'hidden' : '';
 
   attachEventListeners();
 }
@@ -721,7 +749,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
             const profit = p.price - cost;
 
             return `
-              <article style="--i:${idx}" class="bg-white rounded-xl border border-zinc-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden" data-product-id="${p.id}" data-track-view="${p.id}">
+              <article style="--i:${idx}" class="bg-white rounded-xl border border-zinc-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden cursor-pointer group" data-product-id="${p.id}" data-open-product="${p.id}" data-track-impression="${p.id}">
                 <div class="card-media relative h-44 border-b border-zinc-100 flex items-center justify-center overflow-hidden">
                   <span class="text-5xl opacity-40 select-none">${category.icon}</span>
                   ${
@@ -729,6 +757,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                       ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-3" onerror="this.remove()" />`
                       : ''
                   }
+                  <div class="absolute bottom-2 right-2 bg-white/90 text-zinc-700 text-[10px] font-semibold px-2 py-1 rounded shadow-sm opacity-0 group-hover:opacity-100 transition">Ver detalhes</div>
                 </div>
                 <div class="p-4 flex-1 flex flex-col">
                   <!-- Header: category & badges -->
@@ -1005,7 +1034,7 @@ function renderEngagementView(): string {
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-2xl font-black text-zinc-900 mb-1">📈 Engajamento de Produtos</h2>
-            <p class="text-zinc-500 text-sm">Acompanhe visualizações, cliques no WhatsApp, carrinho e pedidos.</p>
+            <p class="text-zinc-500 text-sm">Acompanhe impressões, visualizações de detalhes, cliques no WhatsApp, carrinho e pedidos.</p>
           </div>
           <button id="eng-refresh" class="bg-[#0a8754] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2">
             🔄 Atualizar
@@ -1035,9 +1064,13 @@ function renderEngagementView(): string {
       </div>
 
       <!-- Métricas resumo -->
-      <div id="eng-metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div id="eng-metrics" class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
-          <span class="text-xs text-zinc-400 uppercase font-semibold">Total Visualizações</span>
+          <span class="text-xs text-zinc-400 uppercase font-semibold">Impressões</span>
+          <p id="eng-metric-impressions" class="text-2xl font-black text-zinc-900 mt-1">—</p>
+        </div>
+        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
+          <span class="text-xs text-zinc-400 uppercase font-semibold">Visualizações (detalhe)</span>
           <p id="eng-metric-views" class="text-2xl font-black text-zinc-900 mt-1">—</p>
         </div>
         <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
@@ -1057,7 +1090,7 @@ function renderEngagementView(): string {
       <!-- Gráfico de tendência -->
       <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-xs">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-zinc-900">📊 Tendência de Interações</h3>
+          <h3 class="text-lg font-bold text-zinc-900">📊 Top produtos por visualizações de detalhe</h3>
           <span id="eng-chart-period" class="text-xs text-zinc-500 font-mono"></span>
         </div>
         <div id="eng-chart-container" class="h-64 w-full flex items-end justify-between gap-2 px-4 pb-6">
@@ -1076,7 +1109,8 @@ function renderEngagementView(): string {
               <tr>
                 <th class="p-3 text-left">Produto</th>
                 <th class="p-3 text-left">Categoria</th>
-                <th class="p-3 text-right">Visualizações</th>
+                <th class="p-3 text-right">Impressões</th>
+                <th class="p-3 text-right">Views (detalhe)</th>
                 <th class="p-3 text-right">Cliques WA</th>
                 <th class="p-3 text-right">Carrinho</th>
                 <th class="p-3 text-right">Pedidos</th>
@@ -1086,7 +1120,7 @@ function renderEngagementView(): string {
             </thead>
             <tbody id="eng-table-body">
               <tr>
-                <td colspan="8" class="p-4 text-center text-zinc-400">Carregando…</td>
+                <td colspan="9" class="p-4 text-center text-zinc-400">Carregando…</td>
               </tr>
             </tbody>
           </table>
@@ -1349,6 +1383,129 @@ function buildOrderReportInner(): string {
   `;
 }
 
+// ── Drawer lateral de detalhes do produto ────────────────────────────────────
+
+function renderProductDrawer(): string {
+  if (!detailOpen || !detailProductId) return '';
+
+  const found = findProduct(detailProductId);
+  if (!found) return '';
+
+  const { category, product: p } = found;
+  const isKit = (p.tags || []).includes('kit');
+  const isTop = (p.tags || []).includes('mais-vendido');
+  const cost = p.cost ?? 0;
+  const margin = cost > 0 ? Math.round(((p.price - cost) / cost) * 100) : 0;
+  const profit = p.price - cost;
+
+  const tagsHtml = (p.tags || []).length
+    ? `<div class="flex flex-wrap gap-1.5">${(p.tags || [])
+        .map(
+          (t) =>
+            `<span class="bg-zinc-100 text-zinc-700 text-[11px] font-semibold px-2 py-0.5 rounded">${escapeHtml(t)}</span>`
+        )
+        .join('')}</div>`
+    : '<span class="text-xs text-zinc-400">Sem tags</span>';
+
+  const highlightsHtml = (p.highlights || []).length
+    ? `<ul class="text-sm text-zinc-700 space-y-2">${(p.highlights || [])
+        .map(
+          (h) => `
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-600 mt-0.5 font-bold">✓</span>
+          <span>${escapeHtml(h)}</span>
+        </li>`
+        )
+        .join('')}</ul>`
+    : '<p class="text-sm text-zinc-500">Sem destaques informados.</p>';
+
+  return `
+    <div id="product-detail-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
+    <aside id="product-detail-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Detalhes do produto">
+      <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
+        <h2 class="font-bold text-sm flex items-center gap-2">
+          <span>${category.icon}</span>
+          <span>Detalhes do produto</span>
+        </h2>
+        <button type="button" data-close-product-detail class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition font-bold" aria-label="Fechar detalhes">✕</button>
+      </div>
+
+      <div id="product-detail-body" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden">
+          <div class="relative h-56 flex items-center justify-center bg-white">
+            <span class="text-6xl opacity-30 select-none">${category.icon}</span>
+            ${
+              p.image
+                ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" class="absolute inset-0 w-full h-full object-contain p-4" onerror="this.remove()" />`
+                : ''
+            }
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">${category.icon} ${escapeHtml(category.name)}</span>
+            <div class="flex gap-1">
+              ${isTop ? '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">🔥 TOP</span>' : ''}
+              ${isKit ? '<span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-1.5 py-0.5 rounded">🎁 KIT</span>' : ''}
+            </div>
+          </div>
+          <h3 class="text-xl font-black text-zinc-900 leading-tight">${escapeHtml(p.name)}</h3>
+          <p><span class="font-mono text-xs tracking-wide text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded">Cód ${escapeHtml(p.code)}</span></p>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+          <div class="flex items-baseline justify-between">
+            <span class="text-xs text-zinc-500 font-mono">à vista</span>
+            <div class="text-right">
+              <span class="display-text text-2xl tabular-nums text-[#0a8754]">${brl(p.price)}</span>
+              ${
+                p.price_max && p.price_max > p.price
+                  ? `<span class="block text-xs text-zinc-500 tabular-nums">até ${brl(p.price_max)}</span>`
+                  : ''
+              }
+            </div>
+          </div>
+          ${
+            perfil === 'lojista' && showCostMargins
+              ? `
+            <div class="mt-3 pt-3 border-t border-emerald-200 grid grid-cols-3 gap-2 text-center text-xs font-mono">
+              <div><span class="block text-[10px] uppercase text-zinc-500">Custo</span><span class="font-semibold text-zinc-800">${brl(p.cost)}</span></div>
+              <div><span class="block text-[10px] uppercase text-zinc-500">Lucro</span><span class="font-semibold text-emerald-700">${brl(profit)}</span></div>
+              <div><span class="block text-[10px] uppercase text-zinc-500">Margem</span><span class="font-bold text-indigo-700">${margin}%</span></div>
+            </div>`
+              : ''
+          }
+        </div>
+
+        <div>
+          <h4 class="text-xs font-black uppercase text-zinc-500 mb-2">Destaques</h4>
+          ${highlightsHtml}
+        </div>
+
+        <div>
+          <h4 class="text-xs font-black uppercase text-zinc-500 mb-2">Tags</h4>
+          ${tagsHtml}
+        </div>
+      </div>
+
+      <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
+        <button type="button"
+                data-add-to-cart="${p.id}"
+                class="w-full inline-flex items-center justify-center gap-2 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
+          <span>🛒 Adicionar no carrinho</span>
+        </button>
+        <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
+           data-track-wa="${p.id}"
+           class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
+          <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+          <span>Falar no WhatsApp</span>
+        </a>
+      </div>
+    </aside>
+  `;
+}
+
 // ── Drawer lateral do carrinho ───────────────────────────────────────────────
 
 function renderCartDrawer(): string {
@@ -1531,22 +1688,57 @@ function attachEventListeners() {
   });
 
   // ── Rastreamento de engajamento ──
-  // View: dispara uma vez por produto na sessão
-  document.querySelectorAll<HTMLElement>('[data-track-view]').forEach((el) => {
-    const pid = el.dataset.trackView || '';
-    if (pid && !viewedProducts.has(pid)) {
-      viewedProducts.add(pid);
-      trackEvent(pid, 'view');
-    }
+  // Clique no card abre detalhes do produto (view = abertura do detalhe, 1x por sessão/produto)
+  document.querySelectorAll<HTMLElement>('[data-open-product]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      // Evita abrir detalhes ao clicar em botões/links de ação dentro do card
+      if (target.closest('[data-add-to-cart], [data-track-wa], a, button')) return;
+      const pid = el.dataset.openProduct || '';
+      if (pid) openProductDetail(pid);
+    });
   });
+
+  // Impressão: produto visível na viewport (1x por sessão/produto)
+  if ('IntersectionObserver' in window) {
+    const impressionObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const pid = (entry.target as HTMLElement).dataset.trackImpression || '';
+          if (pid && !impressedProducts.has(pid)) {
+            impressedProducts.add(pid);
+            trackEvent(pid, 'impression');
+          }
+          impressionObserver.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.35 }
+    );
+    document.querySelectorAll<HTMLElement>('[data-track-impression]').forEach((el) => {
+      const pid = el.dataset.trackImpression || '';
+      if (pid && !impressedProducts.has(pid)) impressionObserver.observe(el);
+    });
+  }
 
   // WhatsApp do produto
   document.querySelectorAll<HTMLElement>('[data-track-wa]').forEach((el) => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
       const pid = el.dataset.trackWa || '';
       if (pid) trackEvent(pid, 'whatsapp_click');
     });
   });
+
+  // Drawer de detalhes do produto
+  document.querySelectorAll<HTMLElement>('[data-close-product-detail]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeProductDetail();
+    });
+  });
+  const detailOverlay = document.getElementById('product-detail-overlay');
+  if (detailOverlay) detailOverlay.addEventListener('click', closeProductDetail);
 
   // Toggle margins
   const toggleBtn = document.getElementById('toggle-margins-btn');
@@ -1704,7 +1896,10 @@ function attachEventListeners() {
   if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
 
   document.querySelectorAll<HTMLButtonElement>('[data-add-to-cart]').forEach((btn) => {
-    btn.addEventListener('click', () => addToCart(btn.dataset.addToCart || ''));
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      addToCart(btn.dataset.addToCart || '');
+    });
   });
   document.querySelectorAll<HTMLButtonElement>('[data-cart-inc]').forEach((btn) => {
     btn.addEventListener('click', () => changeCartQty(btn.dataset.cartInc || '', 1));
@@ -1820,10 +2015,10 @@ function attachEventListeners() {
         const msg = err instanceof Error ? err.message : String(err);
         console.error('[Engajamento] Erro:', msg);
         const tableBody = document.getElementById('eng-table-body');
-        const metrics = ['eng-metric-views', 'eng-metric-wa', 'eng-metric-cart', 'eng-metric-orders'];
+        const metrics = ['eng-metric-impressions', 'eng-metric-views', 'eng-metric-wa', 'eng-metric-cart', 'eng-metric-orders'];
         if (tableBody) {
           tableBody.innerHTML =
-            `<tr><td colspan="8" class="p-4 text-center text-red-500">${escapeHtml(msg)}</td></tr>`;
+            `<tr><td colspan="9" class="p-4 text-center text-red-500">${escapeHtml(msg)}</td></tr>`;
         }
         metrics.forEach((id) => {
           const el = document.getElementById(id);
@@ -1840,18 +2035,21 @@ function attachEventListeners() {
       // Métricas resumo
       const totals = stats.reduce(
         (acc, s) => ({
+          impressions: acc.impressions + (s.impressions || 0),
           views: acc.views + (s.views || 0),
           wa: acc.wa + (s.whatsapp_clicks || 0),
           cart: acc.cart + (s.cart_adds || 0),
           orders: acc.orders + (s.orders || 0),
         }),
-        { views: 0, wa: 0, cart: 0, orders: 0 }
+        { impressions: 0, views: 0, wa: 0, cart: 0, orders: 0 }
       );
 
+      const elImpressions = document.getElementById('eng-metric-impressions');
       const elViews = document.getElementById('eng-metric-views');
       const elWa = document.getElementById('eng-metric-wa');
       const elCart = document.getElementById('eng-metric-cart');
       const elOrders = document.getElementById('eng-metric-orders');
+      if (elImpressions) elImpressions.textContent = totals.impressions.toLocaleString();
       if (elViews) elViews.textContent = totals.views.toLocaleString();
       if (elWa) elWa.textContent = totals.wa.toLocaleString();
       if (elCart) elCart.textContent = totals.cart.toLocaleString();
@@ -1868,6 +2066,7 @@ function attachEventListeners() {
                 s.product_name || s.product_id
               )}</td>
               <td class="p-3 text-zinc-600">${escapeHtml(s.category || '-')}</td>
+              <td class="p-3 text-right font-mono text-zinc-700">${(s.impressions || 0).toLocaleString()}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.views || 0).toLocaleString()}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.whatsapp_clicks || 0).toLocaleString()}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.cart_adds || 0).toLocaleString()}</td>
@@ -1947,9 +2146,16 @@ function attachEventListeners() {
   }
 }
 
-// Fecha o drawer com Esc (listener único, fora do re-render)
+// Fecha drawers com Esc (listener único, fora do re-render)
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && cartOpen) {
+  if (e.key !== 'Escape') return;
+  if (detailOpen) {
+    detailOpen = false;
+    detailProductId = null;
+    renderApp();
+    return;
+  }
+  if (cartOpen) {
     cartOpen = false;
     renderApp();
   }

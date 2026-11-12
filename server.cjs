@@ -109,10 +109,12 @@ function aggregateEngagement(events, categoryFilter) {
 
   for (const ev of events) {
     if (!map[ev.product_id]) {
-      map[ev.product_id] = { views: 0, whatsapp_clicks: 0, cart_adds: 0, orders: 0, last_interaction: ev.created_at };
+      map[ev.product_id] = { impressions: 0, views: 0, whatsapp_clicks: 0, cart_adds: 0, orders: 0, last_interaction: ev.created_at };
     }
     // Mapeia event_type do frontend para os campos de contagem
-    if (ev.event_type === 'view') {
+    if (ev.event_type === 'impression') {
+      map[ev.product_id].impressions += 1;
+    } else if (ev.event_type === 'view') {
       map[ev.product_id].views += 1;
     } else if (ev.event_type === 'whatsapp_click') {
       map[ev.product_id].whatsapp_clicks += 1;
@@ -139,6 +141,7 @@ function aggregateEngagement(events, categoryFilter) {
       product_name: product.name,
       category: product.category,
       category_id: product.categoryId,
+      impressions: counts.impressions,
       views: counts.views,
       whatsapp_clicks: counts.whatsapp_clicks,
       cart_adds: counts.cart_adds,
