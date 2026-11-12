@@ -35,6 +35,3 @@ dist/
 
 
 __pycache__/
-
-# Documentação (arquivos já versionados; novos arquivos não são rastreados automaticamente)
-docs/
