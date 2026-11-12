@@ -111,7 +111,17 @@ function aggregateEngagement(events, categoryFilter) {
     if (!map[ev.product_id]) {
       map[ev.product_id] = { views: 0, whatsapp_clicks: 0, cart_adds: 0, orders: 0, last_interaction: ev.created_at };
     }
-    map[ev.product_id][ev.event_type] = (map[ev.product_id][ev.event_type] || 0) + 1;
+    // Mapeia event_type do frontend para os campos de contagem
+    if (ev.event_type === 'view') {
+      map[ev.product_id].views += 1;
+    } else if (ev.event_type === 'whatsapp_click') {
+      map[ev.product_id].whatsapp_clicks += 1;
+    } else if (ev.event_type === 'cart_add') {
+      map[ev.product_id].cart_adds += 1;
+    } else if (ev.event_type === 'order_wa') {
+      map[ev.product_id].orders += 1;
+    }
+    // cart_remove não é contabilizado nas métricas principais
     if (ev.created_at > map[ev.product_id].last_interaction) {
       map[ev.product_id].last_interaction = ev.created_at;
     }
