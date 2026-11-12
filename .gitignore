@@ -29,7 +29,12 @@ CREDENCIAIS-DEPLOY.md
 # Session/state files
 .omo/
 .omc/
+
 # Build output
 dist/
 
+
 __pycache__/
+
+# Documentação (arquivos já versionados; novos arquivos não são rastreados automaticamente)
+docs/
