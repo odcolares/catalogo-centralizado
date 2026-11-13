@@ -2269,48 +2269,24 @@ function attachEventListeners() {
 
       const maxViews = Math.max(...topStats.map((s) => s[metricField] || 0), 1);
       const chartHeight = 260;
-      const padding = { top: 30, right: 20, bottom: 70, left: 70 };
+      const padding = { top: 30, right: 20, bottom: 60, left: 70 };
       const barWidth = 36;
       const gap = 14;
       // Largura do viewBox cresce com o número de barras (evita comprimir em telas pequenas)
       const svgWidth = Math.max(720, padding.left + padding.right + topStats.length * (barWidth + gap));
 
-      // Cor por barra: claro = menor valor, escuro = maior valor (paleta verde da marca)
-      function barFillColor(value: number, max: number) {
-        const t = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
-        const r = Math.round(170 + (10 - 170) * t);
-        const g = Math.round(220 + (135 - 220) * t);
-        const b = Math.round(200 + (84 - 200) * t);
-        return `rgb(${r},${g},${b})`;
-      }
-
-      // Ticks do eixo Y (0, 25%, 50%, 75%, 100%)
-      const yTicks = [0, 0.25, 0.5, 0.75, 1];
-
       let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 ${svgWidth} ${chartHeight}" xmlns="http://www.w3.org/2000/svg" class="w-full" role="img" aria-labelledby="eng-chart-title">
         <title id="eng-chart-title">Top produtos por ${metricField.replace(/_/g, ' ')} no período selecionado</title>
         <defs>
-          <linearGradient id="gridGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#e2e8f0" stop-opacity="0.6"/>
-            <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.2"/>
+          <linearGradient id="gradViews" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a8754" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#0a8754" stop-opacity="0.25"/>
           </linearGradient>
         </defs>
 
         <!-- Eixo Y -->
         <text x="15" y="24" class="text-[10px] text-zinc-500 font-mono">${maxViews}</text>
         <text x="15" y="${chartHeight - 12}" class="text-[10px] text-zinc-500 font-mono">0</text>
-
-        <!-- Grades horizontais -->
-        ${yTicks
-          .map((t) => {
-            const y = chartHeight - padding.bottom - t * (chartHeight - padding.top - padding.bottom);
-            return `
-              <line x1="${padding.left}" y1="${y}" x2="${svgWidth - padding.right}" y2="${y}" stroke="url(#gridGrad)" stroke-width="1" stroke-dasharray="4,4"/>
-              <text x="${padding.left - 6}" y="${y + 3}" class="text-[9px] text-zinc-400 font-mono" text-anchor="end">${Math.round(maxViews * t)}</text>
-            `;
-          })
-          .join('')
-        }
 
         <!-- Barras -->
         ${topStats
@@ -2319,16 +2295,13 @@ function attachEventListeners() {
             const x = padding.left + i * (barWidth + gap);
             const h = (value / maxViews) * (chartHeight - padding.top - padding.bottom);
             const y = chartHeight - padding.bottom - h;
-            const fillColor = barFillColor(value, maxViews);
             const label = escapeHtml(String(s.product_name || s.product_id));
             return `
-              <rect x="${x}" y="${y}" width="${barWidth - 4}" height="${h}" fill="${fillColor}" rx="2" title="${label}: ${value}"/>
-              <text x="${x + (barWidth - 4) / 2}" y="${chartHeight - padding.bottom + 16}" 
-                    class="text-[9px] text-zinc-500 font-mono" text-anchor="middle">${escapeHtml(String(s.product_name || s.product_id).substring(0, 12))}</text>
-              ${h > 28
-                ? `<text x="${x + (barWidth - 4) / 2}" y="${y + h / 2 + 4}" class="text-[10px] text-white font-bold font-mono" text-anchor="middle">${value}</text>`
-                : `<text x="${x + (barWidth - 4) / 2}" y="${y - 6}" class="text-[10px] text-[#0a8754] font-bold font-mono" text-anchor="middle">${value}</text>`
-              }
+              <rect x="${x}" y="${y}" width="${barWidth - 4}" height="${h}" fill="url(#gradViews)" rx="2" title="${label}: ${value}"/>
+              <text x="${x + (barWidth - 4) / 2}" y="${chartHeight - padding.bottom + 18}" 
+                    class="text-[10px] text-zinc-500 font-mono" text-anchor="middle" transform="rotate(-45 ${x + (barWidth - 4) / 2},${chartHeight - padding.bottom + 18})">${escapeHtml(String(s.product_name || s.product_id).substring(0, 14))}</text>
+              <text x="${x + (barWidth - 4) / 2}" y="${y - 6}" 
+                    class="text-[10px] text-[#0a8754] font-bold font-mono" text-anchor="middle">${value}</text>
             `;
           })
           .join('')
