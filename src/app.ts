@@ -727,7 +727,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
   if (filtered.length === 0) {
     productsHtml = `
       <div class="bg-white rounded-xl border border-zinc-200 p-12 text-center text-zinc-500">
-        <p class="text-3xl mb-2">🔍</p>
+        <p class="text-3xl mb-2" aria-hidden="true">🔍</p>
         <p class="text-base font-semibold text-zinc-800">Nenhum produto encontrado</p>
         <p class="text-sm text-zinc-500 mt-1">Tente buscar por outro termo ou limpe os filtros de categoria.</p>
         <button id="clear-filters-btn" class="mt-4 px-4 py-2 bg-[#0a8754] text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition">
@@ -1037,7 +1037,8 @@ function renderEngagementView(): string {
             <p class="text-zinc-500 text-sm">Acompanhe impressões, visualizações de detalhes, cliques no WhatsApp, carrinho e pedidos.</p>
           </div>
           <button id="eng-refresh" class="bg-[#0a8754] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2">
-            🔄 Atualizar
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 4v6h6M23 4v-6h-6M14 2L23 11M10 22l9-9"/><path d="M20 4V20M4 20V4"/></svg>
+            Atualizar
           </button>
         </div>
       </div>
@@ -1046,7 +1047,7 @@ function renderEngagementView(): string {
       <div class="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs">
         <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold text-zinc-500">Período:</span>
+            <label for="eng-period" class="text-xs font-semibold text-zinc-500">Período</label>
             <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
               <option value="7">Últimos 7 dias</option>
               <option value="30" selected>Últimos 30 dias</option>
@@ -1054,7 +1055,7 @@ function renderEngagementView(): string {
             </select>
           </div>
           <div class="flex items-center gap-2 w-full sm:w-auto">
-            <span class="text-xs font-semibold text-zinc-500">Categoria:</span>
+            <label for="eng-category" class="text-xs font-semibold text-zinc-500">Categoria</label>
             <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754] flex-1 sm:flex-auto">
               <option value="">Todas as categorias</option>
               ${categoryOptions}
@@ -1063,27 +1064,43 @@ function renderEngagementView(): string {
         </div>
       </div>
 
-      <!-- Métricas resumo -->
-      <div id="eng-metrics" class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <!-- Métricas resumo — agrupadas por funil -->
+      <div id="eng-metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Grupo: Exposição -->
         <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
-          <span class="text-xs text-zinc-400 uppercase font-semibold">Impressões</span>
-          <p id="eng-metric-impressions" class="text-2xl font-black text-zinc-900 mt-1">—</p>
+          <span class="text-[10px] text-zinc-500 uppercase font-semibold tracking-wider">Exposição</span>
+          <div class="mt-2 space-y-1">
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Impressões</span>
+            <p id="eng-metric-impressions" class="text-2xl font-black text-zinc-900 tabular-nums mt-0.5">—</p>
+          </div>
         </div>
+        <!-- Grupo: Interesse -->
         <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
-          <span class="text-xs text-zinc-400 uppercase font-semibold">Visualizações (detalhe)</span>
-          <p id="eng-metric-views" class="text-2xl font-black text-zinc-900 mt-1">—</p>
+          <span class="text-[10px] text-zinc-500 uppercase font-semibold tracking-wider">Interesse</span>
+          <div class="mt-2 space-y-1">
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Visualizações (detalhe)</span>
+            <p id="eng-metric-views" class="text-2xl font-black text-zinc-900 tabular-nums mt-0.5">—</p>
+          </div>
         </div>
+        <!-- Grupo: Ação -->
         <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
-          <span class="text-xs text-zinc-400 uppercase font-semibold">Cliques WhatsApp</span>
-          <p id="eng-metric-wa" class="text-2xl font-black text-emerald-700 mt-1">—</p>
+          <span class="text-[10px] text-zinc-500 uppercase font-semibold tracking-wider">Ação</span>
+          <div class="mt-2 space-y-1">
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Cliques WhatsApp</span>
+            <p id="eng-metric-wa" class="text-2xl font-black text-emerald-700 tabular-nums mt-0.5">—</p>
+          </div>
+          <div class="mt-1.5 space-y-1">
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Adicionou Carrinho</span>
+            <p id="eng-metric-cart" class="text-xl font-black text-amber-700 tabular-nums mt-0.5">—</p>
+          </div>
         </div>
-        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
-          <span class="text-xs text-zinc-400 uppercase font-semibold">Adicionou Carrinho</span>
-          <p id="eng-metric-cart" class="text-2xl font-black text-amber-700 mt-1">—</p>
-        </div>
-        <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-center">
-          <span class="text-xs text-zinc-400 uppercase font-semibold">Pedidos via WA</span>
-          <p id="eng-metric-orders" class="text-2xl font-black text-indigo-700 mt-1">—</p>
+        <!-- Grupo: Conversão (hero) -->
+        <div class="bg-[#0a8754] p-4 rounded-xl text-center text-white shadow-sm">
+          <span class="text-[10px] text-emerald-200 uppercase font-semibold tracking-wider">Conversão</span>
+          <div class="mt-2 space-y-1">
+            <span class="text-xs text-emerald-200 uppercase font-semibold">Pedidos via WhatsApp</span>
+            <p id="eng-metric-orders" class="text-3xl font-black tabular-nums mt-0.5">—</p>
+          </div>
         </div>
       </div>
 
@@ -1093,8 +1110,20 @@ function renderEngagementView(): string {
           <h3 class="text-lg font-bold text-zinc-900">📊 Top produtos por visualizações de detalhe</h3>
           <span id="eng-chart-period" class="text-xs text-zinc-500 font-mono"></span>
         </div>
-        <div id="eng-chart-container" class="h-64 w-full flex items-end justify-between gap-2 px-4 pb-6">
-          <div class="text-center text-zinc-400 text-sm">Carregando…</div>
+        <div id="eng-chart-container" class="h-64 w-full flex items-end justify-between gap-2 px-4 pb-6" role="status" aria-live="polite" aria-busy="true">
+          <!-- Skeleton do gráfico -->
+          <div class="w-full flex items-end justify-between gap-2 px-4 pb-6 h-full">
+            <div class="w-1/5 skeleton-bar"></div>
+            <div class="w-1/4 skeleton-bar"></div>
+            <div class="w-1/3 skeleton-bar"></div>
+            <div class="w-1/4 skeleton-bar"></div>
+            <div class="w-1/5 skeleton-bar"></div>
+            <div class="w-1/4 skeleton-bar"></div>
+            <div class="w-1/3 skeleton-bar"></div>
+            <div class="w-1/4 skeleton-bar"></div>
+            <div class="w-1/5 skeleton-bar"></div>
+            <div class="w-1/4 skeleton-bar"></div>
+          </div>
         </div>
       </div>
 
@@ -1105,22 +1134,54 @@ function renderEngagementView(): string {
         </div>
         <div class="overflow-x-auto">
           <table id="eng-table" class="w-full text-sm">
+            <caption class="sr-only">Ranking de produtos por período e categoria selecionada</caption>
             <thead class="bg-zinc-50 border-b border-zinc-200 text-[11px] uppercase font-bold text-zinc-500">
               <tr>
-                <th class="p-3 text-left">Produto</th>
-                <th class="p-3 text-left">Categoria</th>
-                <th class="p-3 text-right">Impressões</th>
-                <th class="p-3 text-right">Views (detalhe)</th>
-                <th class="p-3 text-right">Cliques WA</th>
-                <th class="p-3 text-right">Carrinho</th>
-                <th class="p-3 text-right">Pedidos</th>
-                <th class="p-3 text-right">CTR %</th>
-                <th class="p-3 text-right">Última Interação</th>
+                <th scope="col" class="p-3 text-left">Produto</th>
+                <th scope="col" class="p-3 text-left">Categoria</th>
+                <th scope="col" class="p-3 text-right">Impressões</th>
+                <th scope="col" class="p-3 text-right">Views (detalhe)</th>
+                <th scope="col" class="p-3 text-right">Cliques WA</th>
+                <th scope="col" class="p-3 text-right">Carrinho</th>
+                <th scope="col" class="p-3 text-right">Pedidos</th>
+                <th scope="col" class="p-3 text-right">CTR %</th>
+                <th scope="col" class="p-3 text-right">Última Interação</th>
               </tr>
             </thead>
             <tbody id="eng-table-body">
-              <tr>
-                <td colspan="9" class="p-4 text-center text-zinc-400">Carregando…</td>
+              <!-- Skeleton da tabela de ranking -->
+              <tr class="skeleton-row animate-pulse">
+                <td class="p-3"><div class="skeleton-text" style="width:60%"></div></td>
+                <td class="p-3"><div class="skeleton-text" style="width:40%"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number" style="width:40%"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-text" style="width:50%"></div></td>
+              </tr>
+              <tr class="skeleton-row animate-pulse">
+                <td class="p-3"><div class="skeleton-text" style="width:60%"></div></td>
+                <td class="p-3"><div class="skeleton-text" style="width:40%"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number" style="width:40%"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-text" style="width:50%"></div></td>
+              </tr>
+              <tr class="skeleton-row animate-pulse">
+                <td class="p-3"><div class="skeleton-text" style="width:60%"></div></td>
+                <td class="p-3"><div class="skeleton-text" style="width:40%"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-number" style="width:40%"></div></td>
+                <td class="p-3 text-right"><div class="skeleton-text" style="width:50%"></div></td>
               </tr>
             </tbody>
           </table>
@@ -1526,7 +1587,7 @@ function renderCartDrawer(): string {
         </div>
         <div id="cart-drawer-body" class="flex-1 overflow-y-auto p-4">
           <div class="text-center py-10 px-4">
-            <p class="text-4xl mb-3">🛒</p>
+            <p class="text-4xl mb-3" aria-hidden="true">🛒</p>
             <p class="font-bold text-zinc-800">Seu carrinho está vazio</p>
             <p class="text-sm text-zinc-500 mt-1">Adicione produtos do catálogo para montar seu pedido.</p>
             <button type="button" data-close-cart class="mt-4 px-4 py-2 bg-[#0a8754] text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition">
@@ -1997,7 +2058,8 @@ function attachEventListeners() {
 
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="inline-block animate-spin">↻</span><span>Atualizando...</span>';
+        btn.setAttribute('aria-busy', 'true');
+        btn.innerHTML = '<span class="inline-block animate-spin" aria-hidden="true">↻</span><span>Atualizando…</span>';
         btn.classList.add('opacity-70', 'cursor-not-allowed');
       }
 
@@ -2027,7 +2089,9 @@ function attachEventListeners() {
         const metrics = ['eng-metric-impressions', 'eng-metric-views', 'eng-metric-wa', 'eng-metric-cart', 'eng-metric-orders'];
         if (tableBody) {
           tableBody.innerHTML =
-            `<tr><td colspan="9" class="p-4 text-center text-red-500">${escapeHtml(msg)}</td></tr>`;
+            `<tr><td colspan="9" class="p-4 text-center"><div class="flex flex-col items-center gap-2"><span class="text-red-600 font-medium">${escapeHtml(msg)}</span><button id="eng-retry" class="text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-900 px-3 py-1 rounded border border-zinc-300 transition">Tentar novamente</button></div></td></tr>`;
+          const retryBtn = document.getElementById('eng-retry');
+          if (retryBtn) retryBtn.addEventListener('click', loadEngagementStats);
         }
         metrics.forEach((id) => {
           const el = document.getElementById(id);
@@ -2040,6 +2104,7 @@ function attachEventListeners() {
       } finally {
         if (btn) {
           btn.disabled = false;
+          btn.removeAttribute('aria-busy');
           btn.innerHTML = originalBtnHtml;
           btn.classList.remove('opacity-70', 'cursor-not-allowed');
         }
@@ -2073,13 +2138,16 @@ function attachEventListeners() {
       // Tabela de ranking
       const tableBody = document.getElementById('eng-table-body');
       if (tableBody) {
-        tableBody.innerHTML = stats
+        if (stats.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="9" class="p-4 text-center"><div class="flex flex-col items-center gap-2"><p class="text-2xl">📭</p><p class="text-sm font-medium text-zinc-800">Sem dados no período</p><p class="text-xs text-zinc-500 mt-1">Ajuste o período ou a categoria e tente novamente.</p></div></td></tr>`;
+        } else {
+          tableBody.innerHTML = stats
           .map(
             (s) => `
             <tr class="hover:bg-zinc-50 border-b border-zinc-100 text-xs">
-              <td class="p-3 font-medium text-zinc-900">${escapeHtml(
+              <td class="p-3 font-medium text-zinc-900 min-w-[140px]"><div class="truncate">${escapeHtml(
                 s.product_name || s.product_id
-              )}</td>
+              )}</div></td>
               <td class="p-3 text-zinc-600">${escapeHtml(s.category || '-')}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.impressions || 0).toLocaleString()}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.views || 0).toLocaleString()}</td>
@@ -2087,13 +2155,12 @@ function attachEventListeners() {
               <td class="p-3 text-right font-mono text-zinc-700">${(s.cart_adds || 0).toLocaleString()}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.orders || 0).toLocaleString()}</td>
               <td class="p-3 text-right font-mono text-zinc-700">${(s.ctr || 0)}%</td>
-              <td class="p-3 text-right font-mono text-zinc-500">${new Date(
-                s.last_interaction || 0
-              ).toLocaleDateString('pt-BR')}</td>
+              <td class="p-3 text-right font-mono text-zinc-500">${s.last_interaction ? new Date(s.last_interaction).toLocaleDateString('pt-BR') : '—'}</td>
             </tr>
           `
           )
           .join('');
+        }
       }
 
       // Gráfico de barras (top produtos por visualizações)
@@ -2113,11 +2180,14 @@ function attachEventListeners() {
 
       const maxViews = Math.max(...topStats.map((s) => s.views || 0), 1);
       const chartHeight = 260;
-      const padding = { top: 30, right: 20, bottom: 50, left: 60 };
-      const barWidth = 34;
-      const gap = 12;
+      const padding = { top: 30, right: 20, bottom: 60, left: 70 };
+      const barWidth = 36;
+      const gap = 14;
+      // Largura do viewBox cresce com o número de barras (evita comprimir em telas pequenas)
+      const svgWidth = Math.max(720, padding.left + padding.right + topStats.length * (barWidth + gap));
 
-      let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 900 ${chartHeight}" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 ${svgWidth} ${chartHeight}" xmlns="http://www.w3.org/2000/svg" class="w-full" role="img" aria-labelledby="eng-chart-title">
+        <title id="eng-chart-title">Top produtos por visualizações de detalhe no período selecionado</title>
         <defs>
           <linearGradient id="gradViews" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#0a8754" stop-opacity="0.85"/>
