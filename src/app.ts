@@ -1036,10 +1036,25 @@ function renderEngagementView(): string {
             <h2 class="text-2xl font-black text-zinc-900 mb-1">📈 Engajamento de Produtos</h2>
             <p class="text-zinc-500 text-sm">Acompanhe impressões, visualizações de detalhes, cliques no WhatsApp, carrinho e pedidos.</p>
           </div>
-          <button id="eng-refresh" class="bg-[#0a8754] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 4v6h6M23 4v-6h-6M14 2L23 11M10 22l9-9"/><path d="M20 4V20M4 20V4"/></svg>
-            Atualizar
-          </button>
+          <div class="flex items-center gap-3">
+            <button id="eng-refresh" class="bg-[#0a8754] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2" aria-label="Atualizar métricas de engajamento">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 21v-5h-5"/>
+              </svg>
+              Atualizar
+            </button>
+            <button id="eng-export-csv" class="bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold shadow-xs transition flex items-center gap-2" aria-label="Exportar dados de engajamento em CSV">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Exportar CSV
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1060,6 +1075,34 @@ function renderEngagementView(): string {
               <option value="">Todas as categorias</option>
               ${categoryOptions}
             </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros secundários: métrica do gráfico, Top N e busca -->
+      <div class="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
+          <div class="flex items-center gap-2">
+            <label for="eng-chart-metric" class="text-xs font-semibold text-zinc-500">Exibir gráfico por</label>
+            <select id="eng-chart-metric" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+              <option value="views">Visualizações (detalhe)</option>
+              <option value="impressions">Impressões</option>
+              <option value="whatsapp_clicks">Cliques WhatsApp</option>
+              <option value="cart_adds">Adicionou Carrinho</option>
+              <option value="orders">Pedidos via WA</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2">
+            <label for="eng-top-n" class="text-xs font-semibold text-zinc-500">Top</label>
+            <select id="eng-top-n" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <label for="eng-search" class="text-xs font-semibold text-zinc-500">Buscar produto</label>
+            <input id="eng-search" type="text" placeholder="Nome do produto…" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-48 focus:ring-2 focus:ring-[#0a8754]" autocomplete="off"/>
           </div>
         </div>
       </div>
@@ -2047,11 +2090,27 @@ function attachEventListeners() {
   if (activeTab === 'engagement' && perfil === 'lojista') {
     const periodSelect = document.getElementById('eng-period') as HTMLSelectElement | null;
     const categorySelect = document.getElementById('eng-category') as HTMLSelectElement | null;
+    const chartMetricSelect = document.getElementById('eng-chart-metric') as HTMLSelectElement | null;
+    const topNSelect = document.getElementById('eng-top-n') as HTMLSelectElement | null;
+    const searchInput = document.getElementById('eng-search') as HTMLInputElement | null;
     const refreshBtn = document.getElementById('eng-refresh') as HTMLButtonElement | null;
+
+    // Retenção dos últimos dados filtrados para exportação
+    let lastEngagementStats: any[] = [];
+    let lastEngagementFiltered: any[] = [];
+    let lastEngagementParams: { period: string; category: string; chartMetric: string; topN: number } = {
+      period: '30',
+      category: '',
+      chartMetric: 'views',
+      topN: 10,
+    };
 
     async function loadEngagementStats() {
       const period = periodSelect?.value || '30';
       const category = categorySelect?.value || '';
+      const chartMetric = chartMetricSelect?.value || 'views';
+      const topN = parseInt(topNSelect?.value || '10', 10);
+      const search = searchInput?.value?.toLowerCase().trim() || '';
       const chartPeriodEl = document.getElementById('eng-chart-period');
       const btn = document.getElementById('eng-refresh') as HTMLButtonElement | null;
       const originalBtnHtml = btn?.innerHTML || '🔄 Atualizar';
@@ -2081,7 +2140,9 @@ function attachEventListeners() {
         }
 
         const { stats, periodDays } = await res.json();
-        renderEngagementData(stats || [], parseInt(period, 10));
+        lastEngagementStats = stats || [];
+        lastEngagementParams = { period, category, chartMetric, topN };
+        renderEngagementData(lastEngagementStats, parseInt(period, 10), chartMetric, topN, search);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.error('[Engajamento] Erro:', msg);
@@ -2111,8 +2172,34 @@ function attachEventListeners() {
       }
     }
 
-    function renderEngagementData(stats: any[], periodDays: number) {
-      // Métricas resumo
+    function renderEngagementData(
+      stats: any[],
+      periodDays: number,
+      chartMetric: string = 'views',
+      topN: number = 10,
+      search: string = ''
+    ) {
+      const METRIC_FIELD: Record<string, string> = {
+        views: 'views',
+        impressions: 'impressions',
+        whatsapp_clicks: 'whatsapp_clicks',
+        cart_adds: 'cart_adds',
+        orders: 'orders',
+      };
+      const field = METRIC_FIELD[chartMetric] || 'views';
+
+      // Busca por produto (case-insensitive)
+      const filtered = search
+        ? stats.filter((s) => String(s.product_name || s.product_id || '').toLowerCase().includes(search))
+        : stats;
+
+      // Ordena pela métrica selecionada (desc)
+      filtered.sort((a, b) => (b[field] || 0) - (a[field] || 0));
+
+      // Retenção para exportação
+      lastEngagementFiltered = filtered;
+
+      // Métricas resumo (sobre todos os stats do período/filtro de categoria)
       const totals = stats.reduce(
         (acc, s) => ({
           impressions: acc.impressions + (s.impressions || 0),
@@ -2138,10 +2225,12 @@ function attachEventListeners() {
       // Tabela de ranking
       const tableBody = document.getElementById('eng-table-body');
       if (tableBody) {
-        if (stats.length === 0) {
-          tableBody.innerHTML = `<tr><td colspan="9" class="p-4 text-center"><div class="flex flex-col items-center gap-2"><p class="text-2xl">📭</p><p class="text-sm font-medium text-zinc-800">Sem dados no período</p><p class="text-xs text-zinc-500 mt-1">Ajuste o período ou a categoria e tente novamente.</p></div></td></tr>`;
+        if (filtered.length === 0) {
+          const emptyMsg = search ? 'Nenhum produto encontrado com esse termo.' : 'Sem dados no período';
+          const emptySub = search ? 'Tente outro termo de busca ou limpe o filtro.' : 'Ajuste o período ou a categoria e tente novamente.';
+          tableBody.innerHTML = `<tr><td colspan="9" class="p-4 text-center"><div class="flex flex-col items-center gap-2"><p class="text-2xl">📭</p><p class="text-sm font-medium text-zinc-800">${emptyMsg}</p><p class="text-xs text-zinc-500 mt-1">${emptySub}</p></div></td></tr>`;
         } else {
-          tableBody.innerHTML = stats
+          tableBody.innerHTML = filtered
           .map(
             (s) => `
             <tr class="hover:bg-zinc-50 border-b border-zinc-100 text-xs">
@@ -2163,35 +2252,47 @@ function attachEventListeners() {
         }
       }
 
-      // Gráfico de barras (top produtos por visualizações)
-      renderEngagementChart(stats, periodDays);
+      // Gráfico de barras (top produtos pela métrica selecionada)
+      renderEngagementChart(filtered.slice(0, topN), periodDays, field);
     }
 
-    function renderEngagementChart(stats: any[], periodDays: number) {
+    function renderEngagementChart(stats: any[], periodDays: number, metricField: string = 'views') {
       const container = document.getElementById('eng-chart-container');
       if (!container) return;
 
-      const topStats = stats.slice(0, 10);
+      const topStats = stats;
       if (topStats.length === 0) {
         container.innerHTML =
           '<div class="text-center text-zinc-400 text-sm">Sem dados no período</div>';
         return;
       }
 
-      const maxViews = Math.max(...topStats.map((s) => s.views || 0), 1);
+      const maxViews = Math.max(...topStats.map((s) => s[metricField] || 0), 1);
       const chartHeight = 260;
-      const padding = { top: 30, right: 20, bottom: 60, left: 70 };
+      const padding = { top: 30, right: 20, bottom: 70, left: 70 };
       const barWidth = 36;
       const gap = 14;
       // Largura do viewBox cresce com o número de barras (evita comprimir em telas pequenas)
       const svgWidth = Math.max(720, padding.left + padding.right + topStats.length * (barWidth + gap));
 
+      // Cor por barra: claro = menor valor, escuro = maior valor (paleta verde da marca)
+      function barFillColor(value: number, max: number) {
+        const t = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
+        const r = Math.round(170 + (10 - 170) * t);
+        const g = Math.round(220 + (135 - 220) * t);
+        const b = Math.round(200 + (84 - 200) * t);
+        return `rgb(${r},${g},${b})`;
+      }
+
+      // Ticks do eixo Y (0, 25%, 50%, 75%, 100%)
+      const yTicks = [0, 0.25, 0.5, 0.75, 1];
+
       let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 ${svgWidth} ${chartHeight}" xmlns="http://www.w3.org/2000/svg" class="w-full" role="img" aria-labelledby="eng-chart-title">
-        <title id="eng-chart-title">Top produtos por visualizações de detalhe no período selecionado</title>
+        <title id="eng-chart-title">Top produtos por ${metricField.replace(/_/g, ' ')} no período selecionado</title>
         <defs>
-          <linearGradient id="gradViews" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0a8754" stop-opacity="0.85"/>
-            <stop offset="100%" stop-color="#0a8754" stop-opacity="0.25"/>
+          <linearGradient id="gridGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e2e8f0" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.2"/>
           </linearGradient>
         </defs>
 
@@ -2199,19 +2300,35 @@ function attachEventListeners() {
         <text x="15" y="24" class="text-[10px] text-zinc-500 font-mono">${maxViews}</text>
         <text x="15" y="${chartHeight - 12}" class="text-[10px] text-zinc-500 font-mono">0</text>
 
+        <!-- Grades horizontais -->
+        ${yTicks
+          .map((t) => {
+            const y = chartHeight - padding.bottom - t * (chartHeight - padding.top - padding.bottom);
+            return `
+              <line x1="${padding.left}" y1="${y}" x2="${svgWidth - padding.right}" y2="${y}" stroke="url(#gridGrad)" stroke-width="1" stroke-dasharray="4,4"/>
+              <text x="${padding.left - 6}" y="${y + 3}" class="text-[9px] text-zinc-400 font-mono" text-anchor="end">${Math.round(maxViews * t)}</text>
+            `;
+          })
+          .join('')
+        }
+
         <!-- Barras -->
         ${topStats
           .map((s, i) => {
+            const value = s[metricField] || 0;
             const x = padding.left + i * (barWidth + gap);
-            const h = ((s.views || 0) / maxViews) * (chartHeight - padding.top - padding.bottom);
+            const h = (value / maxViews) * (chartHeight - padding.top - padding.bottom);
             const y = chartHeight - padding.bottom - h;
-            const label = escapeHtml(String(s.product_name || s.product_id).substring(0, 14));
+            const fillColor = barFillColor(value, maxViews);
+            const label = escapeHtml(String(s.product_name || s.product_id));
             return `
-              <rect x="${x}" y="${y}" width="${barWidth - 4}" height="${h}" fill="url(#gradViews)" rx="2"/>
-              <text x="${x + (barWidth - 4) / 2}" y="${chartHeight - padding.bottom + 18}" 
-                    class="text-[10px] text-zinc-500 font-mono" text-anchor="middle" transform="rotate(-45 ${x + (barWidth - 4) / 2},${chartHeight - padding.bottom + 18})">${label}</text>
-              <text x="${x + (barWidth - 4) / 2}" y="${y - 6}" 
-                    class="text-[10px] text-[#0a8754] font-bold font-mono" text-anchor="middle">${s.views || 0}</text>
+              <rect x="${x}" y="${y}" width="${barWidth - 4}" height="${h}" fill="${fillColor}" rx="2" title="${label}: ${value}"/>
+              <text x="${x + (barWidth - 4) / 2}" y="${chartHeight - padding.bottom + 16}" 
+                    class="text-[9px] text-zinc-500 font-mono" text-anchor="middle">${escapeHtml(String(s.product_name || s.product_id).substring(0, 12))}</text>
+              ${h > 28
+                ? `<text x="${x + (barWidth - 4) / 2}" y="${y + h / 2 + 4}" class="text-[10px] text-white font-bold font-mono" text-anchor="middle">${value}</text>`
+                : `<text x="${x + (barWidth - 4) / 2}" y="${y - 6}" class="text-[10px] text-[#0a8754] font-bold font-mono" text-anchor="middle">${value}</text>`
+              }
             `;
           })
           .join('')
@@ -2221,13 +2338,66 @@ function attachEventListeners() {
       container.innerHTML = svg;
     }
 
+    function exportEngagementToCsv() {
+      const data = lastEngagementFiltered.length ? lastEngagementFiltered : lastEngagementStats;
+      const { period, category, chartMetric, topN } = lastEngagementParams;
+      const METRIC_LABEL: Record<string, string> = {
+        views: 'Visualizações (detalhe)',
+        impressions: 'Impressões',
+        whatsapp_clicks: 'Cliques WhatsApp',
+        cart_adds: 'Adicionou Carrinho',
+        orders: 'Pedidos via WA',
+      };
+      const metricLabel = METRIC_LABEL[chartMetric] || chartMetric;
+      const rows: string[][] = [];
+      rows.push(['Período', 'Categoria filtro', 'Métrica gráfico', 'Produto', 'Categoria', 'Impressões', 'Views (detalhe)', 'Cliques WhatsApp', 'Carrinho', 'Pedidos', 'CTR %', 'Última interação']);
+      for (const s of data) {
+        rows.push([
+          `Últimos ${period} dias`,
+          category || 'Todas',
+          metricLabel,
+          s.product_name || s.product_id,
+          s.category || '-',
+          String(s.impressions || 0),
+          String(s.views || 0),
+          String(s.whatsapp_clicks || 0),
+          String(s.cart_adds || 0),
+          String(s.orders || 0),
+          String(s.ctr || 0),
+          s.last_interaction ? new Date(s.last_interaction).toLocaleDateString('pt-BR') : '—',
+        ]);
+      }
+      const csv = rows.map((r) =>
+        r.map((v) => {
+          const s = String(v);
+          return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        }).join(';')
+      ).join('\n');
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `engajamento-${period}dias-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('CSV exportado com sucesso!');
+    }
+
     // Carregar dados iniciais
     loadEngagementStats();
 
     // Wire filtros
     periodSelect?.addEventListener('change', loadEngagementStats);
     categorySelect?.addEventListener('change', loadEngagementStats);
+    chartMetricSelect?.addEventListener('change', loadEngagementStats);
+    topNSelect?.addEventListener('change', loadEngagementStats);
+    searchInput?.addEventListener('input', loadEngagementStats);
     refreshBtn?.addEventListener('click', loadEngagementStats);
+    const exportBtn = document.getElementById('eng-export-csv');
+    exportBtn?.addEventListener('click', () => exportEngagementToCsv());
   }
 }
 
