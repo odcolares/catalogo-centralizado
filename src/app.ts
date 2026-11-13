@@ -833,6 +833,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                     }
                   </div>
 
+                  ${perfil === 'cliente' ? `
                   <!-- Cart CTA Button -->
                   <button type="button"
                           data-add-to-cart="${p.id}"
@@ -847,6 +848,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                     <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
                     <span>WhatsApp</span>
                   </a>
+                  ` : ''}
                 </div>
               </article>
             `;
@@ -946,11 +948,11 @@ function renderTableView(): string {
           <td class="p-3 font-mono text-right font-bold text-emerald-700">${brl(p.price)}</td>
           <td class="p-3 font-mono text-right text-zinc-700">${brl(profit)}</td>
           <td class="p-3 font-mono text-right font-semibold ${margin >= 100 ? 'text-emerald-600' : 'text-amber-600'}">${margin}%</td>
-          <td class="p-3 text-right">
+          ${perfil === 'cliente' ? `<td class="p-3 text-right">
             <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener" class="text-emerald-600 hover:text-emerald-800 font-semibold">
               WhatsApp ↗
             </a>
-          </td>
+          </td>` : '<td></td>'}
         </tr>
       `;
     })
@@ -1593,6 +1595,7 @@ function renderProductDrawer(): string {
         </div>
       </div>
 
+      ${perfil === 'cliente' ? `
       <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
         <button type="button"
                 data-add-to-cart="${p.id}"
@@ -1606,6 +1609,7 @@ function renderProductDrawer(): string {
           <span>Falar no WhatsApp</span>
         </a>
       </div>
+      ` : ''}
     </aside>
   `;
 }
@@ -1752,10 +1756,12 @@ function renderCartDrawer(): string {
 
       <!-- Ações -->
       <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
+        ${perfil === 'cliente' ? `
         <button type="button" id="cart-send-wa" class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
           <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
           <span>Enviar pedido no WhatsApp</span>
         </button>
+        ` : ''}
         <div class="grid grid-cols-2 gap-2">
           <button type="button" id="cart-print-pdf" class="inline-flex items-center justify-center gap-1.5 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow-xs transition">
             📄 Gerar PDF
