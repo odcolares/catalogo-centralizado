@@ -513,7 +513,7 @@ function renderApp() {
               <span>${totalProducts} produtos</span>
             </div>
             <h1 class="display-text text-3xl md:text-4xl flex items-center gap-3">
-              <img src="images/whatsapp-label.jpg" alt="WhatsApp" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50 shadow-lg" onerror="this.remove()" />
+              <img src="images/Loja_img.png" alt="Logo da loja" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50 shadow-lg" onerror="this.remove()" />
               <span>${escapeHtml(store.name || 'Catálogo de Eletrônicos')}</span>
             </h1>
             <p class="text-emerald-50/90 text-sm mt-2 max-w-xl leading-relaxed">
@@ -574,7 +574,7 @@ function renderApp() {
             <a href="https://wa.me/${(store.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Vi o catálogo e quero fazer um pedido — pode me atender?')}"
                target="_blank" rel="noopener"
                class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+              <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
               <span>Atendimento WhatsApp</span>
             </a>`
             }
@@ -582,21 +582,23 @@ function renderApp() {
           </div>
         </div>
 
+        ${perfil === 'cliente' ? `
         <!-- Info Badges -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-6 pt-4 border-t border-white/15 font-mono text-[11px] text-emerald-50/90">
           <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
             <span>🚚</span>
-            <span><strong class="text-emerald-200">Entrega:</strong> ${escapeHtml(store.delivery || 'Motoboy no mesmo dia')}</span>
+            <span><strong class="text-emerald-200">Entrega:</strong> ${escapeHtml(store.delivery || 'Entrega via motoboy (taxa a combinar) • Retirada em loja sob consulta')}</span>
           </div>
           <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
             <span>✅</span>
-            <span><strong class="text-emerald-200">Garantia:</strong> ${escapeHtml(store.warranty || 'Garantia local 30 dias')}</span>
+            <span><strong class="text-emerald-200">Garantia:</strong> ${escapeHtml(store.warranty || 'Atendimento para defeitos conforme garantia legal. Consulte condições.')}</span>
           </div>
           <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
             <span>💳</span>
-            <span><strong class="text-emerald-200">Pagamento:</strong> ${escapeHtml(store.payment || 'PIX ou dinheiro')}</span>
+            <span><strong class="text-emerald-200">Pagamento:</strong> ${escapeHtml(store.payment || 'Pagamento do pedido: PIX (comprovante para confirmação).')}</span>
           </div>
         </div>
+        ` : ''}
       </div>
     </header>
 
@@ -615,7 +617,7 @@ function renderApp() {
       </div>
     </footer>
 
-    ${renderCartDrawer()}
+    ${perfil === 'cliente' ? renderCartDrawer() : ''}
     ${renderProductDrawer()}
 
     <!-- Relatório do pedido (só aparece na impressão → Salvar como PDF) -->
@@ -845,7 +847,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                   <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
                      data-track-wa="${p.id}"
                      class="w-full inline-flex items-center justify-center gap-2 mt-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2 px-4 rounded-lg text-sm shadow-xs transition">
-                    <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+                    <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
                     <span>WhatsApp</span>
                   </a>
                   ` : ''}
@@ -1309,7 +1311,18 @@ function renderApiView(): string {
   `;
 }
 
-// ── Pedido: mensagem do WhatsApp ─────────────────────────────────────────────
+
+// 📄 Pedido: mensagem do WhatsApp ─────────────────────────────────────────────
+
+function deliveryLabel(tipo: 'motoboy' | 'retirada'): string {
+  return tipo === 'retirada'
+    ? 'Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem. Valor/condições sob consulta.'
+    : 'Entrega via motoboy (mesmo dia, taxa a combinar/consultar).';
+}
+
+function orderPaymentLabel(): string {
+  return 'Pagamento do pedido: PIX (enviar comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.';
+}
 
 function buildOrderMessage(): string | null {
   if (cart.length === 0) {
@@ -1323,24 +1336,21 @@ function buildOrderMessage(): string | null {
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('pt-BR');
-  const entrega =
-    clientInfo.entrega === 'retirada'
-      ? 'Retirada na loja'
-      : 'Motoboy mesmo dia (R$ 15–20)';
+  const entrega = deliveryLabel(clientInfo.entrega);
 
   const lines: string[] = [
     'Olá! Quero fazer um pedido:',
     '',
-    `📋 Pedido: ${formatOrderNo()} — ${dateStr}`,
+    `📄 Pedido: ${formatOrderNo()} - ${dateStr}`,
     '',
   ];
 
   for (const it of cart) {
     const found = findProduct(it.id);
     const name = found ? found.product.name : it.id;
-    const code = found ? found.product.code : '—';
+    const code = found ? found.product.code : '-';
     lines.push(
-      `🛍️ ${it.qty}x ${name} (${code}) — ${brl(it.price)} → ${brl(it.price * it.qty)}`
+      `• ${it.qty}x ${name} (${code}) - ${brl(it.price)} = ${brl(it.price * it.qty)}`
     );
   }
 
@@ -1348,9 +1358,10 @@ function buildOrderMessage(): string | null {
     '',
     `💰 Subtotal: ${brl(cartSubtotal())}`,
     `🚚 Entrega: ${entrega}`,
+    `💳 ${orderPaymentLabel()}`,
     '',
     `👤 Cliente: ${clientInfo.nome.trim()}`,
-    `📱 Telefone: ${clientInfo.telefone.trim()}`
+    `📞 Telefone: ${clientInfo.telefone.trim()}`
   );
 
   if (clientInfo.bairro.trim()) {
@@ -1362,13 +1373,12 @@ function buildOrderMessage(): string | null {
 
   lines.push(
     '',
-    'Pode confirmar a disponibilidade e o prazo de entrega em Manaus?'
+    'Pode confirmar a disponibilidade, as condições de entrega/retirada em Manaus e os dados para pagamento via PIX?'
   );
 
   return lines.join('\n');
 }
 
-// ── Pedido: relatório para impressão / Salvar como PDF ───────────────────────
 
 function buildOrderReportInner(): string {
   const store = catalog.store || {};
@@ -1377,16 +1387,14 @@ function buildOrderReportInner(): string {
     hour: '2-digit',
     minute: '2-digit',
   })}`;
-  const entrega =
-    clientInfo.entrega === 'retirada'
-      ? 'Retirada na loja'
-      : 'Motoboy mesmo dia (R$ 15–20)';
+  const entrega = deliveryLabel(clientInfo.entrega);
+  const pagamento = orderPaymentLabel();
 
   const rows = cart
     .map((it) => {
       const found = findProduct(it.id);
       const name = found ? found.product.name : `${it.id} (fora do catálogo)`;
-      const code = found ? found.product.code : '—';
+      const code = found ? found.product.code : '-';
       return `
         <tr>
           <td>${escapeHtml(name)}</td>
@@ -1401,15 +1409,15 @@ function buildOrderReportInner(): string {
   const field = (label: string, value: string) => `
     <div>
       <div class="text-[10px] uppercase font-bold text-zinc-500">${label}</div>
-      <div class="text-sm text-zinc-900">${value || '—'}</div>
+      <div class="text-sm text-zinc-900">${value || '-'}</div>
     </div>`;
 
   return `
     <div class="max-w-[190mm] mx-auto text-zinc-900">
-      <!-- Cabeçalho: logo tipográfico + selo WhatsApp -->
+      <!-- Cabeçalho -->
       <div class="flex items-start justify-between gap-4 border-b-[3px] border-[#0a8754] pb-3">
         <div class="flex items-center gap-3">
-          <img src="images/whatsapp-label.jpg" alt="" class="w-12 h-12 rounded-full object-cover border-2 border-[#0a8754]" onerror="this.remove()" />
+          <img src="images/Loja_img.png" alt="" class="w-12 h-12 rounded-full object-cover border-2 border-[#0a8754]" onerror="this.remove()" />
           <div>
             <div class="text-2xl font-black leading-none text-[#0a8754]">${escapeHtml(store.name || '[Nome da Loja]')}</div>
             <div class="text-[11px] text-zinc-600 mt-1 font-semibold">Eletrônicos • ${escapeHtml(store.city || 'Manaus/AM')}</div>
@@ -1427,7 +1435,8 @@ function buildOrderReportInner(): string {
         <div class="grid grid-cols-2 gap-x-4 gap-y-2">
           ${field('Nome', escapeHtml(clientInfo.nome.trim()))}
           ${field('Telefone', escapeHtml(clientInfo.telefone.trim()))}
-          ${field('Entrega', escapeHtml(entrega))}
+          ${field('Entrega/Retirada', escapeHtml(entrega))}
+          ${field('Pagamento do pedido', escapeHtml(pagamento))}
           ${field('Bairro / Endereço', escapeHtml(clientInfo.bairro.trim()))}
         </div>
         ${
@@ -1456,14 +1465,14 @@ function buildOrderReportInner(): string {
 
       <!-- Totais -->
       <div class="flex justify-end mt-3">
-        <div class="w-64 border border-zinc-300 rounded p-3 text-sm">
+        <div class="w-72 border border-zinc-300 rounded p-3 text-sm">
           <div class="flex justify-between">
             <span>Subtotal</span>
             <strong>${brl(cartSubtotal())}</strong>
           </div>
-          <div class="flex justify-between text-xs text-zinc-600 mt-1">
-            <span>Entrega</span>
-            <span>${escapeHtml(entrega)}</span>
+          <div class="mt-1 text-xs text-zinc-600 border-t border-zinc-200 pt-1.5 space-y-1">
+            <div><strong>Entrega/Retirada:</strong> ${escapeHtml(entrega)}</div>
+            <div><strong>Pagamento:</strong> ${escapeHtml(pagamento)}</div>
           </div>
           <div class="flex justify-between border-t border-zinc-300 mt-2 pt-2 text-base font-black">
             <span>TOTAL</span>
@@ -1473,12 +1482,11 @@ function buildOrderReportInner(): string {
       </div>
 
       <!-- Condições da loja -->
-      <div class="mt-4 text-[11px] text-zinc-700 border-t border-zinc-300 pt-3 leading-relaxed">
-        <strong>Condições:</strong>
-        Entrega: ${escapeHtml(store.delivery || 'Motoboy no mesmo dia')} •
-        Garantia: ${escapeHtml(store.warranty || 'Garantia local 30 dias')} •
-        Pagamento: ${escapeHtml(store.payment || 'PIX ou dinheiro')}
-        ${store.minOrder ? `<br /><strong>Pedido mínimo:</strong> ${brl(store.minOrder)}` : ''}
+      <div class="mt-4 text-[11px] text-zinc-700 border-t border-zinc-300 pt-3 leading-relaxed space-y-1">
+        <div><strong>Entrega:</strong> ${escapeHtml(store.delivery || 'Entrega e retirada sob consulta.')}</div>
+        <div><strong>Garantia:</strong> ${escapeHtml(store.warranty || 'Consulte condições de garantia.')}</div>
+        <div><strong>Pagamento:</strong> ${escapeHtml(store.payment || 'Pagamento do pedido via PIX.')}</div>
+        ${store.minOrder ? `<div><strong>Pedido mínimo:</strong> ${brl(store.minOrder)}</div>` : ''}
       </div>
 
       <!-- Rodapé -->
@@ -1487,6 +1495,186 @@ function buildOrderReportInner(): string {
       </div>
     </div>
   `;
+}
+
+// ── Drawer lateral do carrinho ───────────────────────────────────────────────
+
+function renderCartDrawer(): string {
+  if (!cartOpen) return '';
+
+  const count = cartCount();
+
+  if (cart.length === 0) {
+    return `
+      <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
+      <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Carrinho de compras">
+        <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
+          <h2 class="font-bold text-sm flex items-center gap-2">
+            🛒 Carrinho
+            <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">vazio</span>
+          </h2>
+          <button type="button" data-close-cart class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition font-bold" aria-label="Fechar carrinho">✕</button>
+        </div>
+        <div id="cart-drawer-body" class="flex-1 overflow-y-auto p-4">
+          <div class="text-center py-10 px-4">
+            <p class="text-4xl mb-3" aria-hidden="true">🛒</p>
+            <p class="font-bold text-zinc-800">Seu carrinho está vazio</p>
+            <p class="text-sm text-zinc-500 mt-1">Adicione produtos do catálogo para montar seu pedido.</p>
+            <button type="button" data-close-cart class="mt-4 px-4 py-2 bg-[#0a8754] text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition">
+              Continuar comprando
+            </button>
+          </div>
+        </div>
+      </aside>
+    `;
+  }
+
+  const items = cart
+    .map((it) => {
+      const found = findProduct(it.id);
+      const p = found?.product;
+      const name = p ? p.name : `${it.id}`;
+      const code = p ? p.code : '';
+      const icon = found ? found.category.icon : '📦';
+      const img = p?.image
+        ? `<img src="${escapeHtml(p.image)}" alt="" class="absolute inset-0 w-full h-full object-contain p-1.5" onerror="this.remove()" />`
+        : '';
+      return `
+        <div class="flex gap-3 p-2.5 border border-zinc-200 rounded-lg bg-white">
+          <div class="relative w-14 h-14 shrink-0 bg-zinc-50 rounded-md flex items-center justify-center overflow-hidden">
+            <span class="text-xl opacity-60">${icon}</span>
+            ${img}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <p class="text-sm font-bold text-zinc-900 leading-tight">${escapeHtml(name)}</p>
+                ${
+                  code
+                    ? `<p class="text-[11px] text-zinc-500 font-mono mt-0.5">${escapeHtml(code)}</p>`
+                    : `<p class="text-[11px] text-amber-600 mt-0.5">Produto fora do catálogo</p>`
+                }
+              </div>
+              <button type="button" data-cart-remove="${it.id}" class="text-zinc-400 hover:text-red-600 text-sm shrink-0" aria-label="Remover item">✕</button>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <div class="flex items-center border border-zinc-200 rounded-md">
+                <button type="button" data-cart-dec="${it.id}" class="w-7 h-7 flex items-center justify-center text-zinc-600 hover:bg-zinc-100 rounded-l-md font-bold disabled:opacity-40 disabled:cursor-not-allowed" ${it.qty <= 1 ? 'disabled' : ''}>−</button>
+                <span class="w-7 text-center text-sm font-bold text-zinc-900">${it.qty}</span>
+                <button type="button" data-cart-inc="${it.id}" class="w-7 h-7 flex items-center justify-center text-zinc-600 hover:bg-zinc-100 rounded-r-md font-bold disabled:opacity-40 disabled:cursor-not-allowed" ${it.qty >= 99 ? 'disabled' : ''}>+</button>
+              </div>
+              <div class="text-right">
+                <span class="text-sm font-black text-[#0a8754]">${brl(it.price * it.qty)}</span>
+                <span class="block text-[10px] text-zinc-400">${brl(it.price)} un.</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    })
+    .join('');
+
+  const fieldClass =
+    'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]';
+
+  return `
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
+    <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Carrinho de compras">
+      <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
+        <h2 class="font-bold text-sm flex items-center gap-2">
+          🛒 Carrinho
+          <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">${count} ${count === 1 ? 'item' : 'itens'}</span>
+        </h2>
+        <button type="button" data-close-cart class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition font-bold" aria-label="Fechar carrinho">✕</button>
+      </div>
+
+      <div id="cart-drawer-body" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Itens -->
+        <div class="space-y-2.5">${items}</div>
+
+        <!-- Totais -->
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 space-y-1.5 text-sm">
+          <div class="flex justify-between items-baseline">
+            <span class="text-zinc-600 font-medium">Subtotal (${count} ${count === 1 ? 'item' : 'itens'})</span>
+            <strong class="text-lg font-black text-zinc-900">${brl(cartSubtotal())}</strong>
+          </div>
+          <div class="text-xs text-zinc-500 border-t border-emerald-200 pt-1.5 space-y-1">
+            <div class="flex justify-between gap-2"><span>Entrega/Retirada</span><span class="text-right">Taxa/condições a consultar conforme modalidade</span></div>
+            <div class="flex justify-between gap-2"><span>Pagamento do pedido</span><span class="text-right font-semibold text-emerald-700">PIX (comprovante para confirmação)</span></div>
+          </div>
+        </div>
+
+        <!-- Formulário do cliente -->
+        <div class="border border-zinc-200 rounded-lg p-3 space-y-3 bg-zinc-50">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black uppercase text-zinc-500">Dados do cliente</h3>
+            <span class="text-[10px] text-zinc-400">salvos automaticamente</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-nome">Nome *</label>
+              <input id="client-nome" type="text" value="${escapeHtml(clientInfo.nome)}" placeholder="Nome completo" class="${fieldClass}" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-telefone">Telefone *</label>
+              <input id="client-telefone" type="tel" value="${escapeHtml(clientInfo.telefone)}" placeholder="(92) 9xxxx-xxxx" class="${fieldClass}" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-bairro">Bairro / Endereço</label>
+            <input id="client-bairro" type="text" value="${escapeHtml(clientInfo.bairro)}" placeholder="Bairro, rua e número" class="${fieldClass}" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-entrega">Entrega/Retirada</label>
+            <select id="client-entrega" class="${fieldClass}">
+              <option value="motoboy" ${clientInfo.entrega !== 'retirada' ? 'selected' : ''}>Entrega via motoboy (mesmo dia, taxa a combinar/consultar)</option>
+              <option value="retirada" ${clientInfo.entrega === 'retirada' ? 'selected' : ''}>Retirada em loja — a partir de 24h após confirmação do pagamento (dias úteis; não conta sáb. e dom.), com teste e embalagem</option>
+            </select>
+            <p class="mt-1 text-[11px] text-zinc-500">Retirada: valor/condições sob consulta. O prazo conta a partir da confirmação do pagamento (PIX), sem contar sábados e domingos, para teste e embalagem.</p>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-zinc-600 mb-1">Pagamento do pedido (plataforma)</label>
+            <div class="w-full border border-emerald-200 rounded-lg px-3 py-2 text-sm bg-emerald-50 text-emerald-900 font-medium">PIX — envie o comprovante para confirmação</div>
+            <p class="mt-1 text-[11px] text-zinc-500">Dinheiro e cartão (crédito/débito) são aceitos somente presencialmente (in loco), mediante acordo prévio.</p>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-obs">Observações</label>
+            <textarea id="client-obs" rows="2" placeholder="Cor desejada, horário, referência..." class="${fieldClass} resize-none">${escapeHtml(clientInfo.obs)}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
+        ${perfil === 'cliente' ? `
+        <button type="button" id="cart-send-wa" class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
+          <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+          <span>Enviar pedido no WhatsApp</span>
+        </button>
+        ` : ''}
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="cart-print-pdf" class="inline-flex items-center justify-center gap-1.5 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow-xs transition">
+            📄 Gerar PDF
+          </button>
+          <button type="button" id="cart-copy" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-zinc-100 text-zinc-700 border border-zinc-300 font-bold py-2.5 px-3 rounded-lg text-xs transition">
+            📋 Copiar resumo
+          </button>
+        </div>
+        <button type="button" id="cart-clear" class="w-full text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-semibold py-1.5 rounded-lg transition">
+          🗑 Esvaziar carrinho
+        </button>
+      </div>
+    </aside>
+  `;
+}
+
+// Salva o campo sem re-render (preserva o foco do usuário)
+function bindClientField(id: string, apply: (value: string) => void): void {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', () => {
+    apply((el as HTMLInputElement).value);
+    saveJson(CLIENT_KEY, clientInfo);
+  });
 }
 
 // ── Drawer lateral de detalhes do produto ────────────────────────────────────
@@ -1605,7 +1793,7 @@ function renderProductDrawer(): string {
         <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
            data-track-wa="${p.id}"
            class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
-          <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+          <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
           <span>Falar no WhatsApp</span>
         </a>
       </div>
@@ -1614,179 +1802,6 @@ function renderProductDrawer(): string {
   `;
 }
 
-// ── Drawer lateral do carrinho ───────────────────────────────────────────────
-
-function renderCartDrawer(): string {
-  if (!cartOpen) return '';
-
-  const count = cartCount();
-
-  if (cart.length === 0) {
-    return `
-      <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
-      <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Carrinho de compras">
-        <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
-          <h2 class="font-bold text-sm flex items-center gap-2">
-            🛒 Carrinho
-            <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">vazio</span>
-          </h2>
-          <button type="button" data-close-cart class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition font-bold" aria-label="Fechar carrinho">✕</button>
-        </div>
-        <div id="cart-drawer-body" class="flex-1 overflow-y-auto p-4">
-          <div class="text-center py-10 px-4">
-            <p class="text-4xl mb-3" aria-hidden="true">🛒</p>
-            <p class="font-bold text-zinc-800">Seu carrinho está vazio</p>
-            <p class="text-sm text-zinc-500 mt-1">Adicione produtos do catálogo para montar seu pedido.</p>
-            <button type="button" data-close-cart class="mt-4 px-4 py-2 bg-[#0a8754] text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition">
-              Continuar comprando
-            </button>
-          </div>
-        </div>
-      </aside>
-    `;
-  }
-
-  const items = cart
-    .map((it) => {
-      const found = findProduct(it.id);
-      const p = found?.product;
-      const name = p ? p.name : `${it.id}`;
-      const code = p ? p.code : '';
-      const icon = found ? found.category.icon : '📦';
-      const img = p?.image
-        ? `<img src="${escapeHtml(p.image)}" alt="" class="absolute inset-0 w-full h-full object-contain p-1.5" onerror="this.remove()" />`
-        : '';
-      return `
-        <div class="flex gap-3 p-2.5 border border-zinc-200 rounded-lg bg-white">
-          <div class="relative w-14 h-14 shrink-0 bg-zinc-50 rounded-md flex items-center justify-center overflow-hidden">
-            <span class="text-xl opacity-60">${icon}</span>
-            ${img}
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0">
-                <p class="text-sm font-bold text-zinc-900 leading-tight">${escapeHtml(name)}</p>
-                ${
-                  code
-                    ? `<p class="text-[11px] text-zinc-500 font-mono mt-0.5">${escapeHtml(code)}</p>`
-                    : `<p class="text-[11px] text-amber-600 mt-0.5">Produto fora do catálogo</p>`
-                }
-              </div>
-              <button type="button" data-cart-remove="${it.id}" class="text-zinc-400 hover:text-red-600 text-sm shrink-0" aria-label="Remover item">✕</button>
-            </div>
-            <div class="flex items-center justify-between mt-2">
-              <div class="flex items-center border border-zinc-200 rounded-md">
-                <button type="button" data-cart-dec="${it.id}" class="w-7 h-7 flex items-center justify-center text-zinc-600 hover:bg-zinc-100 rounded-l-md font-bold disabled:opacity-40 disabled:cursor-not-allowed" ${it.qty <= 1 ? 'disabled' : ''}>−</button>
-                <span class="w-7 text-center text-sm font-bold text-zinc-900">${it.qty}</span>
-                <button type="button" data-cart-inc="${it.id}" class="w-7 h-7 flex items-center justify-center text-zinc-600 hover:bg-zinc-100 rounded-r-md font-bold disabled:opacity-40 disabled:cursor-not-allowed" ${it.qty >= 99 ? 'disabled' : ''}>+</button>
-              </div>
-              <div class="text-right">
-                <span class="text-sm font-black text-[#0a8754]">${brl(it.price * it.qty)}</span>
-                <span class="block text-[10px] text-zinc-400">${brl(it.price)} un.</span>
-              </div>
-            </div>
-          </div>
-        </div>`;
-    })
-    .join('');
-
-  const fieldClass =
-    'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]';
-
-  return `
-    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
-    <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Carrinho de compras">
-      <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
-        <h2 class="font-bold text-sm flex items-center gap-2">
-          🛒 Carrinho
-          <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">${count} ${count === 1 ? 'item' : 'itens'}</span>
-        </h2>
-        <button type="button" data-close-cart class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition font-bold" aria-label="Fechar carrinho">✕</button>
-      </div>
-
-      <div id="cart-drawer-body" class="flex-1 overflow-y-auto p-4 space-y-4">
-        <!-- Itens -->
-        <div class="space-y-2.5">${items}</div>
-
-        <!-- Totais -->
-        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 space-y-1.5 text-sm">
-          <div class="flex justify-between items-baseline">
-            <span class="text-zinc-600 font-medium">Subtotal (${count} ${count === 1 ? 'item' : 'itens'})</span>
-            <strong class="text-lg font-black text-zinc-900">${brl(cartSubtotal())}</strong>
-          </div>
-          <div class="flex justify-between text-xs text-zinc-500 border-t border-emerald-200 pt-1.5">
-            <span>🚚 Entrega motoboy</span>
-            <span>R$ 15–20 (pago na entrega)</span>
-          </div>
-        </div>
-
-        <!-- Formulário do cliente -->
-        <div class="border border-zinc-200 rounded-lg p-3 space-y-3 bg-zinc-50">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-black uppercase text-zinc-500">Dados do cliente</h3>
-            <span class="text-[10px] text-zinc-400">salvos automaticamente</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-nome">Nome *</label>
-              <input id="client-nome" type="text" value="${escapeHtml(clientInfo.nome)}" placeholder="Nome completo" class="${fieldClass}" />
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-telefone">Telefone *</label>
-              <input id="client-telefone" type="tel" value="${escapeHtml(clientInfo.telefone)}" placeholder="(92) 9xxxx-xxxx" class="${fieldClass}" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-bairro">Bairro / Endereço</label>
-            <input id="client-bairro" type="text" value="${escapeHtml(clientInfo.bairro)}" placeholder="Bairro, rua e número" class="${fieldClass}" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-entrega">Tipo de entrega</label>
-            <select id="client-entrega" class="${fieldClass}">
-              <option value="motoboy" ${clientInfo.entrega !== 'retirada' ? 'selected' : ''}>Motoboy mesmo dia (R$ 15–20)</option>
-              <option value="retirada" ${clientInfo.entrega === 'retirada' ? 'selected' : ''}>Retirada na loja</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-obs">Observações</label>
-            <textarea id="client-obs" rows="2" placeholder="Cor desejada, horário, referência..." class="${fieldClass} resize-none">${escapeHtml(clientInfo.obs)}</textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ações -->
-      <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
-        ${perfil === 'cliente' ? `
-        <button type="button" id="cart-send-wa" class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
-          <img src="images/whatsapp-label.jpg" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
-          <span>Enviar pedido no WhatsApp</span>
-        </button>
-        ` : ''}
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" id="cart-print-pdf" class="inline-flex items-center justify-center gap-1.5 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow-xs transition">
-            📄 Gerar PDF
-          </button>
-          <button type="button" id="cart-copy" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-zinc-100 text-zinc-700 border border-zinc-300 font-bold py-2.5 px-3 rounded-lg text-xs transition">
-            📋 Copiar resumo
-          </button>
-        </div>
-        <button type="button" id="cart-clear" class="w-full text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-semibold py-1.5 rounded-lg transition">
-          🗑 Esvaziar carrinho
-        </button>
-      </div>
-    </aside>
-  `;
-}
-
-// Salva o campo sem re-render (preserva o foco do usuário)
-function bindClientField(id: string, apply: (value: string) => void): void {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('input', () => {
-    apply((el as HTMLInputElement).value);
-    saveJson(CLIENT_KEY, clientInfo);
-  });
-}
 
 function attachEventListeners() {
   // Tabs

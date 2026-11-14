@@ -2,9 +2,9 @@
   "store": {
     "name": "[Nome da Loja]",
     "city": "Manaus/AM",
-    "delivery": "Motoboy mesmo dia — R$ 15 a 20",
-    "warranty": "Garantia local 30 dias — troca na hora",
-    "payment": "PIX ou dinheiro na entrega",
+    "delivery": "Entrega via motoboy (mesmo dia, taxa a combinar/consultar) • Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem — valor/condições sob consulta.",
+    "warranty": "Garantia: atendimento para defeitos de fabricação conforme garantia legal. Trocas/devoluções conforme política da loja — consulte condições e prazos.",
+    "payment": "Pagamento do pedido: PIX (envie o comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
     "whatsapp": "559285617019",
     "supplier": "luizeletronicos.com.br",
     "minOrder": 500
