@@ -1,0 +1,20 @@
+{
+  "demo": "base",
+  "preset": "base",
+  "store": {
+    "name": "Base Loja",
+    "whatsapp": "5592999998888",
+    "city": "Manaus/AM",
+    "delivery": "Consulte condições.",
+    "warranty": "Consulte condições.",
+    "payment": "PIX para pedidos. Dinheiro/cartão apenas in loco.",
+    "minOrder": 0
+  },
+  "logo": {
+    "src": "images/logo.jpg",
+    "alt": "Base Loja"
+  },
+  "customImages": {
+    "logo": "images/logo.jpg"
+  }
+}

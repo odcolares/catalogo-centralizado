@@ -1,0 +1,30 @@
+{
+  "id": "base",
+  "label": "Base",
+  "description": "Tema padrão para todas as demos",
+  "theme": {
+    "primary": "#0a8754",
+    "primaryHover": "#087047",
+    "primaryLight": "#ecfdf5",
+    "accent": "#f59e0b",
+    "surface": "#ffffff",
+    "surfaceAlt": "#f8fafc",
+    "textPrimary": "#0f172a",
+    "textSecondary": "#475569",
+    "border": "#e2e8f0",
+    "logoStyle": "rounded-full",
+    "iconStyle": "rounded-xl"
+  },
+  "copy": {
+    "heroTitle": "Sua loja no WhatsApp",
+    "heroSubtitle": "Catálogo bonito, pedido direto, controle total",
+    "ctaPrimary": "Ver catálogo",
+    "ctaSecondary": "Falar no WhatsApp",
+    "emptyState": "Nenhum produto cadastrado ainda",
+    "footerNote": "Entregamos em Manaus via motoboy."
+  },
+  "storeDefaults": {
+    "city": "Manaus/AM",
+    "minOrder": 0
+  }
+}
