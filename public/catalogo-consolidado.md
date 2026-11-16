@@ -1,9 +1,9 @@
 # Catálogo Consolidado — [Nome da Loja]
 
 > **Fornecedor:** luizeletronicos.com.br | **Cidade:** Manaus/AM
-> **Entrega:** Motoboy mesmo dia — R$ 15 a 20
-> **Garantia:** Garantia local 30 dias — troca na hora
-> **Pagamento:** PIX ou dinheiro na entrega
+> **Entrega:** Entrega via motoboy (mesmo dia, taxa a combinar/consultar) • Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem — valor/condições sob consulta.
+> **Garantia:** Garantia: atendimento para defeitos de fabricação conforme garantia legal. Trocas/devoluções conforme política da loja — consulte condições e prazos.
+> **Pagamento:** Pagamento do pedido: PIX (envie o comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.
 > **Pedido mínimo:** R$ 500,00
 
 | Categoria | Qtd Produtos | Faixa de Preço (venda) |

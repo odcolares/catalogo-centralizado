@@ -1,0 +1,20 @@
+{
+  "demo": "estetica",
+  "preset": "estetica",
+  "store": {
+    "name": "Demo Clínica — Estética & Bem-Estar",
+    "whatsapp": "5592999997777",
+    "city": "Manaus/AM",
+    "delivery": "Atendimento presencial na clínica • Agendamento prévio obrigatório • Consulte disponibilidade de horários.",
+    "warranty": "Garantia de satisfação: reavaliação gratuita em até 7 dias • Procedimentos seguem protocolos técnicos e normas da ANVISA.",
+    "payment": "Pagamento na clínica: PIX, dinheiro, cartão (crédito/débito) — consulte parcelamento. Sinal via PIX para reserva de horário (conforme política).",
+    "minOrder": 0
+  },
+  "logo": {
+    "src": "images/logo-estetica.png",
+    "alt": "Demo Estética"
+  },
+  "customImages": {
+    "logo": "images/logo-estetica.png"
+  }
+}

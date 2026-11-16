@@ -1,0 +1,487 @@
+{
+  "store": {
+    "name": "Demo Loja — Eletrônicos & Acessórios",
+    "city": "Manaus/AM",
+    "delivery": "Entrega via motoboy (mesmo dia, taxa a combinar/consultar) • Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem — valor/condições sob consulta.",
+    "warranty": "Garantia: atendimento para defeitos de fabricação conforme garantia legal. Trocas/devoluções conforme política da loja — consulte condições e prazos.",
+    "payment": "Pagamento do pedido: PIX (envie o comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "whatsapp": "5592999998888",
+    "supplier": "demo-loja",
+    "minOrder": 0
+  },
+  "categories": [
+    {
+      "id": "smartwatches",
+      "name": "Smartwatches",
+      "icon": "⌚",
+      "products": [
+        {
+          "id": "d20",
+          "name": "Smartwatch D20 Bluetooth",
+          "code": "V18 Smart D20",
+          "cost": 13.8,
+          "price": 49.9,
+          "price_max": 149.9,
+          "highlights": [
+            "Diversas cores",
+            "Notificações no pulso",
+            "Bateria dura o dia todo"
+          ],
+          "tags": [
+            "entrada",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/d20.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "s11mini",
+          "name": "Smart Watch S11 Mini",
+          "code": "Reloja1-2",
+          "cost": 33,
+          "price": 109.9,
+          "price_max": 119.9,
+          "highlights": [
+            "39mm Série 10",
+            "2 pulseiras",
+            "Alto valor percebido"
+          ],
+          "tags": [
+            "intermediario",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/s11mini.png",
+          "sourceUrl": ""
+        },
+        {
+          "id": "imeson",
+          "name": "Relógio Imeson IMS-757A",
+          "code": "IMS-757A",
+          "cost": 136,
+          "price": 299.9,
+          "price_max": 349.9,
+          "highlights": [
+            "7-9 dias de bateria",
+            "3ATM à prova d'água",
+            "Chamada"
+          ],
+          "tags": [
+            "premium",
+            "topo-de-linha"
+          ],
+          "enabled": true,
+          "image": "images/imenso-52.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "fones",
+      "name": "Fones de Ouvido",
+      "icon": "🎧",
+      "products": [
+        {
+          "id": "m19",
+          "name": "Fone M19 com Visor Digital LED",
+          "code": "K39 Fone Bt M19",
+          "cost": 14.5,
+          "price": 39.9,
+          "highlights": [
+            "Visor de bateria na case",
+            "Android/iOS",
+            "Compra por impulso"
+          ],
+          "tags": [
+            "entrada",
+            "mais-vendido",
+            "visor-led"
+          ],
+          "enabled": true,
+          "image": "images/m19.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "imenso-52",
+          "name": "IMENSO Bluetooth 5.2 Original",
+          "code": "K06 IMS-821",
+          "cost": 65,
+          "price": 119.9,
+          "price_max": 139.9,
+          "highlights": [
+            "Qualidade superior",
+            "IMENSO original",
+            "Som limpo"
+          ],
+          "tags": [
+            "premium",
+            "tws"
+          ],
+          "enabled": true,
+          "image": "images/imenso-52.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "st15",
+          "name": "Fone Esportivo ST-15",
+          "code": "K113 ST-15",
+          "cost": 36.8,
+          "price": 99.9,
+          "highlights": [
+            "60h de música",
+            "Hi-Fi",
+            "Bluetooth 5.3"
+          ],
+          "tags": [
+            "esportivo",
+            "intermediario"
+          ],
+          "enabled": true,
+          "image": "images/st15.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "informatica",
+      "name": "Informática",
+      "icon": "🖱️",
+      "products": [
+        {
+          "id": "mouse-kapbom",
+          "name": "Mouse Sem Fio KAPBOM KA-611 2.4G",
+          "code": "KAPBOM KA-611",
+          "cost": 11.8,
+          "price": 39.9,
+          "highlights": [
+            "Gamer",
+            "Ergonômico",
+            "USB 2.4G"
+          ],
+          "tags": [
+            "entrada",
+            "mouse",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/mouse-kapbom.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "tec-rgb-bmax",
+          "name": "Teclado Semi-mecânico RGB B-Max",
+          "code": "T18 BM-T10",
+          "cost": 32,
+          "price": 89.9,
+          "price_max": 120,
+          "highlights": [
+            "RGB",
+            "Estilo gamer",
+            "Semi-mecânico"
+          ],
+          "tags": [
+            "intermediario",
+            "teclado",
+            "rgb"
+          ],
+          "enabled": true,
+          "image": "images/tec-rgb-bmax.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "hub-c-6em1",
+          "name": "Hub USB 3.0 Tipo-C 6 em 1 (RJ45 + HDMI)",
+          "code": "C134 BM-8642",
+          "cost": 26.5,
+          "price": 89.9,
+          "price_max": 119,
+          "highlights": [
+            "Laptop",
+            "Porta de rede + vídeo",
+            "6 em 1"
+          ],
+          "tags": [
+            "intermediario",
+            "hub",
+            "type-c",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/hub-c-6em1.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "eletronicos",
+      "name": "Eletrônicos",
+      "icon": "🔊",
+      "products": [
+        {
+          "id": "proj-astro",
+          "name": "Projetor Astronauta Galáxia",
+          "code": "L142 NY-32",
+          "cost": 43,
+          "price": 89.9,
+          "highlights": [
+            "Estrelas/galáxia",
+            "Quarto/infantil",
+            "Presente"
+          ],
+          "tags": [
+            "intermediario",
+            "projetor",
+            "decor"
+          ],
+          "enabled": true,
+          "image": "images/proj-astro.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "caixa-bass20",
+          "name": "Caixa Extra Bass 20W RGB",
+          "code": "R32 JBL P PRO 7",
+          "cost": 118,
+          "price": 249.9,
+          "highlights": [
+            "Estilo JBL",
+            "Grave potente",
+            "RGB"
+          ],
+          "tags": [
+            "premium",
+            "caixa-som",
+            "rgb"
+          ],
+          "enabled": true,
+          "image": "images/caixa-bass20.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "caixa-mini",
+          "name": "Caixa Mini Colorida 5W",
+          "code": "Atacado 100un",
+          "cost": 11.8,
+          "price": 24.9,
+          "highlights": [
+            "Compacta",
+            "Brindes",
+            "Venda rápida"
+          ],
+          "tags": [
+            "entrada",
+            "caixa-som"
+          ],
+          "enabled": true,
+          "image": "images/caixa-mini.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "cameras",
+      "name": "Câmeras e Segurança",
+      "icon": "📸",
+      "products": [
+        {
+          "id": "webcam1",
+          "name": "Webcam Full HD 1080p USB",
+          "code": "L210 AL-ZP209",
+          "cost": 20.5,
+          "price": 59.9,
+          "price_max": 79.9,
+          "highlights": [
+            "Visão 360º",
+            "Videoconferência",
+            "Plug and play"
+          ],
+          "tags": [
+            "entrada",
+            "webcam",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/webcam1.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "cam-seg-noite",
+          "name": "Câmera Segurança Visão Noturna",
+          "code": "J23 LEY-90-v380",
+          "cost": 45,
+          "price": 129.9,
+          "highlights": [
+            "App Yoosee/V380",
+            "Lâmpada integrada",
+            "Visão noturna"
+          ],
+          "tags": [
+            "intermediario",
+            "camera-seguranca",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/cam-seg-noite.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "cam-acao",
+          "name": "Câmera de Ação Esportes 4K",
+          "code": "J10 D800",
+          "cost": 73,
+          "price": 199.9,
+          "highlights": [
+            "À prova d'água",
+            "Mergulho/trilha/moto",
+            "4K"
+          ],
+          "tags": [
+            "premium",
+            "camera-acao",
+            "esportivo"
+          ],
+          "enabled": true,
+          "image": "images/cam-acao.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "acessorios",
+      "name": "Acessórios para Celular",
+      "icon": "📱",
+      "products": [
+        {
+          "id": "carreg-20w-cabo",
+          "name": "Carregador Tipo C Turbo 20W + Cabo 1m",
+          "code": "D70 KD-108C",
+          "cost": 18.5,
+          "price": 49.9,
+          "highlights": [
+            "Kit completo Type-C",
+            "20W",
+            "Cabo 1m"
+          ],
+          "tags": [
+            "intermediario",
+            "kit",
+            "carregador",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/carreg-20w-cabo.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "carreg-2ent-20w",
+          "name": "Carregador Turbo 2 Entradas 20W GAN",
+          "code": "Z63 CQ-1501CL",
+          "cost": 19.99,
+          "price": 49.9,
+          "highlights": [
+            "KAIDI Cube Pro",
+            "Compacto",
+            "20W GAN"
+          ],
+          "tags": [
+            "intermediario",
+            "carregador"
+          ],
+          "enabled": true,
+          "image": "images/carreg-2ent-20w.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "cabo-v8-3a",
+          "name": "Cabo USB V8 Turbo Rápido 3A",
+          "code": "Z52 KD-355M",
+          "cost": 3.99,
+          "price": 17.9,
+          "highlights": [
+            "Micro-USB",
+            "Reforçado",
+            "Carga rápida 3A"
+          ],
+          "tags": [
+            "entrada",
+            "cabo",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/cabo-v8-3a.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "armazenamento",
+      "name": "Armazenamento",
+      "icon": "💾",
+      "products": [
+        {
+          "id": "sd-8gb-onex",
+          "name": "Cartão Micro SD 8GB ONE X + Adaptador",
+          "code": "A62 X-M-8GB",
+          "cost": 9.99,
+          "price": 29.9,
+          "price_max": 39.9,
+          "highlights": [
+            "ONE X",
+            "Custo-benefício",
+            "8GB"
+          ],
+          "tags": [
+            "entrada",
+            "cartao-sd",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/sd-8gb-onex.png",
+          "sourceUrl": ""
+        },
+        {
+          "id": "pendrive-metal-16",
+          "name": "NOVA Mini Pendrive Metal 16GB",
+          "code": "A01-3",
+          "cost": 22.5,
+          "price": 39.9,
+          "price_max": 40,
+          "highlights": [
+            "Chaveiro metal",
+            "AGOLD",
+            "16GB"
+          ],
+          "tags": [
+            "entrada",
+            "pendrive"
+          ],
+          "enabled": true,
+          "image": "images/pendrive-metal-16.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "hub-ugreen-4",
+          "name": "Hub 4 em 1 Ugreen USB-C 4x USB 3.0",
+          "code": "BM-8640",
+          "cost": 45,
+          "price": 119.9,
+          "highlights": [
+            "Marca Ugreen",
+            "Alta velocidade",
+            "4x USB 3.0"
+          ],
+          "tags": [
+            "premium",
+            "hub",
+            "ugreen",
+            "sob-consulta"
+          ],
+          "enabled": true,
+          "image": "images/hub-ugreen-4.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    }
+  ]
+}

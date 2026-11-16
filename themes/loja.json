@@ -1,0 +1,48 @@
+{
+  "id": "loja",
+  "label": "Loja",
+  "description": "Preset para lojas de varejo geral (roupas, acessórios, eletrônicos, presentes)",
+  "theme": {
+    "primary": "#0a8754",
+    "primaryHover": "#087047",
+    "primaryLight": "#ecfdf5",
+    "accent": "#f59e0b",
+    "surface": "#ffffff",
+    "surfaceAlt": "#f8fafc",
+    "textPrimary": "#0f172a",
+    "textSecondary": "#475569",
+    "border": "#e2e8f0",
+    "logoStyle": "rounded-full",
+    "iconStyle": "rounded-xl"
+  },
+  "copy": {
+    "heroTitle": "Sua loja no WhatsApp",
+    "heroSubtitle": "Catálogo bonito, pedido direto, controle total",
+    "ctaPrimary": "Ver catálogo",
+    "ctaSecondary": "Falar no WhatsApp",
+    "emptyState": "Nenhum produto cadastrado ainda",
+    "footerNote": "Entregamos em Manaus via motoboy. Retirada na loja disponível."
+  },
+  "storeDefaults": {
+    "city": "Manaus/AM",
+    "delivery": "Entrega via motoboy (mesmo dia, taxa a combinar/consultar) • Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem — valor/condições sob consulta.",
+    "warranty": "Garantia: atendimento para defeitos de fabricação conforme garantia legal. Trocas/devoluções conforme política da loja — consulte condições e prazos.",
+    "payment": "Pagamento do pedido: PIX (envie o comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "minOrder": 0,
+    "categories": [
+      { "id": "destaques", "name": "Destaques", "icon": "⭐", "order": 1 },
+      { "id": "novidades", "name": "Novidades", "icon": "🆕", "order": 2 },
+      { "id": "mais-vendidos", "name": "Mais Vendidos", "icon": "🔥", "order": 3 },
+      { "id": "ofertas", "name": "Ofertas", "icon": "🏷️", "order": 4 }
+    ],
+    "tags": [
+      "mais-vendido",
+      "entrada",
+      "intermediario",
+      "premium",
+      "oferta",
+      "kit",
+      "promocao"
+    ]
+  }
+}

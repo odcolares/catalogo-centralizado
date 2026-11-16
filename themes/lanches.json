@@ -1,0 +1,50 @@
+{
+  "id": "lanches",
+  "label": "Lanches",
+  "description": "Preset para lanchonetes, hamburguerias, delivery de comida e food trucks",
+  "theme": {
+    "primary": "#ea580c",
+    "primaryHover": "#c2410c",
+    "primaryLight": "#fff7ed",
+    "accent": "#f59e0b",
+    "surface": "#ffffff",
+    "surfaceAlt": "#fff7ed",
+    "textPrimary": "#1f2937",
+    "textSecondary": "#6b7280",
+    "border": "#ffedd5",
+    "logoStyle": "rounded-full",
+    "iconStyle": "rounded-xl"
+  },
+  "copy": {
+    "heroTitle": "Sua lanchonete no WhatsApp",
+    "heroSubtitle": "Cardápio apetitoso, pedido rápido, entrega no capricho",
+    "ctaPrimary": "Ver cardápio",
+    "ctaSecondary": "Pedir no WhatsApp",
+    "emptyState": "Nenhum item no cardápio ainda",
+    "footerNote": "Delivery em Manaus via motoboy. Retirada no balcão disponível."
+  },
+  "storeDefaults": {
+    "city": "Manaus/AM",
+    "delivery": "Delivery via motoboy (taxa por bairro, consulte) • Retirada no balcão: pronta em 15-30 min após confirmação do pagamento (PIX) — valor/condições sob consulta.",
+    "warranty": "Qualidade garantida: itens preparados na hora • Reclamações sobre o pedido devem ser feitas em até 30 min após recebimento/retirada para reposição ou crédito.",
+    "payment": "Pagamento do pedido: PIX (comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "minOrder": 15,
+    "categories": [
+      { "id": "hamburgueres", "name": "Hambúrgueres", "icon": "🍔", "order": 1 },
+      { "id": "acompanhamentos", "name": "Acompanhamentos", "icon": "🍟", "order": 2 },
+      { "id": "bebidas", "name": "Bebidas", "icon": "🥤", "order": 3 },
+      { "id": "sobremesas", "name": "Sobremesas", "icon": "🍦", "order": 4 },
+      { "id": "combos", "name": "Combos", "icon": "🎁", "order": 5 }
+    ],
+    "tags": [
+      "mais-vendido",
+      "promocao",
+      "novo",
+      "combo",
+      "vegetariano",
+      "apimentado",
+      "kids",
+      "fit"
+    ]
+  }
+}

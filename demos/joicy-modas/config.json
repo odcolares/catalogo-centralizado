@@ -1,0 +1,25 @@
+{
+  "storeName": "Joicy Modas Importados",
+  "storePhone": "559294147938",
+  "whatsappLink": "https://wa.me/559294147938",
+  "address": "Manaus, AM",
+  "businessHours": "Seg-Sex: 8h-18h | Sáb: 8h-12h",
+  "deliveryInfo": "Taxa de entrega de acordo com o bairro. Consulte no WhatsApp.",
+  "paymentInfo": "PIX na plataforma | Dinheiro/cartão apenas in loco mediante acordo prévio.",
+  "pickupInfo": "Retirada a partir de 24h úteis após confirmação do PIX (não conta sáb/dom), com teste e embalagem.",
+  "guaranteeInfo": "Defeitos conforme CDC (Lei 8.078/90). Trocas conforme política da loja: até 7 dias para arrependimento (art. 49 CDC); defeitos 30 dias (art. 26 CDC). Produtos de beleza/perfumaria: apenas lacrados.",
+  "heroTitle": "Beleza e Presentes Importados",
+  "heroSubtitle": "Cestas de maquiagem, perfumaria, chocolates e kits especiais para todas as ocasiões",
+  "footerText": "Joicy Modas Importados - Beleza que encanta",
+  "socialLinks": {
+    "instagram": "",
+    "facebook": ""
+  },
+  "features": {
+    "showDelivery": true,
+    "showGuarantee": true,
+    "showPayment": true,
+    "showCart": true,
+    "showWhatsApp": true
+  }
+}

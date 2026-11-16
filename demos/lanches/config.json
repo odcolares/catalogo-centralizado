@@ -1,0 +1,20 @@
+{
+  "demo": "lanches",
+  "preset": "lanches",
+  "store": {
+    "name": "Demo Lanchonete — Burgers & Delivery",
+    "whatsapp": "5592999996666",
+    "city": "Manaus/AM",
+    "delivery": "Delivery via motoboy (taxa por bairro, consulte) • Retirada no balcão: pronta em 15-30 min após confirmação do pagamento (PIX) — valor/condições sob consulta.",
+    "warranty": "Qualidade garantida: itens preparados na hora • Reclamações sobre o pedido devem ser feitas em até 30 min após recebimento/retirada para reposição ou crédito.",
+    "payment": "Pagamento do pedido: PIX (comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "minOrder": 15
+  },
+  "logo": {
+    "src": "images/logo-lanches.png",
+    "alt": "Demo Lanches"
+  },
+  "customImages": {
+    "logo": "images/logo-lanches.png"
+  }
+}

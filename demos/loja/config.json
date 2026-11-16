@@ -1,0 +1,20 @@
+{
+  "demo": "loja",
+  "preset": "loja",
+  "store": {
+    "name": "Demo Loja — Eletrônicos & Acessórios",
+    "whatsapp": "5592999998888",
+    "city": "Manaus/AM",
+    "delivery": "Entrega via motoboy (mesmo dia, taxa a combinar/consultar) • Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem — valor/condições sob consulta.",
+    "warranty": "Garantia: atendimento para defeitos de fabricação conforme garantia legal. Trocas/devoluções conforme política da loja — consulte condições e prazos.",
+    "payment": "Pagamento do pedido: PIX (envie o comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "minOrder": 0
+  },
+  "logo": {
+    "src": "images/logo-loja.png",
+    "alt": "Demo Loja"
+  },
+  "customImages": {
+    "logo": "images/logo-loja.png"
+  }
+}

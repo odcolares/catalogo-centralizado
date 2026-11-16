@@ -1,0 +1,20 @@
+{
+  "demo": "bella-makeup",
+  "preset": "feminino",
+  "store": {
+    "name": "Bella Makeup & Cia",
+    "whatsapp": "5592999995555",
+    "city": "Manaus/AM",
+    "delivery": "Delivery grátis acima de R$ 150 • Motoboy Manaus (taxa por bairro) • Retirada na loja (Centro): pronta em 24h úteis após PIX confirmado",
+    "warranty": "Trocas em até 7 dias para produtos lacrados e com nota. Defeitos: garantia legal 30 dias. Produtos abertos não têm troca por higiene — exceto defeito de fabricação.",
+    "payment": "Pedidos no WhatsApp: PIX (envie comprovante para confirmar). Dinheiro, cartão (crédito/débito) e parcelamento apenas na loja física.",
+    "minOrder": 0
+  },
+  "logo": {
+    "src": "images/logo-bella.png",
+    "alt": "Bella Makeup & Cia"
+  },
+  "customImages": {
+    "logo": "images/logo-bella.png"
+  }
+}

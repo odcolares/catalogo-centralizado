@@ -1,10 +1,38 @@
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
+import fs from 'fs';
 
-export default defineConfig(() => {
+// Plugin para servir lojista.html na raiz quando na porta 3001
+function lojistaHtmlPlugin() {
   return {
-    plugins: [tailwindcss()],
+    name: 'lojista-html',
+    configureServer(server) {
+      // Middleware executado ANTES do middleware padrão do Vite
+      server.middlewares.use((req, res, next) => {
+        const isLojistaPort = process.env.VITE_PORT === '3001' || process.env.PORT === '3001';
+        if (isLojistaPort && req.url === '/') {
+          // Serve lojista.html diretamente
+          const htmlPath = path.resolve(__dirname, 'lojista.html');
+          const html = fs.readFileSync(htmlPath, 'utf-8');
+          res.setHeader('Content-Type', 'text/html');
+          res.end(html);
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => {
+  // Carrega env vars do .env e .env.<mode>
+  const env = loadEnv(mode, process.cwd(), '');
+
+  const demo = env.VITE_DEMO || env.DEMO || 'loja';
+
+  return {
+    plugins: [tailwindcss(), lojistaHtmlPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -16,6 +44,11 @@ export default defineConfig(() => {
           main: path.resolve(__dirname, 'index.html'),
           lojista: path.resolve(__dirname, 'lojista.html'),
         },
+      },
+      // Define a variável DEMO no build para o demo-loader
+      define: {
+        'import.meta.env.DEMO': JSON.stringify(demo),
+        'import.meta.env.VITE_DEMO': JSON.stringify(demo),
       },
     },
     server: {

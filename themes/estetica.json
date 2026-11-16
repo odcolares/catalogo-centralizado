@@ -1,0 +1,50 @@
+{
+  "id": "estetica",
+  "label": "Estética",
+  "description": "Preset para clínicas de estética, salões, barbearia, spa e bem-estar",
+  "theme": {
+    "primary": "#be185d",
+    "primaryHover": "#9d174d",
+    "primaryLight": "#fdf2f8",
+    "accent": "#f59e0b",
+    "surface": "#ffffff",
+    "surfaceAlt": "#fdf2f8",
+    "textPrimary": "#1f2937",
+    "textSecondary": "#6b7280",
+    "border": "#fce7f3",
+    "logoStyle": "rounded-full",
+    "iconStyle": "rounded-xl"
+  },
+  "copy": {
+    "heroTitle": "Sua clínica no WhatsApp",
+    "heroSubtitle": "Agendamento simples, serviços claros, clientes fiéis",
+    "ctaPrimary": "Ver serviços",
+    "ctaSecondary": "Agendar no WhatsApp",
+    "emptyState": "Nenhum serviço cadastrado ainda",
+    "footerNote": "Atendimento em Manaus. Agende seu horário."
+  },
+  "storeDefaults": {
+    "city": "Manaus/AM",
+    "delivery": "Atendimento presencial na clínica • Agendamento prévio obrigatório • Consulte disponibilidade de horários.",
+    "warranty": "Garantia de satisfação: reavaliação gratuita em até 7 dias • Procedimentos seguem protocolos técnicos e normas da ANVISA.",
+    "payment": "Pagamento na clínica: PIX, dinheiro, cartão (crédito/débito) — consulte parcelamento. Sinal via PIX para reserva de horário (conforme política).",
+    "minOrder": 0,
+    "categories": [
+      { "id": "faciais", "name": "Faciais", "icon": "✨", "order": 1 },
+      { "id": "corporais", "name": "Corporais", "icon": "💆", "order": 2 },
+      { "id": "capilares", "name": "Capilares", "icon": "💇", "order": 3 },
+      { "id": "depilacao", "name": "Depilação", "icon": "🪒", "order": 4 },
+      { "id": "pacotes", "name": "Pacotes", "icon": "🎁", "order": 5 }
+    ],
+    "tags": [
+      "mais-procurado",
+      "promocao",
+      "novo",
+      "pacote",
+      "masculino",
+      "feminino",
+      "rejuvenescimento",
+      "hidratacao"
+    ]
+  }
+}

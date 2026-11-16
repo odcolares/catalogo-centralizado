@@ -1,0 +1,59 @@
+{
+  "id": "feminino",
+  "label": "Beleza & Feminino",
+  "description": "Preset para lojas de maquiagem, skincare, cuidados pessoais, acessórios femininos e variedades voltadas ao público feminino",
+  "theme": {
+    "primary": "#ec4899",
+    "primaryHover": "#db2777",
+    "primaryLight": "#fdf2f8",
+    "accent": "#fbbf24",
+    "surface": "#ffffff",
+    "surfaceAlt": "#fdf2f8",
+    "textPrimary": "#1f2937",
+    "textSecondary": "#9d174d",
+    "border": "#fce7f3",
+    "logoStyle": "rounded-full",
+    "iconStyle": "rounded-xl"
+  },
+  "copy": {
+    "heroTitle": "Sua beleza no WhatsApp",
+    "heroSubtitle": "Maquiagens, skincare, cabelos e variedades — peça direto pelo chat",
+    "ctaPrimary": "Ver produtos",
+    "ctaSecondary": "Falar no WhatsApp",
+    "emptyState": "Nenhum produto cadastrado ainda",
+    "footerNote": "Entrega em Manaus via motoboy • Retirada na loja disponível • Pagamento via PIX"
+  },
+  "storeDefaults": {
+    "city": "Manaus/AM",
+    "delivery": "Delivery via motoboy (taxa por bairro, consulte) • Retirada na loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com conferência e embalagem — valor/condições sob consulta.",
+    "warranty": "Garantia: defeitos de fabricação conforme garantia legal (30 dias). Produtos de beleza lacrados não aceitam troca por higiene — exceto defeito. Consulte política da loja.",
+    "payment": "Pagamento do pedido: PIX (envie o comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "minOrder": 0,
+    "categories": [
+      { "id": "maquiagem", "name": "Maquiagem", "icon": "💄", "order": 1 },
+      { "id": "skincare", "name": "Skincare", "icon": "✨", "order": 2 },
+      { "id": "cabelos", "name": "Cabelos", "icon": "💇", "order": 3 },
+      { "id": "unhas", "name": "Unhas", "icon": "💅", "order": 4 },
+      { "id": "acessorios", "name": "Acessórios", "icon": "🎀", "order": 5 },
+      { "id": "kits", "name": "Kits & Presentes", "icon": "🎁", "order": 6 }
+    ],
+    "tags": [
+      "mais-vendido",
+      "lancamento",
+      "promocao",
+      "vegano",
+      "cruelty-free",
+      "base",
+      "batom",
+      "blush",
+      "rimel",
+      "pincel",
+      "skincare",
+      "kit-presente",
+      "olhos",
+      "lábios",
+      "rosto",
+      "pincéis"
+    ]
+  }
+}

@@ -1,14 +1,33 @@
 @import "tailwindcss";
 
-/* ── Tema tipográfico da marca (mesma do login: Archivo + IBM Plex Mono) ── */
+/* Tema tipográfico da marca (mesma do login: Archivo + IBM Plex Mono) */
 @theme {
   --font-sans: "Archivo", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
 }
 
+/* CSS Custom Properties para tema dinâmico (definidos via applyThemeTokens) */
+:root {
+  /* Fallbacks (tema padrão "loja" - verde) */
+  --theme-primary: #0a8754;
+  --theme-primaryHover: #087047;
+  --theme-primaryLight: #ecfdf5;
+  --theme-accent: #f59e0b;
+  --theme-surface: #ffffff;
+  --theme-surfaceAlt: #f8fafc;
+  --theme-textPrimary: #0f172a;
+  --theme-textSecondary: #475569;
+  --theme-border: #e2e8f0;
+  --theme-logoStyle: rounded-full;
+  --theme-iconStyle: rounded-xl;
+}
+
+/* Aplica variáveis de tema aos componentes base */
 body {
   font-family: "Archivo", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--theme-surface);
+  color: var(--theme-textPrimary);
 }
 
 /* Display: Archivo variável expandido (wdth) para preços e títulos */
@@ -19,28 +38,28 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* LED de status (readout do header) */
+/* LED de status (readout do header) - usa accent color */
 .led {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #7dffc2;
+  background: var(--theme-accent);
   flex: none;
   animation: led-pulse 2.6s ease-out infinite;
 }
 @keyframes led-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(125, 255, 194, 0.55); }
-  70% { box-shadow: 0 0 0 7px rgba(125, 255, 194, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(125, 255, 194, 0); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-accent) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--theme-accent) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-accent) 0%, transparent); }
 }
 
-/* ── Header atmosférico: gradiente + grid técnico + grão ── */
+/* Header atmosférico: gradiente + grid técnico + grão */
 .site-header {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(120% 90% at 12% 0%, rgba(255, 255, 255, 0.15), transparent 55%),
-    linear-gradient(155deg, #0b9a5f 0%, #0a8754 48%, #056039 100%);
+    radial-gradient(120% 90% at 12% 0%, color-mix(in srgb, var(--theme-surface) 15%, transparent), transparent 55%),
+    linear-gradient(155deg, color-mix(in srgb, var(--theme-primary) 100%, transparent) 0%, var(--theme-primary) 48%, color-mix(in srgb, var(--theme-primary) 70%, #000) 100%);
 }
 .site-header::before {
   content: "";
@@ -48,8 +67,8 @@ body {
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--theme-surface) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--theme-surface) 7%, transparent) 1px, transparent 1px);
   background-size: 46px 46px;
   -webkit-mask-image: radial-gradient(130% 110% at 20% 0%, #000 30%, transparent 90%);
   mask-image: radial-gradient(130% 110% at 20% 0%, #000 30%, transparent 90%);
@@ -64,20 +83,20 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
 }
 
-/* ── Mídia dos cards: fundo de folha técnica ── */
+/* Mídia dos cards: fundo sutil com primary color */
 .card-media {
-  background-color: #f8faf9;
-  background-image: radial-gradient(rgba(10, 135, 84, 0.14) 1px, transparent 1.2px);
+  background-color: var(--theme-surfaceAlt);
+  background-image: radial-gradient(color-mix(in srgb, var(--theme-primary) 14%, transparent) 1px, transparent 1.2px);
   background-size: 14px 14px;
 }
 
-/* ── Footer bookend esmeralda escura ── */
+/* Footer bookend */
 .site-footer {
   position: relative;
-  background: linear-gradient(180deg, #06543a 0%, #04301f 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--theme-primary) 70%, #000) 0%, color-mix(in srgb, var(--theme-primary) 85%, #000) 100%);
 }
 
-/* ── Revealed orquestrado: apenas no primeiro render (data-reveal) ── */
+/* Revealed orquestrado: apenas no primeiro render (data-reveal) */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }
@@ -103,7 +122,7 @@ main[data-reveal] article {
   }
 }
 
-/* ── Impressão: relatório do pedido em A4 (Salvar como PDF) ── */
+/* Impressão: relatório do pedido em A4 (Salvar como PDF) */
 @media print {
   @page {
     size: A4;
@@ -116,16 +135,18 @@ main[data-reveal] article {
     background: #fff !important;
   }
 
-  /* Cores da marca (logo/tabela) saem na impressão */
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 }
 
-/* ── Skeletons: estados de carregamento do dashboard (Engajamento) ── */
+/* Skeletons: estados de carregamento do dashboard (Engajamento) */
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--theme-border) 100%, transparent) 25%,
+    color-mix(in srgb, var(--theme-border) 70%, transparent) 50%,
+    color-mix(in srgb, var(--theme-border) 100%, transparent) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
   border-radius: 0.375rem;
@@ -157,33 +178,25 @@ main[data-reveal] article {
 }
 
 .skeleton-row td {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;
-    background: #e5e7eb !important;
+    background: var(--theme-border) !important;
   }
 }
 
-/* ── Drawer do carrinho ── */
+/* Drawer do carrinho */
 @keyframes cart-slide-in {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 @keyframes cart-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .cart-drawer-panel {
@@ -192,4 +205,77 @@ main[data-reveal] article {
 
 .cart-drawer-overlay {
   animation: cart-fade-in 0.18s ease-out;
+}
+
+/* Utility classes para componentes que usam tema dinamicamente */
+.btn-primary {
+  background-color: var(--theme-primary);
+  color: white;
+  border-color: var(--theme-primary);
+}
+.btn-primary:hover {
+  background-color: var(--theme-primaryHover);
+  border-color: var(--theme-primaryHover);
+}
+
+.btn-secondary {
+  background-color: var(--theme-surface);
+  color: var(--theme-primary);
+  border-color: var(--theme-border);
+}
+.btn-secondary:hover {
+  background-color: var(--theme-primaryLight);
+}
+
+.badge-primary {
+  background-color: var(--theme-primaryLight);
+  color: var(--theme-primary);
+  border-color: color-mix(in srgb, var(--theme-primary) 30%, transparent);
+}
+
+.badge-accent {
+  background-color: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+  color: var(--theme-accent);
+}
+
+.text-primary { color: var(--theme-primary); }
+.text-primary-hover { color: var(--theme-primaryHover); }
+.text-secondary { color: var(--theme-textSecondary); }
+.text-accent { color: var(--theme-accent); }
+
+.bg-primary { background-color: var(--theme-primary); }
+.bg-primary-light { background-color: var(--theme-primaryLight); }
+.bg-surface { background-color: var(--theme-surface); }
+.bg-surface-alt { background-color: var(--theme-surfaceAlt); }
+.bg-accent-light { background-color: color-mix(in srgb, var(--theme-accent) 15%, transparent); }
+
+.border-primary { border-color: var(--theme-primary); }
+.border-border { border-color: var(--theme-border); }
+
+/* Card hover effect usando primary */
+.card-hover:hover {
+  border-color: color-mix(in srgb, var(--theme-primary) 40%, transparent);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 10%, transparent);
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* Scrollbar theming */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--theme-surfaceAlt);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--theme-primary) 50%, transparent);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary);
 }

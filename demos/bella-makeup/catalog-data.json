@@ -1,0 +1,484 @@
+{
+  "store": {
+    "name": "Bella Makeup & Cia",
+    "city": "Manaus/AM",
+    "delivery": "Delivery grátis acima de R$ 150 • Motoboy Manaus (taxa por bairro) • Retirada na loja (Centro): pronta em 24h úteis após PIX confirmado",
+    "warranty": "Trocas em até 7 dias para produtos lacrados e com nota. Defeitos: garantia legal 30 dias. Produtos abertos não têm troca por higiene — exceto defeito de fabricação.",
+    "payment": "Pedidos no WhatsApp: PIX (envie comprovante para confirmar). Dinheiro, cartão (crédito/débito) e parcelamento apenas na loja física.",
+    "whatsapp": "5592999995555",
+    "supplier": "bella-makeup-fornecedores",
+    "minOrder": 0
+  },
+  "categories": [
+    {
+      "id": "maquiagem",
+      "name": "Maquiagem",
+      "icon": "💄",
+      "products": [
+        {
+          "id": "base-liquida-matte",
+          "name": "Base Líquida Matte HD - 8 Tons",
+          "code": "BM-MAK-001",
+          "cost": 18.5,
+          "price": 49.9,
+          "price_max": 59.9,
+          "highlights": [
+            "Cobertura média a alta",
+            "Acabamento matte natural",
+            "8 tons para peles brasileiras",
+            "Longa duração 12h"
+          ],
+          "tags": [
+            "mais-vendido",
+            "base",
+            "rosto"
+          ],
+          "enabled": true,
+          "image": "images/base-liquida-matte.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "batom-matte-velvet",
+          "name": "Batom Matte Velvet - 12 Cores",
+          "code": "BM-MAK-002",
+          "cost": 12.9,
+          "price": 34.9,
+          "price_max": 42.9,
+          "highlights": [
+            "Textura aveludada",
+            "Não resseca os lábios",
+            "12 cores tendência",
+            "Alta pigmentação"
+          ],
+          "tags": [
+            "mais-vendido",
+            "batom",
+            "lábios",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/batom-matte-velvet.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "paleta-sombras-nude",
+          "name": "Paleta de Sombras Nude Essentials - 18 Cores",
+          "code": "BM-MAK-003",
+          "cost": 35.0,
+          "price": 89.9,
+          "price_max": 109.9,
+          "highlights": [
+            "18 tons mattes e cintilantes",
+            "Pigmentação profissional",
+            "Estojo compacto com espelho",
+            "Tons quentes e frios"
+          ],
+          "tags": [
+            "lancamento",
+            "olhos",
+            "kit-presente",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/paleta-sombras-nude.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "blush-liquido-glow",
+          "name": "Blush Líquido Glow - 6 Cores",
+          "code": "BM-MAK-004",
+          "cost": 14.5,
+          "price": 39.9,
+          "highlights": [
+            "Efeito 'coradinho natural'",
+            "Fórmula com ácido hialurônico",
+            "Construtível em camadas",
+            "6 tons universais"
+          ],
+          "tags": [
+            "blush",
+            "rosto",
+            "lancamento",
+            "vegano"
+          ],
+          "enabled": true,
+          "image": "images/blush-liquido-glow.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "rimel-volume-extremo",
+          "name": "Máscara de Cílios Volume Extremo",
+          "code": "BM-MAK-005",
+          "cost": 16.0,
+          "price": 44.9,
+          "highlights": [
+            "Volume 300% + alongamento",
+            "Escova curvada especial",
+            "À prova d'água opcional",
+            "Não empelota"
+          ],
+          "tags": [
+            "mais-vendido",
+            "rimel",
+            "olhos"
+          ],
+          "enabled": true,
+          "image": "images/rimel-volume-extremo.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "kit-pinceis-profissional",
+          "name": "Kit Pincéis Profissional - 12 Peças",
+          "code": "BM-MAK-006",
+          "cost": 28.0,
+          "price": 79.9,
+          "price_max": 99.9,
+          "highlights": [
+            "Cerdas sintéticas premium",
+            "Cabo ergonômico rose gold",
+            "Estojo organizador incluso",
+            "Vegano & Cruelty-free"
+          ],
+          "tags": [
+            "pincel",
+            "kit-presente",
+            "vegano",
+            "cruelty-free",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/kit-pinceis-profissional.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "skincare",
+      "name": "Skincare",
+      "icon": "✨",
+      "products": [
+        {
+          "id": "acido-hialuronico-serum",
+          "name": "Sérum Ácido Hialurônico 2% + B5",
+          "code": "BM-SKIN-001",
+          "cost": 22.0,
+          "price": 59.9,
+          "highlights": [
+            "Hidratação profunda multi-camadas",
+            "Preenche linhas finas",
+            "Textura leve, absorção rápida",
+            "Adequado para todos os tipos de pele"
+          ],
+          "tags": [
+            "mais-vendido",
+            "skincare",
+            "vegano"
+          ],
+          "enabled": true,
+          "image": "images/acido-hialuronico-serum.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "vitamina-c-10",
+          "name": "Vitamina C 10% Estabilizada",
+          "code": "BM-SKIN-002",
+          "cost": 25.0,
+          "price": 69.9,
+          "highlights": [
+            "Antioxidante potente",
+            "Uniformiza tom da pele",
+            "Estímulo de colágeno",
+            "Embalagem airless (protege ativo)"
+          ],
+          "tags": [
+            "skincare",
+            "lancamento",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/vitamina-c-10.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "protetor-solar-fps50",
+          "name": "Protetor Solar FPS 50 Toque Seco",
+          "code": "BM-SKIN-003",
+          "cost": 19.5,
+          "price": 54.9,
+          "highlights": [
+            "Amplo espectro UVA/UVB",
+            "Toque seco, não esfarela",
+            "Base para maquiagem",
+            "Resistente à água e suor"
+          ],
+          "tags": [
+            "mais-vendido",
+            "skincare",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/protetor-solar-fps50.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "kit-skincare-iniciante",
+          "name": "Kit Skincare Iniciante (3 passos)",
+          "code": "BM-SKIN-004",
+          "cost": 45.0,
+          "price": 129.9,
+          "highlights": [
+            "Gel de limpeza suave 150ml",
+            "Tônico equilibrante 200ml",
+            "Hidratante gel-creme 50g",
+            "Rotina completa manhã/noite"
+          ],
+          "tags": [
+            "kit-presente",
+            "skincare",
+            "vegano",
+            "cruelty-free"
+          ],
+          "enabled": true,
+          "image": "images/kit-skincare-iniciante.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "cabelos",
+      "name": "Cabelos",
+      "icon": "💇",
+      "products": [
+        {
+          "id": "oleo-reparador-pontas",
+          "name": "Óleo Reparador de Pontas - 60ml",
+          "code": "BM-HAIR-001",
+          "cost": 15.5,
+          "price": 42.9,
+          "highlights": [
+            "Blend de 6 óleos vegetais",
+            "Sela cutículas, anti-frizz",
+            "Proteção térmica 230°C",
+            "Brilho espelhado"
+          ],
+          "tags": [
+            "mais-vendido",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/oleo-reparador-pontas.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "mascara-hidratacao-intensa",
+          "name": "Máscara Hidratação Intensa - 300g",
+          "code": "BM-HAIR-002",
+          "cost": 18.0,
+          "price": 49.9,
+          "highlights": [
+            "Manteiga de karité + ceramidas",
+            "Ação 3 min no banho",
+            "Cabelos macios e alinhados",
+            "Liberada para low poo"
+          ],
+          "tags": [
+            "skincare",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/mascara-hidratacao-intensa.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "leave-in-multifuncao",
+          "name": "Leave-in Multifunção 10 em 1 - 200ml",
+          "code": "BM-HAIR-003",
+          "cost": 20.0,
+          "price": 54.9,
+          "highlights": [
+            "Protetor térmico + UV",
+            "Desembaraça, hidrata, brilho",
+            "Controla frizz 72h",
+            "Sem enxágue"
+          ],
+          "tags": [
+            "lancamento",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/leave-in-multifuncao.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "unhas",
+      "name": "Unhas",
+      "icon": "💅",
+      "products": [
+        {
+          "id": "esmalte-gel-colecao-verao",
+          "name": "Coleção Esmaltes Gel Verão - 8 Cores",
+          "code": "BM-NAIL-001",
+          "cost": 32.0,
+          "price": 89.9,
+          "highlights": [
+            "Durabilidade 14 dias",
+            "Brilho gel sem lâmpada",
+            "8 cores tendência verão",
+            "Fórmula 9-free"
+          ],
+          "tags": [
+            "lancamento",
+            "kit-presente",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/esmalte-gel-colecao-verao.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "base-fortalecedora-unhas",
+          "name": "Base Fortalecedora Unhas Quebradiças",
+          "code": "BM-NAIL-002",
+          "cost": 11.0,
+          "price": 29.9,
+          "highlights": [
+            "Queratina + cálcio + D-pantenol",
+            "Crescimento saudável",
+            "Pode usar sozinha ou como base",
+            "Resultados em 14 dias"
+          ],
+          "tags": [
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/base-fortalecedora-unhas.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "acessorios",
+      "name": "Acessórios",
+      "icon": "🎀",
+      "products": [
+        {
+          "id": "necessaire-organizadora",
+          "name": "Nécessaire Organizadora Maquiagem - Rosa",
+          "code": "BM-ACC-001",
+          "cost": 22.0,
+          "price": 59.9,
+          "highlights": [
+            "Compartimentos ajustáveis",
+            "Espelho embutido",
+            "Material impermeável",
+            "Alça de mão + alça tiracolo"
+          ],
+          "tags": [
+            "kit-presente",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/necessaire-organizadora.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "tiara-cetim-conjunto",
+          "name": "Conjunto 3 Tiaras Cetim Premium",
+          "code": "BM-ACC-002",
+          "cost": 14.5,
+          "price": 34.9,
+          "highlights": [
+            "Não marca, não escorrega",
+            "Cores: rosa, bege, preto",
+            "Acabamento premium",
+            "Presenteável"
+          ],
+          "tags": [
+            "promocao",
+            "kit-presente"
+          ],
+          "enabled": true,
+          "image": "images/tiara-cetim-conjunto.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "kits",
+      "name": "Kits & Presentes",
+      "icon": "🎁",
+      "products": [
+        {
+          "id": "kit-bella-glam",
+          "name": "Kit Bella Glam Completo",
+          "code": "BM-KIT-001",
+          "cost": 65.0,
+          "price": 179.9,
+          "highlights": [
+            "Base Líquida Matte (tom à escolha)",
+            "Batom Matte Velvet (cor à escolha)",
+            "Blush Líquido Glow (cor à escolha)",
+            "Nécessaire Organizadora Rosa",
+            "Caixa presenteável exclusiva"
+          ],
+          "tags": [
+            "kit-presente",
+            "mais-vendido",
+            "promocao",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/kit-bella-glam.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "kit-skincare-rotina",
+          "name": "Kit Skincare Rotina Dia & Noite",
+          "code": "BM-KIT-002",
+          "cost": 58.0,
+          "price": 159.9,
+          "highlights": [
+            "Gel Limpeza Suave 150ml",
+            "Vitamina C 10% 30ml",
+            "Protetor Solar FPS 50 50g",
+            "Hidratante Gel-Creme 50g",
+            "Nécessaire de brinde"
+          ],
+          "tags": [
+            "kit-presente",
+            "skincare",
+            "vegano",
+            "cruelty-free"
+          ],
+          "enabled": true,
+          "image": "images/kit-skincare-rotina.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "kit-noite-especial",
+          "name": "Kit Noite Especial - Olhos & Lábios",
+          "code": "BM-KIT-003",
+          "cost": 42.0,
+          "price": 119.9,
+          "highlights": [
+            "Paleta Sombras Nude 18 cores",
+            "Máscara Volume Extremo",
+            "Batom Matte Velvet (2 cores)",
+            "Delineador líquido precisão",
+            "Embalagem luxo"
+          ],
+          "tags": [
+            "kit-presente",
+            "lancamento",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/kit-noite-especial.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    }
+  ]
+}

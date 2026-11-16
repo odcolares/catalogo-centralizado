@@ -39,6 +39,29 @@ export interface CatalogData {
 
 export type Perfil = 'cliente' | 'lojista';
 
+export interface ThemeTokens {
+  primary: string;
+  primaryHover: string;
+  primaryLight: string;
+  accent: string;
+  surface: string;
+  surfaceAlt: string;
+  textPrimary: string;
+  textSecondary: string;
+  border: string;
+  logoStyle: string;
+  iconStyle: string;
+}
+
+export interface CopyTexts {
+  heroTitle: string;
+  heroSubtitle: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+  emptyState: string;
+  footerNote: string;
+}
+
 // Injetado por initApp() — placeholder vazio até o entry fornecer os dados
 let catalog: CatalogData = {
   store: { name: '', city: '', delivery: '', warranty: '', payment: '', whatsapp: '' },
@@ -46,6 +69,29 @@ let catalog: CatalogData = {
 };
 let perfil: Perfil = 'cliente';
 let firstRender = true;
+let currentTheme: ThemeTokens | null = null;
+let currentCopy: CopyTexts | null = null;
+
+/** Aplica tokens de tema como CSS custom properties no :root */
+function applyThemeTokens(theme: ThemeTokens): void {
+  const root = document.documentElement;
+  Object.entries(theme).forEach(([key, value]) => {
+    root.style.setProperty(`--theme-${key}`, value);
+  });
+  currentTheme = theme;
+}
+
+/** Retorna copy atual (com fallback para defaults) */
+export function getCopy(): CopyTexts {
+  return currentCopy || {
+    heroTitle: 'Sua loja no WhatsApp',
+    heroSubtitle: 'Catálogo bonito, pedido direto, controle total',
+    ctaPrimary: 'Ver catálogo',
+    ctaSecondary: 'Falar no WhatsApp',
+    emptyState: 'Nenhum produto cadastrado ainda',
+    footerNote: 'Entregamos em Manaus via motoboy.',
+  };
+}
 
 // Produtos já visualizados em detalhe nesta sessão (evita eventos "view" duplicados)
 const viewedDetailProducts = new Set<string>();
@@ -55,6 +101,11 @@ const impressedProducts = new Set<string>();
 // Drawer de detalhes do produto
 let detailProductId: string | null = null;
 let detailOpen = false;
+
+// Drawer de informações da loja (Entrega, Garantia, Pagamento) — cliente
+type StoreInfoSection = 'entrega' | 'garantia' | 'pagamento';
+let storeInfoOpen = false;
+let storeInfoSection: StoreInfoSection = 'entrega';
 
 // State
 let activeTab: 'catalog' | 'table' | 'engagement' = 'catalog';
@@ -309,6 +360,17 @@ function closeProductDetail(): void {
   renderApp();
 }
 
+function openStoreInfo(section: StoreInfoSection): void {
+  storeInfoSection = section;
+  storeInfoOpen = true;
+  renderApp();
+}
+
+function closeStoreInfo(): void {
+  storeInfoOpen = false;
+  renderApp();
+}
+
 function clearCart(): void {
   cart = [];
   releaseOrderNumber();
@@ -330,13 +392,15 @@ function formatWhatsAppNumber(digits: string): string {
 let totalProducts = 0;
 
 // Chamado pelo entry (cliente ou lojista): injeta dados, define o perfil e monta a UI
-export function initApp(data: CatalogData, p: Perfil): void {
+export function initApp(data: CatalogData, p: Perfil, theme?: ThemeTokens, copy?: CopyTexts): void {
   catalog = data;
   perfil = p;
   totalProducts = catalog.categories.reduce(
     (acc, c) => acc + c.products.filter(isEnabled).length,
     0
   );
+  if (theme) applyThemeTokens(theme);
+  if (copy) currentCopy = copy;
   renderApp();
 }
 
@@ -470,12 +534,12 @@ function renderFinanceSummary(): string {
   return `
     <div class="max-w-6xl mx-auto px-4 pt-4 print:hidden">
       <div class="flex items-center gap-2 mb-2">
-        <span class="text-[11px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">📈 Resumo financeiro</span>
+        <span class="text-[11px] font-black uppercase badge-primary px-2 py-0.5 rounded">📈 Resumo financeiro</span>
         <span class="text-[11px] text-zinc-400">base: 1 unidade por produto</span>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         ${card('Custo Total (1un)', brl(totalCost), 'text-zinc-900')}
-        ${card('Venda Total (1un)', brl(totalPrice), 'text-emerald-700')}
+        ${card('Venda Total (1un)', brl(totalPrice), 'text-primary')}
         ${card('Lucro Potencial', brl(profit), 'text-indigo-700')}
         ${card('Margem Média', avgMargin + '%', 'text-amber-600')}
       </div>
@@ -506,7 +570,7 @@ function renderApp() {
       <div class="max-w-6xl mx-auto px-4 py-7 relative z-[1]">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div class="inline-flex items-center gap-2 bg-black/25 border border-white/15 text-emerald-50 font-mono text-[11px] tracking-wider px-2.5 py-1 rounded mb-3">
+            <div class="inline-flex items-center gap-2 bg-black/25 border border-white/15 text-white font-mono text-[11px] tracking-wider px-2.5 py-1 rounded mb-3">
               <span class="led" aria-hidden="true"></span>
               <span>📍 ${escapeHtml(store.city || 'Manaus/AM')}</span>
               <span class="opacity-50">/</span>
@@ -516,7 +580,7 @@ function renderApp() {
               <img src="images/Loja_img.png" alt="Logo da loja" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50 shadow-lg" onerror="this.remove()" />
               <span>${escapeHtml(store.name || 'Catálogo de Eletrônicos')}</span>
             </h1>
-            <p class="text-emerald-50/90 text-sm mt-2 max-w-xl leading-relaxed">
+            <p class="text-white/90 text-sm mt-2 max-w-xl leading-relaxed">
               Catálogo centralizado com estoque, especificações, preços de atacado e venda local em Manaus.
             </p>
           </div>
@@ -524,14 +588,14 @@ function renderApp() {
           <div class="flex flex-col sm:flex-row gap-2">
             ${perfil === 'lojista'
               ? `
-            <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg border border-emerald-300 whitespace-nowrap">
+            <span class="inline-flex items-center gap-1.5 badge-primary px-3 py-2.5 rounded-lg whitespace-nowrap">
               🟢 MODO LOJISTA
             </span>
             <div class="inline-flex items-center gap-1 bg-white border border-zinc-300 rounded-lg p-0.5 shadow-sm" role="segmented-control">
               <button type="button"
                       class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
                         activeTab === 'catalog'
-                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
+                          ? 'bg-primary-light text-primary font-bold shadow-sm'
                         : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
                       }" data-tab="catalog">
                 🛍️ Vitrine
@@ -539,7 +603,7 @@ function renderApp() {
               <button type="button"
                       class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
                         activeTab === 'table'
-                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
+                          ? 'bg-primary-light text-primary font-bold shadow-sm'
                         : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
                       }" data-tab="table">
                 📊 Tabela &amp; Margens
@@ -547,14 +611,14 @@ function renderApp() {
               <button type="button"
                       class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
                         activeTab === 'engagement'
-                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
+                          ? 'bg-primary-light text-primary font-bold shadow-sm'
                           : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
                       }" data-tab="engagement">
                 📈 Engajamento
               </button>
             </div>
             <button id="toggle-margins-btn"
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-emerald-400/40 hover:bg-emerald-700/50 transition">
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-primary/40 hover:bg-primary/50 transition">
               ${showCostMargins ? '👁️ Ocultar Custos/Margens' : '📈 Exibir Custos/Margens'}
             </button>
             <button id="logout-btn"
@@ -563,42 +627,36 @@ function renderApp() {
             </button>`
               : `
             <button type="button" id="open-cart-btn"
-                    class="relative inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
+                    class="relative inline-flex items-center justify-center gap-2 btn-secondary font-bold px-4 py-2.5 rounded-lg border border-transparent shadow transition text-sm leading-none">
               <span>🛒 Carrinho${cartQty > 0 ? ` (${cartQty})` : ''}</span>
               ${
                 cartQty > 0
-                  ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[10px] font-black min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center ring-2 ring-[#0a8754]">${cartQty}</span>`
+                  ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[10px] font-black min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center ring-2 ring-primary">${cartQty}</span>`
                   : ''
               }
             </button>
             <a href="https://wa.me/${(store.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Vi o catálogo e quero fazer um pedido — pode me atender?')}"
                target="_blank" rel="noopener"
-               class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
-              <span>Atendimento WhatsApp</span>
-            </a>`
+               class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg border border-transparent shadow transition text-sm leading-none">
+              <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover shrink-0" onerror="this.remove()" />
+              <span class="leading-none">Atendimento WhatsApp</span>
+            </a>
+            <div class="flex items-center gap-2 flex-nowrap">
+              <button type="button" data-open-store-info="entrega" class="inline-flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg border border-transparent bg-[#20ba5a] hover:bg-[#1a9e4b] text-white shadow transition whitespace-nowrap leading-none">
+                <span aria-hidden="true">🚚</span><span class="leading-none">Entrega</span>
+              </button>
+              <button type="button" data-open-store-info="garantia" class="inline-flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg border border-transparent bg-[#20ba5a] hover:bg-[#1a9e4b] text-white shadow transition whitespace-nowrap leading-none">
+                <span aria-hidden="true">✅</span><span class="leading-none">Garantia</span>
+              </button>
+              <button type="button" data-open-store-info="pagamento" class="inline-flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg border border-transparent bg-[#20ba5a] hover:bg-[#1a9e4b] text-white shadow transition whitespace-nowrap leading-none">
+                <span aria-hidden="true">💳</span><span class="leading-none">Pagamento</span>
+              </button>
+            </div>`
             }
           </div>
           </div>
         </div>
-
-        ${perfil === 'cliente' ? `
-        <!-- Info Badges -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-6 pt-4 border-t border-white/15 font-mono text-[11px] text-emerald-50/90">
-          <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
-            <span>🚚</span>
-            <span><strong class="text-emerald-200">Entrega:</strong> ${escapeHtml(store.delivery || 'Entrega via motoboy (taxa a combinar) • Retirada em loja sob consulta')}</span>
-          </div>
-          <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
-            <span>✅</span>
-            <span><strong class="text-emerald-200">Garantia:</strong> ${escapeHtml(store.warranty || 'Atendimento para defeitos conforme garantia legal. Consulte condições.')}</span>
-          </div>
-          <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
-            <span>💳</span>
-            <span><strong class="text-emerald-200">Pagamento:</strong> ${escapeHtml(store.payment || 'Pagamento do pedido: PIX (comprovante para confirmação).')}</span>
-          </div>
-        </div>
-        ` : ''}
+        
       </div>
     </header>
 
@@ -612,13 +670,14 @@ function renderApp() {
     <!-- Footer -->
     <footer class="site-footer mt-12 py-8 text-center text-xs print:hidden">
       <div class="max-w-6xl mx-auto px-4 space-y-1.5">
-        <p class="text-emerald-100/85">Catálogo centralizado de eletrônicos em Manaus/AM • Fonte única em <code class="font-mono bg-white/10 px-1.5 py-0.5 rounded text-emerald-50">catalog-data.json</code></p>
-        <p class="text-emerald-100/60">Gera simultaneamente HTML responsivo, Markdown consolidado e API JSON estruturada.</p>
+        <p class="text-white/85">Catálogo centralizado de eletrônicos em Manaus/AM • Fonte única em <code class="font-mono bg-white/10 px-1.5 py-0.5 rounded text-primary">catalog-data.json</code></p>
+        <p class="text-white/60">Gera simultaneamente HTML responsivo, Markdown consolidado e API JSON estruturada.</p>
       </div>
     </footer>
 
     ${perfil === 'cliente' ? renderCartDrawer() : ''}
     ${renderProductDrawer()}
+    ${perfil === 'cliente' ? renderStoreInfoDrawer() : ''}
 
     <!-- Relatório do pedido (só aparece na impressão → Salvar como PDF) -->
     <div id="order-report" class="hidden print:block">${cart.length > 0 ? buildOrderReportInner() : ''}</div>
@@ -629,7 +688,7 @@ function renderApp() {
   const nextDetailBody = document.getElementById('product-detail-body');
   if (nextDetailBody) nextDetailBody.scrollTop = detailScroll;
 
-  document.body.style.overflow = cartOpen || detailOpen ? 'hidden' : '';
+  document.body.style.overflow = cartOpen || detailOpen || storeInfoOpen ? 'hidden' : '';
 
   attachEventListeners();
 }
@@ -662,7 +721,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
       (cat) => `
       <button class="cat-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition border ${
         selectedCategory === cat.id
-          ? 'bg-[#0a8754] text-white border-[#0a8754] shadow-xs'
+          ? 'bg-primary text-white border-primary shadow-xs'
           : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
       }" data-cat="${cat.id}">
         <span>${cat.icon}</span>
@@ -679,12 +738,12 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
       return `
       <button class="cat-filter-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition border ${
         active
-          ? 'bg-[#0a8754] text-white border-[#0a8754] shadow-xs font-semibold'
+          ? 'bg-primary text-white border-primary shadow-xs font-semibold'
           : 'text-zinc-700 border-transparent hover:bg-zinc-50'
       }" data-cat="${cat.id}">
         <span class="shrink-0">${cat.icon}</span>
         <span class="flex-1 text-left truncate">${escapeHtml(cat.name)}</span>
-        <span class="font-mono text-[11px] tabular-nums ${active ? 'text-emerald-100' : 'text-zinc-400'}">${cat.count}</span>
+        <span class="font-mono text-[11px] tabular-nums ${active ? 'text-primary-light' : 'text-zinc-400'}">${cat.count}</span>
       </button>`;
     })
     .join('');
@@ -732,7 +791,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
         <p class="text-3xl mb-2" aria-hidden="true">🔍</p>
         <p class="text-base font-semibold text-zinc-800">Nenhum produto encontrado</p>
         <p class="text-sm text-zinc-500 mt-1">Tente buscar por outro termo ou limpe os filtros de categoria.</p>
-        <button id="clear-filters-btn" class="mt-4 px-4 py-2 bg-[#0a8754] text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition">
+        <button id="clear-filters-btn" class="mt-4 px-4 py-2 btn-primary rounded-lg text-xs font-bold transition">
           Limpar Filtros
         </button>
       </div>
@@ -764,7 +823,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                 <div class="p-4 flex-1 flex flex-col">
                   <!-- Header: category & badges -->
                   <div class="flex items-center justify-between gap-2 mb-2">
-                    <span class="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded flex items-center gap-1">
+                    <span class="text-xs font-semibold text-primary bg-primary-light px-2 py-0.5 rounded flex items-center gap-1">
                       <span>${category.icon}</span>
                       <span>${escapeHtml(category.name)}</span>
                     </span>
@@ -789,7 +848,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                       .map(
                         (h) => `
                       <li class="flex items-start gap-1.5">
-                        <span class="text-emerald-600 mt-0.5 font-bold">✓</span>
+                        <span class="text-primary mt-0.5 font-bold">✓</span>
                         <span>${escapeHtml(h)}</span>
                       </li>
                     `
@@ -822,7 +881,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                           </div>
                           <div>
                             <span class="text-[10px] text-zinc-400 block uppercase">Lucro</span>
-                            <span class="text-emerald-700 font-semibold">${brl(profit)}</span>
+                            <span class="text-primary font-semibold">${brl(profit)}</span>
                           </div>
                           <div>
                             <span class="text-[10px] text-zinc-400 block uppercase">Margem</span>
@@ -839,7 +898,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                   <!-- Cart CTA Button -->
                   <button type="button"
                           data-add-to-cart="${p.id}"
-                          class="w-full inline-flex items-center justify-center gap-2 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
+                          class="w-full inline-flex items-center justify-center gap-2 btn-primary text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
                     <span>🛒 Adicionar no carrinho</span>
                   </button>
 
@@ -879,7 +938,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                    id="search-input"
                    value="${escapeHtml(searchQuery)}"
                    placeholder="Buscar modelo, código ou característica (ex: Smartwatch, D20, 60h, Type-C)..."
-                   class="w-full pl-9 pr-4 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]" />
+                   class="w-full pl-9 pr-4 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
             ${
               searchQuery
                 ? `<button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600">✕</button>`
@@ -889,7 +948,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
 
           <div class="flex gap-2">
             <select id="sort-select"
-                    class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-700 focus:outline-none focus:ring-2 focus:ring-[#0a8754]">
+                    class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-700 focus:outline-none focus:ring-2 focus:ring-primary">
               <option value="default" ${sortBy === 'default' ? 'selected' : ''}>Ordenação Padrão</option>
               <option value="price-asc" ${sortBy === 'price-asc' ? 'selected' : ''}>Menor Preço</option>
               <option value="price-desc" ${sortBy === 'price-desc' ? 'selected' : ''}>Maior Preço</option>
@@ -916,7 +975,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
         <span>Exibindo <strong>${filtered.length}</strong> de ${totalProducts} produtos</span>
         ${
           selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery
-            ? `<button id="reset-all-filters-btn" class="text-emerald-700 font-semibold hover:underline">Limpar todos os filtros</button>`
+            ? `<button id="reset-all-filters-btn" class="text-primary font-semibold hover:underline">Limpar todos os filtros</button>`
             : ''
         }
       </div>
@@ -947,11 +1006,11 @@ function renderTableView(): string {
           <td class="p-3 text-zinc-500 font-mono">${escapeHtml(p.code)}</td>
           <td class="p-3 text-zinc-600">${cat.icon} ${escapeHtml(cat.name)}</td>
           <td class="p-3 font-mono text-right text-zinc-600">${brl(cost)}</td>
-          <td class="p-3 font-mono text-right font-bold text-emerald-700">${brl(p.price)}</td>
+          <td class="p-3 font-mono text-right font-bold text-primary">${brl(p.price)}</td>
           <td class="p-3 font-mono text-right text-zinc-700">${brl(profit)}</td>
-          <td class="p-3 font-mono text-right font-semibold ${margin >= 100 ? 'text-emerald-600' : 'text-amber-600'}">${margin}%</td>
+          <td class="p-3 font-mono text-right font-semibold ${margin >= 100 ? 'text-primary' : 'text-amber-600'}">${margin}%</td>
           ${perfil === 'cliente' ? `<td class="p-3 text-right">
-            <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener" class="text-emerald-600 hover:text-emerald-800 font-semibold">
+            <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener" class="text-primary hover:text-primary-hover font-semibold">
               WhatsApp ↗
             </a>
           </td>` : '<td></td>'}
@@ -976,7 +1035,7 @@ function renderTableView(): string {
         </div>
         <div class="bg-white p-4 rounded-xl border border-zinc-200">
           <span class="text-xs text-zinc-400 uppercase font-semibold">Venda Total 1 Unidade</span>
-          <p class="text-2xl font-black text-emerald-700 mt-1">${brl(totalPrice)}</p>
+          <p class="text-2xl font-black text-primary mt-1">${brl(totalPrice)}</p>
         </div>
         <div class="bg-white p-4 rounded-xl border border-zinc-200">
           <span class="text-xs text-zinc-400 uppercase font-semibold">Margem Média Bruta</span>
@@ -1041,7 +1100,7 @@ function renderEngagementView(): string {
             <p class="text-zinc-500 text-sm">Acompanhe impressões, visualizações de detalhes, cliques no WhatsApp, carrinho e pedidos.</p>
           </div>
           <div class="flex items-center gap-3">
-            <button id="eng-refresh" class="bg-[#0a8754] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2" aria-label="Atualizar métricas de engajamento">
+            <button id="eng-refresh" class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xs transition flex items-center gap-2" aria-label="Atualizar métricas de engajamento">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                 <path d="M3 3v5h5"/>
@@ -1050,7 +1109,7 @@ function renderEngagementView(): string {
               </svg>
               Atualizar
             </button>
-            <button id="eng-export-csv" class="bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold shadow-xs transition flex items-center gap-2" aria-label="Exportar dados de engajamento em CSV">
+            <button id="eng-export-csv" class="bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-primary px-4 py-2 rounded-lg text-sm font-semibold shadow-xs transition flex items-center gap-2" aria-label="Exportar dados de engajamento em CSV">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
@@ -1067,7 +1126,7 @@ function renderEngagementView(): string {
         <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div class="flex items-center gap-2">
             <label for="eng-period" class="text-xs font-semibold text-zinc-500">Período</label>
-            <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+            <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary">
               <option value="7">Últimos 7 dias</option>
               <option value="30" selected>Últimos 30 dias</option>
               <option value="90">Últimos 90 dias</option>
@@ -1075,7 +1134,7 @@ function renderEngagementView(): string {
           </div>
           <div class="flex items-center gap-2 w-full sm:w-auto">
             <label for="eng-category" class="text-xs font-semibold text-zinc-500">Categoria</label>
-            <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754] flex-1 sm:flex-auto">
+            <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary flex-1 sm:flex-auto">
               <option value="">Todas as categorias</option>
               ${categoryOptions}
             </select>
@@ -1088,7 +1147,7 @@ function renderEngagementView(): string {
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
           <div class="flex items-center gap-2">
             <label for="eng-chart-metric" class="text-xs font-semibold text-zinc-500">Exibir gráfico por</label>
-            <select id="eng-chart-metric" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+            <select id="eng-chart-metric" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary">
               <option value="views">Visualizações (detalhe)</option>
               <option value="impressions">Impressões</option>
               <option value="whatsapp_clicks">Cliques WhatsApp</option>
@@ -1098,7 +1157,7 @@ function renderEngagementView(): string {
           </div>
           <div class="flex items-center gap-2">
             <label for="eng-top-n" class="text-xs font-semibold text-zinc-500">Top</label>
-            <select id="eng-top-n" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+            <select id="eng-top-n" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary">
               <option value="5">5</option>
               <option value="10" selected>10</option>
               <option value="20">20</option>
@@ -1106,7 +1165,7 @@ function renderEngagementView(): string {
           </div>
           <div class="flex items-center gap-2 w-full sm:w-auto">
             <label for="eng-search" class="text-xs font-semibold text-zinc-500">Buscar produto</label>
-            <input id="eng-search" type="text" placeholder="Nome do produto…" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-48 focus:ring-2 focus:ring-[#0a8754]" autocomplete="off"/>
+            <input id="eng-search" type="text" placeholder="Nome do produto…" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-48 focus:ring-2 focus:ring-primary" autocomplete="off"/>
           </div>
         </div>
       </div>
@@ -1134,7 +1193,7 @@ function renderEngagementView(): string {
           <span class="text-[10px] text-zinc-500 uppercase font-semibold tracking-wider">Ação</span>
           <div class="mt-2 space-y-1">
             <span class="text-xs text-zinc-400 uppercase font-semibold">Cliques WhatsApp</span>
-            <p id="eng-metric-wa" class="text-2xl font-black text-emerald-700 tabular-nums mt-0.5">—</p>
+            <p id="eng-metric-wa" class="text-2xl font-black text-primary tabular-nums mt-0.5">—</p>
           </div>
           <div class="mt-1.5 space-y-1">
             <span class="text-xs text-zinc-400 uppercase font-semibold">Adicionou Carrinho</span>
@@ -1142,10 +1201,10 @@ function renderEngagementView(): string {
           </div>
         </div>
         <!-- Grupo: Conversão (hero) -->
-        <div class="bg-[#0a8754] p-4 rounded-xl text-center text-white shadow-sm">
-          <span class="text-[10px] text-emerald-200 uppercase font-semibold tracking-wider">Conversão</span>
+        <div class="bg-primary p-4 rounded-xl text-center text-white shadow-sm">
+          <span class="text-[10px] text-primary-light uppercase font-semibold tracking-wider">Conversão</span>
           <div class="mt-2 space-y-1">
-            <span class="text-xs text-emerald-200 uppercase font-semibold">Pedidos via WhatsApp</span>
+            <span class="text-xs text-primary-light uppercase font-semibold">Pedidos via WhatsApp</span>
             <p id="eng-metric-orders" class="text-3xl font-black tabular-nums mt-0.5">—</p>
           </div>
         </div>
@@ -1247,7 +1306,7 @@ function renderMarkdownView(): string {
           <h2 class="text-base font-bold text-zinc-900">Catálogo em Markdown</h2>
           <p class="text-xs text-zinc-500">Pronto para exportar, publicar no GitHub, Notion ou WhatsApp</p>
         </div>
-        <button id="copy-markdown-btn" class="px-4 py-2 bg-[#0a8754] text-white hover:bg-emerald-700 text-xs font-bold rounded-lg shadow-xs transition">
+        <button id="copy-markdown-btn" class="px-4 py-2 btn-primary text-white text-xs font-bold rounded-lg shadow-xs transition">
           📋 Copiar Markdown
         </button>
       </div>
@@ -1298,13 +1357,13 @@ function renderApiView(): string {
           <a href="/catalog-api.json" target="_blank" class="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-lg transition">
             🔗 Abrir /catalog-api.json
           </a>
-          <button id="copy-json-btn" class="px-4 py-2 bg-[#0a8754] text-white hover:bg-emerald-700 text-xs font-bold rounded-lg shadow-xs transition">
+          <button id="copy-json-btn" class="px-4 py-2 btn-primary text-white text-xs font-bold rounded-lg shadow-xs transition">
             📋 Copiar JSON
           </button>
         </div>
       </div>
 
-      <div class="bg-zinc-950 text-emerald-400 p-5 rounded-xl font-mono text-xs overflow-x-auto border border-zinc-800 max-h-[600px]">
+      <div class="bg-zinc-950 text-primary p-5 rounded-xl font-mono text-xs overflow-x-auto border border-zinc-800 max-h-[600px]">
         <pre>${escapeHtml(jsonString)}</pre>
       </div>
     </div>
@@ -1415,11 +1474,11 @@ function buildOrderReportInner(): string {
   return `
     <div class="max-w-[190mm] mx-auto text-zinc-900">
       <!-- Cabeçalho -->
-      <div class="flex items-start justify-between gap-4 border-b-[3px] border-[#0a8754] pb-3">
+      <div class="flex items-start justify-between gap-4 border-b-[3px] border-primary pb-3">
         <div class="flex items-center gap-3">
-          <img src="images/Loja_img.png" alt="" class="w-12 h-12 rounded-full object-cover border-2 border-[#0a8754]" onerror="this.remove()" />
+          <img src="images/Loja_img.png" alt="" class="w-12 h-12 rounded-full object-cover border-2 border-primary" onerror="this.remove()" />
           <div>
-            <div class="text-2xl font-black leading-none text-[#0a8754]">${escapeHtml(store.name || '[Nome da Loja]')}</div>
+            <div class="text-2xl font-black leading-none text-primary">${escapeHtml(store.name || '[Nome da Loja]')}</div>
             <div class="text-[11px] text-zinc-600 mt-1 font-semibold">Eletrônicos • ${escapeHtml(store.city || 'Manaus/AM')}</div>
           </div>
         </div>
@@ -1431,7 +1490,7 @@ function buildOrderReportInner(): string {
 
       <!-- Dados do cliente -->
       <div class="mt-4 border border-zinc-300 rounded p-3">
-        <div class="text-[11px] font-black uppercase text-[#0a8754] mb-2">Dados do cliente</div>
+        <div class="text-[11px] font-black uppercase text-primary mb-2">Dados do cliente</div>
         <div class="grid grid-cols-2 gap-x-4 gap-y-2">
           ${field('Nome', escapeHtml(clientInfo.nome.trim()))}
           ${field('Telefone', escapeHtml(clientInfo.telefone.trim()))}
@@ -1452,7 +1511,7 @@ function buildOrderReportInner(): string {
       <!-- Itens do pedido -->
       <table class="w-full mt-4 border-collapse text-sm">
         <thead>
-          <tr class="bg-[#0a8754] text-white text-[11px] uppercase">
+          <tr class="bg-primary text-white text-[11px] uppercase">
             <th class="p-2 text-left">Produto</th>
             <th class="p-2 text-left">Código</th>
             <th class="p-2 text-center">Qtd</th>
@@ -1476,7 +1535,7 @@ function buildOrderReportInner(): string {
           </div>
           <div class="flex justify-between border-t border-zinc-300 mt-2 pt-2 text-base font-black">
             <span>TOTAL</span>
-            <span class="text-[#0a8754]">${brl(cartSubtotal())}</span>
+            <span class="text-primary">${brl(cartSubtotal())}</span>
           </div>
         </div>
       </div>
@@ -1490,7 +1549,7 @@ function buildOrderReportInner(): string {
       </div>
 
       <!-- Rodapé -->
-      <div class="mt-4 border-t-2 border-[#0a8754] pt-2 text-center text-[10px] text-zinc-500">
+      <div class="mt-4 border-t-2 border-primary pt-2 text-center text-[10px] text-zinc-500">
         WhatsApp: ${escapeHtml(formatWhatsAppNumber(store.whatsapp))} • Relatório gerado pelo catálogo digital em ${dateStr}
       </div>
     </div>
@@ -1508,7 +1567,7 @@ function renderCartDrawer(): string {
     return `
       <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
       <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Carrinho de compras">
-        <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
+        <div class="flex items-center justify-between px-4 py-3 bg-primary text-white shrink-0">
           <h2 class="font-bold text-sm flex items-center gap-2">
             🛒 Carrinho
             <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">vazio</span>
@@ -1520,7 +1579,7 @@ function renderCartDrawer(): string {
             <p class="text-4xl mb-3" aria-hidden="true">🛒</p>
             <p class="font-bold text-zinc-800">Seu carrinho está vazio</p>
             <p class="text-sm text-zinc-500 mt-1">Adicione produtos do catálogo para montar seu pedido.</p>
-            <button type="button" data-close-cart class="mt-4 px-4 py-2 bg-[#0a8754] text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition">
+            <button type="button" data-close-cart class="mt-4 px-4 py-2 btn-primary text-white text-xs font-bold rounded-lg transition">
               Continuar comprando
             </button>
           </div>
@@ -1564,7 +1623,7 @@ function renderCartDrawer(): string {
                 <button type="button" data-cart-inc="${it.id}" class="w-7 h-7 flex items-center justify-center text-zinc-600 hover:bg-zinc-100 rounded-r-md font-bold disabled:opacity-40 disabled:cursor-not-allowed" ${it.qty >= 99 ? 'disabled' : ''}>+</button>
               </div>
               <div class="text-right">
-                <span class="text-sm font-black text-[#0a8754]">${brl(it.price * it.qty)}</span>
+                <span class="text-sm font-black text-primary">${brl(it.price * it.qty)}</span>
                 <span class="block text-[10px] text-zinc-400">${brl(it.price)} un.</span>
               </div>
             </div>
@@ -1574,12 +1633,12 @@ function renderCartDrawer(): string {
     .join('');
 
   const fieldClass =
-    'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]';
+    'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary';
 
   return `
     <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
     <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Carrinho de compras">
-      <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
+      <div class="flex items-center justify-between px-4 py-3 bg-primary text-white shrink-0">
         <h2 class="font-bold text-sm flex items-center gap-2">
           🛒 Carrinho
           <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">${count} ${count === 1 ? 'item' : 'itens'}</span>
@@ -1592,14 +1651,14 @@ function renderCartDrawer(): string {
         <div class="space-y-2.5">${items}</div>
 
         <!-- Totais -->
-        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 space-y-1.5 text-sm">
+        <div class="bg-primary-light border border-primary rounded-lg p-3 space-y-1.5 text-sm">
           <div class="flex justify-between items-baseline">
             <span class="text-zinc-600 font-medium">Subtotal (${count} ${count === 1 ? 'item' : 'itens'})</span>
             <strong class="text-lg font-black text-zinc-900">${brl(cartSubtotal())}</strong>
           </div>
-          <div class="text-xs text-zinc-500 border-t border-emerald-200 pt-1.5 space-y-1">
+          <div class="text-xs text-zinc-500 border-t border-primary pt-1.5 space-y-1">
             <div class="flex justify-between gap-2"><span>Entrega/Retirada</span><span class="text-right">Taxa/condições a consultar conforme modalidade</span></div>
-            <div class="flex justify-between gap-2"><span>Pagamento do pedido</span><span class="text-right font-semibold text-emerald-700">PIX (comprovante para confirmação)</span></div>
+            <div class="flex justify-between gap-2"><span>Pagamento do pedido</span><span class="text-right font-semibold text-primary">PIX (comprovante para confirmação)</span></div>
           </div>
         </div>
 
@@ -1633,7 +1692,7 @@ function renderCartDrawer(): string {
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-zinc-600 mb-1">Pagamento do pedido (plataforma)</label>
-            <div class="w-full border border-emerald-200 rounded-lg px-3 py-2 text-sm bg-emerald-50 text-emerald-900 font-medium">PIX — envie o comprovante para confirmação</div>
+            <div class="w-full border border-primary rounded-lg px-3 py-2 text-sm bg-primary-light text-primary font-medium">PIX — envie o comprovante para confirmação</div>
             <p class="mt-1 text-[11px] text-zinc-500">Dinheiro e cartão (crédito/débito) são aceitos somente presencialmente (in loco), mediante acordo prévio.</p>
           </div>
           <div>
@@ -1652,7 +1711,7 @@ function renderCartDrawer(): string {
         </button>
         ` : ''}
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" id="cart-print-pdf" class="inline-flex items-center justify-center gap-1.5 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow-xs transition">
+          <button type="button" id="cart-print-pdf" class="inline-flex items-center justify-center gap-1.5 btn-primary text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow-xs transition">
             📄 Gerar PDF
           </button>
           <button type="button" id="cart-copy" class="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-zinc-100 text-zinc-700 border border-zinc-300 font-bold py-2.5 px-3 rounded-lg text-xs transition">
@@ -1662,6 +1721,61 @@ function renderCartDrawer(): string {
         <button type="button" id="cart-clear" class="w-full text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-semibold py-1.5 rounded-lg transition">
           🗑 Esvaziar carrinho
         </button>
+      </div>
+    </aside>
+  `;
+}
+
+
+function renderStoreInfoDrawer(): string {
+  if (!storeInfoOpen || perfil !== 'cliente') return '';
+  const store = catalog.store || {};
+  const sections: Record<StoreInfoSection, { title: string; icon: string; content: string; extra: string }> = {
+    entrega: {
+      title: 'Entrega e Retirada',
+      icon: '🚚',
+      content: escapeHtml(store.delivery || 'Entrega e retirada sob consulta.'),
+      extra: '<ul class="mt-3 space-y-1.5 text-sm text-zinc-700 list-disc pl-5">' +
+        '<li><strong>Entrega:</strong> via motoboy (mesmo dia, taxa a combinar/consultar).</li>' +
+        '<li><strong>Retirada:</strong> disponível <strong>a partir de 24h após a confirmação do pagamento (PIX)</strong>, em <strong>dias úteis</strong> (não conta sábados e domingos), para <strong>teste e embalagem</strong>. Valor/condições sob consulta.</li>' +
+      '</ul>'
+    },
+    garantia: {
+      title: 'Garantia',
+      icon: '✅',
+      content: escapeHtml(store.warranty || 'Consulte condições de garantia.'),
+      extra: '<ul class="mt-3 space-y-1.5 text-sm text-zinc-700 list-disc pl-5">' +
+        '<li>Atendimento para <strong>defeitos de fabricação</strong> conforme garantia legal.</li>' +
+        '<li><strong>Trocas/devoluções</strong> conforme política da loja — consulte condições e prazos.</li>' +
+      '</ul>'
+    },
+    pagamento: {
+      title: 'Pagamento',
+      icon: '💳',
+      content: escapeHtml(store.payment || 'Pagamento do pedido via PIX.'),
+      extra: '<ul class="mt-3 space-y-1.5 text-sm text-zinc-700 list-disc pl-5">' +
+        '<li><strong>Pedido na plataforma:</strong> somente <strong>PIX</strong> (enviar comprovante para confirmação).</li>' +
+        '<li><strong>Dinheiro e cartão (crédito/débito):</strong> aceitos <strong>somente presencialmente (in loco)</strong> (entrega/retirada), mediante acordo prévio — não como pagamento do pedido na plataforma.</li>' +
+      '</ul>'
+    },
+  };
+
+  const sec = sections[storeInfoSection];
+  if (!sec) return '';
+
+  return `
+    <div id="store-info-overlay" class="fixed inset-0 bg-black/50 z-40 print:hidden"></div>
+    <aside id="store-info-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col print:hidden" role="dialog" aria-modal="true" aria-label="${sec.title}">
+      <div class="flex items-center justify-between px-4 py-3 bg-primary text-white shrink-0">
+        <h2 class="font-bold text-sm flex items-center gap-2"><span aria-hidden="true">${sec.icon}</span> ${sec.title}</h2>
+        <button type="button" data-close-store-info class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition font-bold" aria-label="Fechar">✕</button>
+      </div>
+      <div id="store-info-body" class="flex-1 overflow-y-auto p-4">
+        <section class="rounded-xl border border-primary bg-primary-light/40 p-4">
+          <p class="text-sm text-zinc-800 leading-relaxed">${sec.content}</p>
+          ${sec.extra}
+        </section>
+        <p class="mt-3 text-[11px] text-zinc-500">Condições válidas para pedidos feitos pela plataforma (perfil cliente).</p>
       </div>
     </aside>
   `;
@@ -1706,7 +1820,7 @@ function renderProductDrawer(): string {
         .map(
           (h) => `
         <li class="flex items-start gap-2">
-          <span class="text-emerald-600 mt-0.5 font-bold">✓</span>
+          <span class="text-primary mt-0.5 font-bold">✓</span>
           <span>${escapeHtml(h)}</span>
         </li>`
         )
@@ -1716,7 +1830,7 @@ function renderProductDrawer(): string {
   return `
     <div id="product-detail-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
     <aside id="product-detail-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl flex flex-col cart-drawer-panel print:hidden" role="dialog" aria-modal="true" aria-label="Detalhes do produto">
-      <div class="flex items-center justify-between px-4 py-3 bg-[#0a8754] text-white shrink-0">
+      <div class="flex items-center justify-between px-4 py-3 bg-primary text-white shrink-0">
         <h2 class="font-bold text-sm flex items-center gap-2">
           <span>${category.icon}</span>
           <span>Detalhes do produto</span>
@@ -1738,7 +1852,7 @@ function renderProductDrawer(): string {
 
         <div class="space-y-2">
           <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">${category.icon} ${escapeHtml(category.name)}</span>
+            <span class="text-xs font-semibold text-primary bg-primary-light px-2 py-0.5 rounded">${category.icon} ${escapeHtml(category.name)}</span>
             <div class="flex gap-1">
               ${isTop ? '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">🔥 TOP</span>' : ''}
               ${isKit ? '<span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-1.5 py-0.5 rounded">🎁 KIT</span>' : ''}
@@ -1748,11 +1862,11 @@ function renderProductDrawer(): string {
           <p><span class="font-mono text-xs tracking-wide text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded">Cód ${escapeHtml(p.code)}</span></p>
         </div>
 
-        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+        <div class="bg-primary-light border border-primary rounded-lg p-3">
           <div class="flex items-baseline justify-between">
             <span class="text-xs text-zinc-500 font-mono">à vista</span>
             <div class="text-right">
-              <span class="display-text text-2xl tabular-nums text-[#0a8754]">${brl(p.price)}</span>
+              <span class="display-text text-2xl tabular-nums text-primary">${brl(p.price)}</span>
               ${
                 p.price_max && p.price_max > p.price
                   ? `<span class="block text-xs text-zinc-500 tabular-nums">até ${brl(p.price_max)}</span>`
@@ -1763,9 +1877,9 @@ function renderProductDrawer(): string {
           ${
             perfil === 'lojista' && showCostMargins
               ? `
-            <div class="mt-3 pt-3 border-t border-emerald-200 grid grid-cols-3 gap-2 text-center text-xs font-mono">
+            <div class="mt-3 pt-3 border-t border-primary grid grid-cols-3 gap-2 text-center text-xs font-mono">
               <div><span class="block text-[10px] uppercase text-zinc-500">Custo</span><span class="font-semibold text-zinc-800">${brl(p.cost)}</span></div>
-              <div><span class="block text-[10px] uppercase text-zinc-500">Lucro</span><span class="font-semibold text-emerald-700">${brl(profit)}</span></div>
+              <div><span class="block text-[10px] uppercase text-zinc-500">Lucro</span><span class="font-semibold text-primary">${brl(profit)}</span></div>
               <div><span class="block text-[10px] uppercase text-zinc-500">Margem</span><span class="font-bold text-indigo-700">${margin}%</span></div>
             </div>`
               : ''
@@ -1787,7 +1901,7 @@ function renderProductDrawer(): string {
       <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
         <button type="button"
                 data-add-to-cart="${p.id}"
-                class="w-full inline-flex items-center justify-center gap-2 bg-[#0a8754] hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
+                class="w-full inline-flex items-center justify-center gap-2 btn-primary text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
           <span>🛒 Adicionar no carrinho</span>
         </button>
         <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
@@ -1864,6 +1978,19 @@ function attachEventListeners() {
   });
   const detailOverlay = document.getElementById('product-detail-overlay');
   if (detailOverlay) detailOverlay.addEventListener('click', closeProductDetail);
+
+  // Drawer de informações da loja (Entrega/Garantia/Pagamento)
+  document.querySelectorAll<HTMLElement>('[data-open-store-info]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const section = el.dataset.openStoreInfo as StoreInfoSection | undefined;
+      if (section) openStoreInfo(section);
+    });
+  });
+  document.querySelectorAll<HTMLElement>('[data-close-store-info]').forEach((el) => {
+    el.addEventListener('click', () => closeStoreInfo());
+  });
+  const storeInfoOverlay = document.getElementById('store-info-overlay');
+  if (storeInfoOverlay) storeInfoOverlay.addEventListener('click', closeStoreInfo);
 
   // Toggle margins
   const toggleBtn = document.getElementById('toggle-margins-btn');

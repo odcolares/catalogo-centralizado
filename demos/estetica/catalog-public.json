@@ -1,0 +1,337 @@
+{
+  "store": {
+    "name": "Demo Clínica — Estética & Bem-Estar",
+    "city": "Manaus/AM",
+    "delivery": "Atendimento presencial na clínica • Agendamento prévio obrigatório • Consulte disponibilidade de horários.",
+    "warranty": "Garantia de satisfação: reavaliação gratuita em até 7 dias • Procedimentos seguem protocolos técnicos e normas da ANVISA.",
+    "payment": "Pagamento na clínica: PIX, dinheiro, cartão (crédito/débito) — consulte parcelamento. Sinal via PIX para reserva de horário (conforme política).",
+    "whatsapp": "5592999997777",
+    "supplier": "demo-estetica",
+    "minOrder": 0
+  },
+  "categories": [
+    {
+      "id": "faciais",
+      "name": "Faciais",
+      "icon": "✨",
+      "products": [
+        {
+          "id": "limpeza-profunda",
+          "name": "Limpeza de Pele Profunda",
+          "code": "FAC-001",
+          "price": 120,
+          "price_max": 150,
+          "highlights": [
+            "Extração de cravos",
+            "Hidratação final",
+            "Peeling suave incluso"
+          ],
+          "tags": [
+            "mais-procurado",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/limpeza-profunda.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "peeling-quimico",
+          "name": "Peeling Químico Facial",
+          "code": "FAC-002",
+          "price": 250,
+          "price_max": 320,
+          "highlights": [
+            "Renovação celular",
+            "Uniformiza tom",
+            "Reduz marcas de acne"
+          ],
+          "tags": [
+            "rejuvenescimento",
+            "intermediario"
+          ],
+          "enabled": true,
+          "image": "images/peeling-quimico.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "microagulhamento",
+          "name": "Microagulhamento Facial",
+          "code": "FAC-003",
+          "price": 350,
+          "price_max": 450,
+          "highlights": [
+            "Estimula colágeno",
+            "Cicatrizes e poros",
+            "Drug delivery opcional"
+          ],
+          "tags": [
+            "rejuvenescimento",
+            "premium"
+          ],
+          "enabled": true,
+          "image": "images/microagulhamento.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "corporais",
+      "name": "Corporais",
+      "icon": "💆",
+      "products": [
+        {
+          "id": "massagem-modeladora",
+          "name": "Massagem Modeladora",
+          "code": "COR-001",
+          "price": 90,
+          "price_max": 120,
+          "highlights": [
+            "Reduz medidas",
+            "Ativa circulação",
+            "Drenagem inclusa"
+          ],
+          "tags": [
+            "mais-procurado",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/massagem-modeladora.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "drenagem-linfatica",
+          "name": "Drenagem Linfática Manual",
+          "code": "COR-002",
+          "price": 110,
+          "price_max": 140,
+          "highlights": [
+            "Desincha",
+            "Pós-operatório",
+            "Relaxante"
+          ],
+          "tags": [
+            "hidratacao",
+            "pos-operatorio"
+          ],
+          "enabled": true,
+          "image": "images/drenagem-linfatica.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "criolipolise",
+          "name": "Criolipólise (por área)",
+          "code": "COR-003",
+          "price": 550,
+          "price_max": 750,
+          "highlights": [
+            "Congela gordura localizada",
+            "Não invasivo",
+            "Resultados em 8-12 semanas"
+          ],
+          "tags": [
+            "premium",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/criolipolise.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "capilares",
+      "name": "Capilares",
+      "icon": "💇",
+      "products": [
+        {
+          "id": "cauterizacao",
+          "name": "Cauterização Capilar",
+          "code": "CAP-001",
+          "price": 80,
+          "price_max": 110,
+          "highlights": [
+            "Repara danos",
+            "Brilho intenso",
+            "Sela cutículas"
+          ],
+          "tags": [
+            "hidratacao",
+            "mais-procurado"
+          ],
+          "enabled": true,
+          "image": "images/cauterizacao.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "botox-capilar",
+          "name": "Botox Capilar",
+          "code": "CAP-002",
+          "price": 180,
+          "price_max": 240,
+          "highlights": [
+            "Alinhamento perfeito",
+            "Anti-frizz duradouro",
+            "Hidratação profunda"
+          ],
+          "tags": [
+            "rejuvenescimento",
+            "intermediario"
+          ],
+          "enabled": true,
+          "image": "images/botox-capilar.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "progressiva",
+          "name": "Progressiva Orgânica",
+          "code": "CAP-003",
+          "price": 280,
+          "price_max": 380,
+          "highlights": [
+            "Sem formol",
+            "Liso natural",
+            "Dura até 4 meses"
+          ],
+          "tags": [
+            "premium",
+            "mais-procurado"
+          ],
+          "enabled": true,
+          "image": "images/progressiva.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "depilacao",
+      "name": "Depilação",
+      "icon": "🪒",
+      "products": [
+        {
+          "id": "depilacao-laser-axila",
+          "name": "Depilação a Laser - Axila (sessão)",
+          "code": "DEP-001",
+          "price": 70,
+          "price_max": 90,
+          "highlights": [
+            "Definitiva",
+            "Rápido e indolor",
+            "Pele lisa"
+          ],
+          "tags": [
+            "mais-procurado",
+            "promocao",
+            "feminino"
+          ],
+          "enabled": true,
+          "image": "images/depilacao-laser-axila.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "depilacao-laser-virinha",
+          "name": "Depilação a Laser - Virilha (sessão)",
+          "code": "DEP-002",
+          "price": 90,
+          "price_max": 120,
+          "highlights": [
+            "Definitiva",
+            "Clareia a região",
+            "Menos foliculite"
+          ],
+          "tags": [
+            "mais-procurado",
+            "feminino"
+          ],
+          "enabled": true,
+          "image": "images/depilacao-laser-virinha.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "depilacao-laser-barba",
+          "name": "Depilação a Laser - Barba/Rosto (sessão)",
+          "code": "DEP-003",
+          "price": 110,
+          "price_max": 140,
+          "highlights": [
+            "Acaba com foliculite",
+            "Contorno perfeito",
+            "Masculino"
+          ],
+          "tags": [
+            "masculino",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/depilacao-laser-barba.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "pacotes",
+      "name": "Pacotes",
+      "icon": "🎁",
+      "products": [
+        {
+          "id": "pacote-noiva",
+          "name": "Pacote Noiva Completo",
+          "code": "PAC-001",
+          "price": 950,
+          "price_max": 1200,
+          "highlights": [
+            "6 sessões faciais",
+            "Design de sobrancelha",
+            "Maquiagem dia do evento"
+          ],
+          "tags": [
+            "pacote",
+            "promocao",
+            "feminino"
+          ],
+          "enabled": true,
+          "image": "images/pacote-noiva.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "pacote-detox",
+          "name": "Pacote Detox Corporal (5 sessões)",
+          "code": "PAC-002",
+          "price": 450,
+          "price_max": 550,
+          "highlights": [
+            "5 drenagens + modeladora",
+            "Reduz retenção",
+            "Agendamento flexível"
+          ],
+          "tags": [
+            "pacote",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/pacote-detox.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "pacote-homem",
+          "name": "Pacote Homem Moderno",
+          "code": "PAC-003",
+          "price": 380,
+          "price_max": 480,
+          "highlights": [
+            "Barba laser (3 sessões)",
+            "Limpeza facial",
+            "Corte + barba"
+          ],
+          "tags": [
+            "pacote",
+            "masculino",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/pacote-homem.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    }
+  ]
+}

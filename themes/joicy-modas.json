@@ -1,0 +1,53 @@
+{
+  "name": "Joicy Modas Importados",
+  "niche": "feminino",
+  "colors": {
+    "primary": "#f60468",
+    "primaryLight": "#fb93c0",
+    "primaryDark": "#c40352",
+    "secondary": "#d6a017",
+    "secondaryLight": "#f0c44a",
+    "secondaryDark": "#ab7f11",
+    "background": "#fdfdfd",
+    "surface": "#ffffff",
+    "text": "#161717",
+    "textLight": "#6b6b6b",
+    "border": "#f0e6ec",
+    "success": "#48b851",
+    "error": "#e53935",
+    "warning": "#d6a017",
+    "info": "#167cbf"
+  },
+  "icons": {
+    "cart": "🛍️",
+    "whatsapp": "💬",
+    "category": "💄",
+    "delivery": "🚚",
+    "guarantee": "✨",
+    "payment": "💳",
+    "star": "⭐",
+    "heart": "❤️",
+    "sparkles": "✨",
+    "gift": "🎁",
+    "makeup": "💄",
+    "nail": "💅",
+    "hair": "💇",
+    "perfume": "🌸"
+  },
+  "categories": [
+    "Cestas de Maquiagem",
+    "Dia dos Pais",
+    "Cestas de Chocolates",
+    "Mais Vendidas",
+    "Buquê de Chocolate",
+    "Dia dos Namorados",
+    "Dia das Mães",
+    "Presentes",
+    "Perfumaria"
+  ],
+  "tags": ["importados", "presentes", "maquiagem", "perfumaria", "cestas", "beauty"],
+  "meta": {
+    "description": "Cestas de beleza, maquiagem, perfumaria e presentes importados para todas as ocasiões",
+    "keywords": ["cestas de maquiagem", "presentes femininos", "perfumes importados", "kits beleza", "cestas de chocolate"]
+  }
+}

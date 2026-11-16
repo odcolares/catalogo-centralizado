@@ -1,0 +1,410 @@
+{
+  "store": {
+    "name": "Demo Lanchonete — Burgers & Delivery",
+    "city": "Manaus/AM",
+    "delivery": "Delivery via motoboy (taxa por bairro, consulte) • Retirada no balcão: pronta em 15-30 min após confirmação do pagamento (PIX) — valor/condições sob consulta.",
+    "warranty": "Qualidade garantida: itens preparados na hora • Reclamações sobre o pedido devem ser feitas em até 30 min após recebimento/retirada para reposição ou crédito.",
+    "payment": "Pagamento do pedido: PIX (comprovante para confirmação). Dinheiro e cartão (crédito/débito) somente presenciais (in loco), mediante acordo.",
+    "whatsapp": "5592999996666",
+    "supplier": "demo-lanches",
+    "minOrder": 15
+  },
+  "categories": [
+    {
+      "id": "hamburgueres",
+      "name": "Hambúrgueres",
+      "icon": "🍔",
+      "products": [
+        {
+          "id": "smash-classico",
+          "name": "Smash Clássico",
+          "code": "HAM-001",
+          "price": 22.9,
+          "highlights": [
+            "160g blend Angus",
+            "Queijo cheddar",
+            "Molho especial da casa"
+          ],
+          "tags": [
+            "mais-vendido",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/smash-classico.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "smash-duplo",
+          "name": "Smash Duplo Bacon",
+          "code": "HAM-002",
+          "price": 32.9,
+          "highlights": [
+            "2x 160g blend Angus",
+            "Bacon crocante",
+            "Duplo cheddar"
+          ],
+          "tags": [
+            "mais-vendido",
+            "combo"
+          ],
+          "enabled": true,
+          "image": "images/smash-duplo.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "hamburguer-vegano",
+          "name": "Hambúrguer Vegano",
+          "code": "HAM-003",
+          "price": 28.9,
+          "highlights": [
+            "Hambúrguer de grão-de-bico",
+            "Queijo vegano derretido",
+            "Molho especial vegano"
+          ],
+          "tags": [
+            "vegetariano",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/hamburguer-vegano.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "hamburguer-frango",
+          "name": "Crispy Chicken Burger",
+          "code": "HAM-004",
+          "price": 25.9,
+          "highlights": [
+            "Filé de frango empanado crocante",
+            "Maionese de alho",
+            "Alface e tomate frescos"
+          ],
+          "tags": [
+            "intermediario",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/hamburguer-frango.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "acompanhamentos",
+      "name": "Acompanhamentos",
+      "icon": "🍟",
+      "products": [
+        {
+          "id": "batata-frita",
+          "name": "Batata Frita Clássica",
+          "code": "ACO-001",
+          "price": 12.9,
+          "highlights": [
+            "Corte rústico",
+            "Crocante por fora",
+            "Macio por dentro"
+          ],
+          "tags": [
+            "mais-vendido",
+            "combo"
+          ],
+          "enabled": true,
+          "image": "images/batata-frita.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "batata-rustica",
+          "name": "Batata Rústica com Alecrim",
+          "code": "ACO-002",
+          "price": 16.9,
+          "highlights": [
+            "Com casca",
+            "Alecrim e alho",
+            "Azeite extra virgem"
+          ],
+          "tags": [
+            "vegetariano",
+            "fit"
+          ],
+          "enabled": true,
+          "image": "images/batata-rustica.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "onion-rings",
+          "name": "Onion Rings",
+          "code": "ACO-003",
+          "price": 18.9,
+          "highlights": [
+            "Cebola empanada crocante",
+            "Molho barbecue",
+            "Porção generosa"
+          ],
+          "tags": [
+            "apimentado",
+            "combo"
+          ],
+          "enabled": true,
+          "image": "images/onion-rings.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "nuggets",
+          "name": "Nuggets de Frango (8 un)",
+          "code": "ACO-004",
+          "price": 19.9,
+          "highlights": [
+            "Frango 100% peito",
+            "Empanamento tempêrado",
+            "Molhos à escolha"
+          ],
+          "tags": [
+            "kids",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/nuggets.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "bebidas",
+      "name": "Bebidas",
+      "icon": "🥤",
+      "products": [
+        {
+          "id": "coca-cola-lata",
+          "name": "Coca-Cola Lata 350ml",
+          "code": "BEB-001",
+          "price": 7.9,
+          "highlights": [
+            "Gelada",
+            "Original",
+            "Lata 350ml"
+          ],
+          "tags": [
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/coca-cola-lata.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "coca-cola-zero",
+          "name": "Coca-Cola Zero Lata 350ml",
+          "code": "BEB-002",
+          "price": 7.9,
+          "highlights": [
+            "Zero açúcar",
+            "Mesmo sabor",
+            "Lata 350ml"
+          ],
+          "tags": [
+            "fit",
+            "mais-vendido"
+          ],
+          "enabled": true,
+          "image": "images/coca-cola-zero.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "guarana-antartica",
+          "name": "Guaraná Antarctica Lata 350ml",
+          "code": "BEB-003",
+          "price": 7.5,
+          "highlights": [
+            "Original brasileiro",
+            "Gelado",
+            "Lata 350ml"
+          ],
+          "tags": [],
+          "enabled": true,
+          "image": "images/guarana-antartica.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "suco-natural",
+          "name": "Suco Natural (Laranja/Maracujá) 300ml",
+          "code": "BEB-004",
+          "price": 12.9,
+          "highlights": [
+            "Fruta fresca",
+            "Sem conservantes",
+            "Feito na hora"
+          ],
+          "tags": [
+            "fit",
+            "vegetariano",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/suco-natural.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "agua-com-gas",
+          "name": "Água com Gás 500ml",
+          "code": "BEB-005",
+          "price": 5.9,
+          "highlights": [
+            "Gelada",
+            "Refrescante",
+            "500ml"
+          ],
+          "tags": [
+            "fit"
+          ],
+          "enabled": true,
+          "image": "images/agua-com-gas.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "sobremesas",
+      "name": "Sobremesas",
+      "icon": "🍦",
+      "products": [
+        {
+          "id": "sorvete-casquinha",
+          "name": "Sorvete Casquinha (2 bolas)",
+          "code": "SOB-001",
+          "price": 12.9,
+          "highlights": [
+            "Sabores: chocolate, baunilha, morango",
+            "Casquinha crocante",
+            "Cobertura opcional"
+          ],
+          "tags": [
+            "kids",
+            "vegetariano"
+          ],
+          "enabled": true,
+          "image": "images/sorvete-casquinha.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "milkshake",
+          "name": "Milkshake (Chocolate/Morango/Baunilha)",
+          "code": "SOB-002",
+          "price": 18.9,
+          "highlights": [
+            "Cremoso e gelado",
+            "Calda por cima",
+            "Chantilly incluso"
+          ],
+          "tags": [
+            "mais-vendido",
+            "kids"
+          ],
+          "enabled": true,
+          "image": "images/milkshake.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "brownie-sorvete",
+          "name": "Brownie com Sorvete",
+          "code": "SOB-003",
+          "price": 22.9,
+          "highlights": [
+            "Brownie quentinho",
+            "1 bola de sorvete",
+            "Calda de chocolate"
+          ],
+          "tags": [
+            "premium",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/brownie-sorvete.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "combos",
+      "name": "Combos",
+      "icon": "🎁",
+      "products": [
+        {
+          "id": "combo-smash-frita-refri",
+          "name": "Combo Smash + Batata + Refri",
+          "code": "CMB-001",
+          "price": 38.9,
+          "highlights": [
+            "1 Smash Clássico",
+            "Batata Frita Média",
+            "Refri Lata 350ml à escolha"
+          ],
+          "tags": [
+            "combo",
+            "mais-vendido",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/combo-smash-frita-refri.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "combo-duplo-frita-refri",
+          "name": "Combo Duplo Bacon + Batata + Refri",
+          "code": "CMB-002",
+          "price": 48.9,
+          "highlights": [
+            "1 Smash Duplo Bacon",
+            "Batata Frita Grande",
+            "Refri Lata 350ml à escolha"
+          ],
+          "tags": [
+            "combo",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/combo-duplo-frita-refri.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "combo-kids",
+          "name": "Combo Kids",
+          "code": "CMB-003",
+          "price": 29.9,
+          "highlights": [
+            "1 Mini Burger",
+            "Batata Frita Pequena",
+            "Suco de Caixinha 200ml",
+            "Brinquedo surpresa"
+          ],
+          "tags": [
+            "combo",
+            "kids",
+            "promocao"
+          ],
+          "enabled": true,
+          "image": "images/combo-kids.jpg",
+          "sourceUrl": ""
+        },
+        {
+          "id": "combo-casal",
+          "name": "Combo Casal (2 Smash + 2 Batatas + 2 Refris)",
+          "code": "CMB-004",
+          "price": 69.9,
+          "highlights": [
+            "2 Smash Clássicos",
+            "2 Batatas Fritas Médias",
+            "2 Refris Lata 350ml",
+            "Ideal para dividir"
+          ],
+          "tags": [
+            "combo",
+            "promocao",
+            "novo"
+          ],
+          "enabled": true,
+          "image": "images/combo-casal.jpg",
+          "sourceUrl": ""
+        }
+      ]
+    }
+  ]
+}
