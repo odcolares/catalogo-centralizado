@@ -1,7 +1,7 @@
 {
   "name": "catalogo-centralizado",
   "version": "1.0.0",
-  "description": "Catálogo centralizado de eletrônicos Manaus — fonte única em JSON que gera MD, HTML, API JSON e PDF.",
+  "description": "Catalogo centralizado de eletronicos Manaus - fonte unica em JSON que gera MD, HTML, API JSON e PDF.",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,12 +13,11 @@
     "test": "node generator.cjs",
     "dev:loja": "vite --port=3000 --host=0.0.0.0",
     "dev:demo:loja": "cross-env VITE_DEMO=loja vite --port=3000 --host=0.0.0.0",
-    "dev:lojista:loja": "vite --port=3001 --host=0.0.0.0 --config vite.config.ts --mode development",
+    "dev:lojista:loja": "cross-env VITE_DEMO=loja VITE_PORT=3001 vite --port=3001 --host=0.0.0.0 --config vite.config.ts --mode development",
     "dev:demo:estetica": "cross-env VITE_DEMO=estetica vite --port=3000 --host=0.0.0.0",
     "dev:demo:lanches": "cross-env VITE_DEMO=lanches vite --port=3000 --host=0.0.0.0",
     "dev:demo:bella-makeup": "cross-env VITE_DEMO=bella-makeup vite --port=3000 --host=0.0.0.0",
     "dev:demo:joicy-modas": "cross-env VITE_DEMO=joicy-modas vite --port=3000 --host=0.0.0.0",
-    "dev:lojista:loja": "cross-env VITE_DEMO=loja VITE_PORT=3001 vite --port=3001 --host=0.0.0.0 --config vite.config.ts --mode development",
     "dev:lojista:estetica": "cross-env VITE_DEMO=estetica VITE_PORT=3001 vite --port=3001 --host=0.0.0.0 --config vite.config.ts --mode development",
     "dev:lojista:lanches": "cross-env VITE_DEMO=lanches VITE_PORT=3001 vite --port=3001 --host=0.0.0.0 --config vite.config.ts --mode development",
     "dev:lojista:bella-makeup": "cross-env VITE_DEMO=bella-makeup VITE_PORT=3001 vite --port=3001 --host=0.0.0.0 --config vite.config.ts --mode development",
@@ -29,6 +28,7 @@
     "build:demo:bella-makeup": "cross-env VITE_DEMO=bella-makeup vite build --mode demo-bella-makeup",
     "build:demo:joicy-modas": "cross-env VITE_DEMO=joicy-modas vite build --mode demo-joicy-modas",
     "build:all-demos": "npm run build:demo:loja && npm run build:demo:estetica && npm run build:demo:lanches && npm run build:demo:bella-makeup && npm run build:demo:joicy-modas",
+    "build:lojista": "vite build --config vite.config.ts --mode production"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
