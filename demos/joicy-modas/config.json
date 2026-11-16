@@ -10,6 +10,6 @@
     "payment": "PIX na plataforma | Dinheiro/cartão apenas in loco mediante acordo prévio.",
     "minOrder": 0
   },
-  "logo": { "src": "images/logo.png", "alt": "Joicy Modas Importados" },
-  "customImages": { "logo": "images/logo.png" }
+  "logo": { "src": "images/logo.jpg", "alt": "Joicy Modas Importados" },
+  "customImages": { "logo": "images/logo.jpg" }
 }
