@@ -577,7 +577,7 @@ function renderApp() {
               <span>${totalProducts} produtos</span>
             </div>
             <h1 class="display-text text-3xl md:text-4xl flex items-center gap-3">
-              <img src="${store.logo?.src || 'images/Loja_img.png'}" alt="${store.logo?.alt || 'Logo da loja'}" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50 shadow-lg" onerror="this.remove()" />
+              <img src="${store.logo?.src || 'images/logo.jpg'}" alt="${store.logo?.alt || 'Logo da loja'}" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50 shadow-lg" onerror="this.remove()" />
               <span>${escapeHtml(store.name || 'Catálogo de Eletrônicos')}</span>
             </h1>
             <p class="text-white/90 text-sm mt-2 max-w-xl leading-relaxed">
@@ -638,7 +638,7 @@ function renderApp() {
             <a href="https://wa.me/${(store.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Vi o catálogo e quero fazer um pedido — pode me atender?')}"
                target="_blank" rel="noopener"
                class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg border border-transparent shadow transition text-sm leading-none">
-              <img src="${store.logo?.src || 'images/Loja_img.png'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover shrink-0" onerror="this.remove()" />
+              <img src="${store.logo?.src || 'images/logo.jpg'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover shrink-0" onerror="this.remove()" />
               <span class="leading-none">Atendimento WhatsApp</span>
             </a>
             <div class="flex items-center gap-2 flex-nowrap">
@@ -906,7 +906,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                   <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
                      data-track-wa="${p.id}"
                      class="w-full inline-flex items-center justify-center gap-2 mt-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2 px-4 rounded-lg text-sm shadow-xs transition">
-                    <img src="${store.logo?.src || 'images/Loja_img.png'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+                    <img src="${store.logo?.src || 'images/logo.jpg'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
                     <span>WhatsApp</span>
                   </a>
                   ` : ''}
@@ -1476,7 +1476,7 @@ function buildOrderReportInner(): string {
       <!-- Cabeçalho -->
       <div class="flex items-start justify-between gap-4 border-b-[3px] border-primary pb-3">
         <div class="flex items-center gap-3">
-          <img src="${store.logo?.src || 'images/Loja_img.png'}" alt="${store.logo?.alt || ''}" class="w-12 h-12 rounded-full object-cover border-2 border-primary" onerror="this.remove()" />
+          <img src="${store.logo?.src || 'images/logo.jpg'}" alt="${store.logo?.alt || ''}" class="w-12 h-12 rounded-full object-cover border-2 border-primary" onerror="this.remove()" />
           <div>
             <div class="text-2xl font-black leading-none text-primary">${escapeHtml(store.name || '[Nome da Loja]')}</div>
             <div class="text-[11px] text-zinc-600 mt-1 font-semibold">Eletrônicos • ${escapeHtml(store.city || 'Manaus/AM')}</div>
@@ -1706,7 +1706,7 @@ function renderCartDrawer(): string {
       <div class="border-t border-zinc-200 p-3 space-y-2 bg-zinc-50 shrink-0">
         ${perfil === 'cliente' ? `
         <button type="button" id="cart-send-wa" class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
-          <img src="${store.logo?.src || 'images/Loja_img.png'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+          <img src="${store.logo?.src || 'images/logo.jpg'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
           <span>Enviar pedido no WhatsApp</span>
         </button>
         ` : ''}
@@ -1907,7 +1907,7 @@ function renderProductDrawer(): string {
         <a href="${getWhatsAppUrl(p)}" target="_blank" rel="noopener"
            data-track-wa="${p.id}"
            class="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-2.5 px-4 rounded-lg text-sm shadow-xs transition">
-          <img src="${store.logo?.src || 'images/Loja_img.png'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
+          <img src="${store.logo?.src || 'images/logo.jpg'}" alt="${store.logo?.alt || ''}" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
           <span>Falar no WhatsApp</span>
         </a>
       </div>

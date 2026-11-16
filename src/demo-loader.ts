@@ -189,7 +189,7 @@ function getDefaultDemoConfig(demoId: string): DemoConfig {
       payment: 'PIX para pedidos. Dinheiro/cartão apenas in loco.',
       minOrder: 0,
     },
-    logo: { src: 'images/Loja_img.png', alt: `Demo ${demoId}` },
+    logo: { src: 'images/logo.jpg', alt: `Demo ${demoId}` },
   };
 }
 
