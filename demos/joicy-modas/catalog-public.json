@@ -1,354 +1,510 @@
 {
-  "version": "1.0",
-  "updatedAt": "2026-11-16T12:50:00.000Z",
-  "source": "WhatsApp Business Catalog - Joicy Modas Importados",
+  "store": {
+    "name": "Joicy Modas Importados",
+    "city": "Manaus/AM",
+    "delivery": "Taxa de entrega de acordo com o bairro. Consulte no WhatsApp.",
+    "warranty": "Defeitos conforme CDC (Lei 8.078/90). Trocas conforme política da loja: até 7 dias para arrependimento (art. 49 CDC); defeitos 30 dias (art. 26 CDC). Produtos de beleza/perfumaria: apenas lacrados.",
+    "payment": "PIX na plataforma | Dinheiro/cartão apenas in loco mediante acordo prévio.",
+    "whatsapp": "559294147938",
+    "minOrder": 0
+  },
   "categories": [
     {
       "id": "cestas-maquiagem",
-      "name": "🌸 Cestas de Maquiagem 🌸",
+      "name": "🌸 Cestas de Maquiagem",
       "icon": "💄",
       "products": [
         {
           "id": "prod-001",
           "name": "🎀 Cesta da Angel recheada de makes",
-          "description": "Kit de pincéis, paleta de sombras, serum facial, piranha de cabelo, delineador, esponja, blusch, rímel, sabonete facial, gloss, lápis de olho, tiara makeup, sombra, pelúcia da Angel. Taxa de entrega de acordo com o bairro.",
+          "code": "JOICY-001",
           "price": 299.00,
-          "category": "cestas-maquiagem",
-          "images": ["images/prod-001.jpg"],
+          "price_max": 299.00,
+          "highlights": [
+            "Kit de pincéis",
+            "Paleta de sombras",
+            "Serum facial",
+            "Piranha de cabelo",
+            "Delineador",
+            "Esponja",
+            "Blush",
+            "Rímel",
+            "Sabonete facial",
+            "Gloss",
+            "Lápis de olho",
+            "Tiara makeup",
+            "Pelúcia da Angel"
+          ],
           "tags": ["maquiagem", "kit completo", "presente", "angel"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-001.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-002",
           "name": "🌸 Cesta de Maquiagem",
-          "description": "Kit de esponja, Demaquilante, pó banana, tiara makeup, sombra, blusch, gel de virilha, base matte, cartela de cílios, cola para cílios, rímel, gloss, piranha. Taxa de entrega R$ 15,00.",
+          "code": "JOICY-002",
           "price": 215.00,
-          "category": "cestas-maquiagem",
-          "images": ["images/prod-002.jpg"],
+          "price_max": 215.00,
+          "highlights": [
+            "Kit de esponja",
+            "Demaquilante",
+            "Pó banana",
+            "Tiara makeup",
+            "Sombra",
+            "Blush",
+            "Gel de virilha",
+            "Base matte",
+            "Cartela de cílios",
+            "Cola para cílios",
+            "Rímel",
+            "Gloss",
+            "Piranha"
+          ],
           "tags": ["maquiagem", "cesta", "presente"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-002.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-003",
           "name": "💖 Cesta para presentear",
-          "description": "18 itens sortidos na cesta. Ideal para presentes especiais.",
+          "code": "JOICY-003",
           "price": 315.00,
-          "category": "cestas-maquiagem",
-          "images": ["images/prod-003.jpg"],
+          "price_max": 315.00,
+          "highlights": [
+            "18 itens sortidos na cesta",
+            "Ideal para presentes especiais"
+          ],
           "tags": ["presente", "cesta", "sortido"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-003.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "dia-dos-pais",
-      "name": "💙 Dia dos Pais 💙",
+      "name": "💙 Dia dos Pais",
       "icon": "💙",
       "products": [
         {
           "id": "prod-004",
           "name": "💙 Para o dia dos Pais",
-          "description": "A pronta entrega. Kit especial masculino.",
+          "code": "JOICY-004",
           "price": 160.00,
-          "category": "dia-dos-pais",
-          "images": ["images/prod-004.jpg"],
+          "price_max": 160.00,
+          "highlights": [
+            "A pronta entrega",
+            "Kit especial masculino"
+          ],
           "tags": ["pais", "presente", "masculino", "pronta-entrega"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-004.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-005",
           "name": "💙 Kit para presentear",
-          "description": "1 carteira masculina, 1 fone de ouvido, 1 perfume importado.",
+          "code": "JOICY-005",
           "price": 100.00,
-          "category": "dia-dos-pais",
-          "images": ["images/prod-005.jpg"],
+          "price_max": 100.00,
+          "highlights": [
+            "1 carteira masculina",
+            "1 fone de ouvido",
+            "1 perfume importado"
+          ],
           "tags": ["pais", "kit", "carteira", "fone", "perfume"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-005.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-006",
           "name": "❤️ Kit para presentear paizão",
-          "description": "Carteira, relógio esportivo, fone de ouvido via bluetooth digital.",
+          "code": "JOICY-006",
           "price": 125.00,
-          "category": "dia-dos-pais",
-          "images": ["images/prod-006.jpg"],
+          "price_max": 125.00,
+          "highlights": [
+            "Carteira",
+            "Relógio esportivo",
+            "Fone de ouvido via bluetooth digital"
+          ],
           "tags": ["pais", "kit", "carteira", "relogio", "fone"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-006.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "cestas-chocolates",
-      "name": "🍫 Cestas de Chocolates 🍫",
+      "name": "🍫 Cestas de Chocolates",
       "icon": "🍫",
       "products": [
         {
           "id": "prod-007",
           "name": "💖 💙 Cestas dos Stitch",
-          "description": "Cestas temáticas Stitch. Design exclusivo.",
+          "code": "JOICY-007",
           "price": 170.00,
-          "category": "cestas-chocolates",
-          "images": ["images/prod-007.jpg"],
+          "price_max": 170.00,
+          "highlights": [
+            "Cestas temáticas Stitch",
+            "Design exclusivo"
+          ],
           "tags": ["chocolate", "stitch", "temático", "presente"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-007.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-008",
           "name": "🩷 Cesta de coração",
-          "description": "1 cesta toda decorada, 1 urso de pelúcia, 5 chocolates variados. Taxa de entrega R$ 15,00.",
+          "code": "JOICY-008",
           "price": 65.00,
-          "category": "cestas-chocolates",
-          "images": ["images/prod-008.jpg"],
+          "price_max": 65.00,
+          "highlights": [
+            "1 cesta toda decorada",
+            "1 urso de pelúcia",
+            "5 chocolates variados",
+            "Taxa de entrega R$ 15,00"
+          ],
           "tags": ["chocolate", "coração", "urso", "pelúcia"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-008.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-009",
           "name": "❤️ Caixa personalizada para presentear",
-          "description": "3 Kit Kat, 3 chocolates variados, 1 urso de pelúcia pequeno, 1 decoração toda inclusa. Taxa de entrega R$ 15,00.",
+          "code": "JOICY-009",
           "price": 70.00,
-          "category": "cestas-chocolates",
-          "images": ["images/prod-009.jpg"],
+          "price_max": 70.00,
+          "highlights": [
+            "3 Kit Kat",
+            "3 chocolates variados",
+            "1 urso de pelúcia pequeno",
+            "1 decoração toda inclusa",
+            "Taxa de entrega R$ 15,00"
+          ],
           "tags": ["chocolate", "caixa", "personalizada", "kitkat", "urso"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-009.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "mais-vendidas",
-      "name": "❤️🔥 Mais Vendidas ❤️🔥",
+      "name": "❤️🔥 Mais Vendidas",
       "icon": "🔥",
       "products": [
         {
           "id": "prod-010",
           "name": "🩷 Cesta de chocolate",
-          "description": "A pronta entrega. Cesta de chocolates sortidos.",
+          "code": "JOICY-010",
           "price": 80.00,
-          "category": "mais-vendidas",
-          "images": ["images/prod-010.jpg"],
+          "price_max": 80.00,
+          "highlights": [
+            "A pronta entrega",
+            "Cesta de chocolates sortidos"
+          ],
           "tags": ["chocolate", "mais-vendida", "pronta-entrega"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-010.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-011",
           "name": "Cesta especial para presentear",
-          "description": "Itens da foto. Seleção especial para presentes.",
+          "code": "JOICY-011",
           "price": 115.00,
-          "category": "mais-vendidas",
-          "images": ["images/prod-011.jpg"],
+          "price_max": 115.00,
+          "highlights": [
+            "Itens da foto",
+            "Seleção especial para presentes"
+          ],
           "tags": ["especial", "presente", "mais-vendida"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-011.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-012",
           "name": "Cesta da Angel",
-          "description": "Cesta temática Angel com seleção de produtos.",
+          "code": "JOICY-012",
           "price": 165.00,
-          "category": "mais-vendidas",
-          "images": ["images/prod-012.jpg"],
+          "price_max": 165.00,
+          "highlights": [
+            "Cesta temática Angel",
+            "Seleção de produtos"
+          ],
           "tags": ["angel", "cesta", "mais-vendida"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-012.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "buque-chocolate",
-      "name": "❤️🔥 Buquê de Chocolate ❤️🔥",
+      "name": "❤️🔥 Buquê de Chocolate",
       "icon": "🌹",
       "products": [
         {
           "id": "prod-013",
           "name": "Buquê de chocolates",
-          "description": "Buquê artesanal com chocolates sortidos. Presente elegante e delicioso.",
+          "code": "JOICY-013",
           "price": 125.00,
-          "category": "buque-chocolate",
-          "images": ["images/prod-013.jpg"],
+          "price_max": 125.00,
+          "highlights": [
+            "Buquê artesanal com chocolates sortidos",
+            "Presente elegante e delicioso"
+          ],
           "tags": ["buquê", "chocolate", "presente", "romântico"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-013.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "dia-namorados",
-      "name": "❤️ Dia dos Namorados ❤️",
+      "name": "❤️ Dia dos Namorados",
       "icon": "❤️",
       "products": [
         {
           "id": "prod-014",
           "name": "Cesta linda para presentear",
-          "description": "A pronta entrega. Cesta completa para surpreender no dia dos namorados.",
+          "code": "JOICY-014",
           "price": 230.00,
-          "category": "dia-namorados",
-          "images": ["images/prod-014.jpg"],
+          "price_max": 230.00,
+          "highlights": [
+            "A pronta entrega",
+            "Cesta completa para surpreender no dia dos namorados"
+          ],
           "tags": ["namorados", "cesta", "romântico", "pronta-entrega"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-014.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-015",
           "name": "Mini buquê de Maquiagem",
-          "description": "Lápis de olho, batom básico, demaquilante, cílios postiços, blusch. Compacto e charmoso.",
+          "code": "JOICY-015",
           "price": 50.00,
-          "category": "dia-namorados",
-          "images": ["images/prod-015.jpg"],
+          "price_max": 50.00,
+          "highlights": [
+            "Lápis de olho",
+            "Batom básico",
+            "Demaquilante",
+            "Cílios postiços",
+            "Blush"
+          ],
           "tags": ["namorados", "maquiagem", "mini", "buquê"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-015.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-016",
           "name": "Buquê de Maquiagem",
-          "description": "Batom básico, cílios postiços, lápis de olho, máscara facial, gloss. Presente beauty completo.",
+          "code": "JOICY-016",
           "price": 50.00,
-          "category": "dia-namorados",
-          "images": ["images/prod-016.jpg"],
+          "price_max": 50.00,
+          "highlights": [
+            "Batom básico",
+            "Cílios postiços",
+            "Lápis de olho",
+            "Máscara facial",
+            "Gloss"
+          ],
           "tags": ["namorados", "maquiagem", "buquê", "beauty"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-016.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-017",
           "name": "Mini buquê de Maquiagem (versão 2)",
-          "description": "Base pequena, gloss, tiara, lápis de olho, par de brinco. Taxa de entrega R$ 15,00.",
+          "code": "JOICY-017",
           "price": 50.00,
-          "category": "dia-namorados",
-          "images": ["images/prod-017.jpg"],
+          "price_max": 50.00,
+          "highlights": [
+            "Base pequena",
+            "Gloss",
+            "Tiara",
+            "Lápis de olho",
+            "Par de brinco",
+            "Taxa de entrega R$ 15,00"
+          ],
           "tags": ["namorados", "maquiagem", "mini", "buquê", "acessórios"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-017.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "dia-maes",
-      "name": "❤️ Dia das Mães ❤️",
+      "name": "❤️ Dia das Mães",
       "icon": "🌹",
       "products": [
         {
           "id": "prod-018",
           "name": "Cesta cheia de cosméticos",
-          "description": "Urso médio, Caixa de Rafaello, condicionador de morango, máscara de hidratação e mais itens.",
+          "code": "JOICY-018",
           "price": 185.00,
-          "category": "dia-maes",
-          "images": ["images/prod-018.jpg"],
+          "price_max": 185.00,
+          "highlights": [
+            "Urso médio",
+            "Caixa de Rafaello",
+            "Condicionador de morango",
+            "Máscara de hidratação",
+            "E mais itens"
+          ],
           "tags": ["mães", "cosméticos", "cesta", "rafaello", "urso"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-018.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-019",
           "name": "Especial dia das mães",
-          "description": "A pronta entrega. Seleção especial para homenagear as mães.",
+          "code": "JOICY-019",
           "price": 195.00,
-          "category": "dia-maes",
-          "images": ["images/prod-019.jpg"],
+          "price_max": 195.00,
+          "highlights": [
+            "A pronta entrega",
+            "Seleção especial para homenagear as mães"
+          ],
           "tags": ["mães", "especial", "pronta-entrega"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-019.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-020",
           "name": "Cesta romântica para presentear",
-          "description": "Caixa de chocolate, perfume, copo personalizado, urso personalizado. Kit completo romântico.",
+          "code": "JOICY-020",
           "price": 220.00,
-          "category": "dia-maes",
-          "images": ["images/prod-020.jpg"],
+          "price_max": 220.00,
+          "highlights": [
+            "Caixa de chocolate",
+            "Perfume",
+            "Copo personalizado",
+            "Urso personalizado",
+            "Kit completo romântico"
+          ],
           "tags": ["mães", "romântico", "chocolate", "perfume", "personalizado"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-020.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "presentes",
-      "name": "💕 Presentes 💞",
+      "name": "💕 Presentes",
       "icon": "🎁",
       "products": [
         {
           "id": "prod-021",
           "name": "Kit Natura para presentear",
-          "description": "Ideal para presentear. Seleção de produtos Natura.",
+          "code": "JOICY-021",
           "price": 135.00,
-          "category": "presentes",
-          "images": ["images/prod-021.jpg"],
+          "price_max": 135.00,
+          "highlights": [
+            "Ideal para presentear",
+            "Seleção de produtos Natura"
+          ],
           "tags": ["natura", "kit", "presente", "beleza"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-021.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-022",
           "name": "Kit completo beleza",
-          "description": "A pronta entrega. Kit completo com itens essenciais de beleza.",
+          "code": "JOICY-022",
           "price": 100.00,
-          "category": "presentes",
-          "images": ["images/prod-022.jpg"],
+          "price_max": 100.00,
+          "highlights": [
+            "A pronta entrega",
+            "Kit completo com itens essenciais de beleza"
+          ],
           "tags": ["beleza", "kit", "completo", "pronta-entrega"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-022.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-023",
           "name": "Kit para presentear",
-          "description": "A pronta entrega. Kit versátil para diversas ocasiões.",
+          "code": "JOICY-023",
           "price": 125.00,
-          "category": "presentes",
-          "images": ["images/prod-023.jpg"],
+          "price_max": 125.00,
+          "highlights": [
+            "A pronta entrega",
+            "Kit versátil para diversas ocasiões"
+          ],
           "tags": ["presente", "kit", "versátil", "pronta-entrega"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-023.jpg",
+          "sourceUrl": ""
         }
       ]
     },
     {
       "id": "perfumaria",
-      "name": "🌻 Perfumaria 🌻",
+      "name": "🌻 Perfumaria",
       "icon": "🌸",
       "products": [
         {
           "id": "prod-024",
           "name": "Perfume Árabe",
-          "description": "Cada perfume R$ 99,00. Fragrâncias importadas árabes de alta fixação.",
+          "code": "JOICY-024",
           "price": 99.00,
-          "category": "perfumaria",
-          "images": ["images/prod-024.jpg"],
+          "price_max": 99.00,
+          "highlights": [
+            "Cada perfume R$ 99,00",
+            "Fragrâncias importadas árabes de alta fixação"
+          ],
           "tags": ["perfume", "árabe", "importado", "fixação"],
-          "active": true,
-          "featured": true
+          "enabled": true,
+          "image": "images/prod-024.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-025",
           "name": "Kit completo Essencial Feminino",
-          "description": "Kit completo com produtos essenciais femininos.",
+          "code": "JOICY-025",
           "price": 298.00,
-          "category": "perfumaria",
-          "images": ["images/prod-025.jpg"],
+          "price_max": 298.00,
+          "highlights": [
+            "Kit completo com produtos essenciais femininos"
+          ],
           "tags": ["kit", "essencial", "feminino", "completo"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-025.jpg",
+          "sourceUrl": ""
         },
         {
           "id": "prod-026",
           "name": "Cesta com produtos da Natura",
-          "description": "Creme Tododia Natura, Body Splash Natura, Hidratante Corporal Una Natura e mais.",
+          "code": "JOICY-026",
           "price": 245.00,
-          "category": "perfumaria",
-          "images": ["images/prod-026.jpg"],
+          "price_max": 245.00,
+          "highlights": [
+            "Creme Tododia Natura",
+            "Body Splash Natura",
+            "Hidratante Corporal Una Natura",
+            "E mais"
+          ],
           "tags": ["natura", "cesta", "tododia", "body-splash", "una"],
-          "active": true,
-          "featured": false
+          "enabled": true,
+          "image": "images/prod-026.jpg",
+          "sourceUrl": ""
         }
       ]
     }

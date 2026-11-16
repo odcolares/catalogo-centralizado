@@ -1,53 +1,45 @@
 {
-  "name": "Joicy Modas Importados",
-  "niche": "feminino",
-  "colors": {
+  "id": "joicy-modas",
+  "label": "Joicy Modas Importados",
+  "description": "Preset para lojas de beleza, maquiagem, perfumaria e presentes femininos",
+  "theme": {
     "primary": "#f60468",
-    "primaryLight": "#fb93c0",
-    "primaryDark": "#c40352",
-    "secondary": "#d6a017",
-    "secondaryLight": "#f0c44a",
-    "secondaryDark": "#ab7f11",
-    "background": "#fdfdfd",
+    "primaryHover": "#c40352",
+    "primaryLight": "#fce7f3",
+    "accent": "#d6a017",
     "surface": "#ffffff",
-    "text": "#161717",
-    "textLight": "#6b6b6b",
+    "surfaceAlt": "#fdfdfd",
+    "textPrimary": "#161717",
+    "textSecondary": "#6b6b6b",
     "border": "#f0e6ec",
-    "success": "#48b851",
-    "error": "#e53935",
-    "warning": "#d6a017",
-    "info": "#167cbf"
+    "logoStyle": "rounded-full",
+    "iconStyle": "rounded-xl"
   },
-  "icons": {
-    "cart": "🛍️",
-    "whatsapp": "💬",
-    "category": "💄",
-    "delivery": "🚚",
-    "guarantee": "✨",
-    "payment": "💳",
-    "star": "⭐",
-    "heart": "❤️",
-    "sparkles": "✨",
-    "gift": "🎁",
-    "makeup": "💄",
-    "nail": "💅",
-    "hair": "💇",
-    "perfume": "🌸"
+  "copy": {
+    "heroTitle": "Beleza e Presentes Importados",
+    "heroSubtitle": "Cestas de maquiagem, perfumaria, chocolates e kits especiais para todas as ocasiões",
+    "ctaPrimary": "Ver catálogo",
+    "ctaSecondary": "Falar no WhatsApp",
+    "emptyState": "Nenhum produto cadastrado ainda",
+    "footerNote": "Joicy Modas Importados - Beleza que encanta"
   },
-  "categories": [
-    "Cestas de Maquiagem",
-    "Dia dos Pais",
-    "Cestas de Chocolates",
-    "Mais Vendidas",
-    "Buquê de Chocolate",
-    "Dia dos Namorados",
-    "Dia das Mães",
-    "Presentes",
-    "Perfumaria"
-  ],
-  "tags": ["importados", "presentes", "maquiagem", "perfumaria", "cestas", "beauty"],
-  "meta": {
-    "description": "Cestas de beleza, maquiagem, perfumaria e presentes importados para todas as ocasiões",
-    "keywords": ["cestas de maquiagem", "presentes femininos", "perfumes importados", "kits beleza", "cestas de chocolate"]
+  "storeDefaults": {
+    "city": "Manaus/AM",
+    "delivery": "Taxa de entrega de acordo com o bairro. Consulte no WhatsApp.",
+    "warranty": "Defeitos conforme CDC (Lei 8.078/90). Trocas conforme política da loja: até 7 dias para arrependimento (art. 49 CDC); defeitos 30 dias (art. 26 CDC). Produtos de beleza/perfumaria: apenas lacrados.",
+    "payment": "PIX na plataforma | Dinheiro/cartão apenas in loco mediante acordo prévio.",
+    "minOrder": 0,
+    "categories": [
+      { "id": "cestas-maquiagem", "name": "🌸 Cestas de Maquiagem", "icon": "💄", "order": 1 },
+      { "id": "dia-dos-pais", "name": "💙 Dia dos Pais", "icon": "💙", "order": 2 },
+      { "id": "cestas-chocolates", "name": "🍫 Cestas de Chocolates", "icon": "🍫", "order": 3 },
+      { "id": "mais-vendidas", "name": "❤️🔥 Mais Vendidas", "icon": "🔥", "order": 4 },
+      { "id": "buque-chocolate", "name": "❤️🔥 Buquê de Chocolate", "icon": "🌹", "order": 5 },
+      { "id": "dia-namorados", "name": "❤️ Dia dos Namorados", "icon": "❤️", "order": 6 },
+      { "id": "dia-maes", "name": "❤️ Dia das Mães", "icon": "🌹", "order": 7 },
+      { "id": "presentes", "name": "💕 Presentes", "icon": "🎁", "order": 8 },
+      { "id": "perfumaria", "name": "🌻 Perfumaria", "icon": "🌸", "order": 9 }
+    ],
+    "tags": ["importados", "presentes", "maquiagem", "perfumaria", "cestas", "beauty"]
   }
 }
