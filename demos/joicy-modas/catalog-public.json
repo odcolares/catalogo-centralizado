@@ -37,7 +37,7 @@
           ],
           "tags": ["maquiagem", "kit completo", "presente", "angel"],
           "enabled": true,
-          "image": "images/prod-001.jpg",
+          "image": "images/prod-001.svg",
           "sourceUrl": ""
         },
         {
@@ -63,7 +63,7 @@
           ],
           "tags": ["maquiagem", "cesta", "presente"],
           "enabled": true,
-          "image": "images/prod-002.jpg",
+          "image": "images/prod-002.svg",
           "sourceUrl": ""
         },
         {
@@ -78,7 +78,7 @@
           ],
           "tags": ["presente", "cesta", "sortido"],
           "enabled": true,
-          "image": "images/prod-003.jpg",
+          "image": "images/prod-003.svg",
           "sourceUrl": ""
         }
       ]
@@ -100,7 +100,7 @@
           ],
           "tags": ["pais", "presente", "masculino", "pronta-entrega"],
           "enabled": true,
-          "image": "images/prod-004.jpg",
+          "image": "images/prod-004.svg",
           "sourceUrl": ""
         },
         {
@@ -116,7 +116,7 @@
           ],
           "tags": ["pais", "kit", "carteira", "fone", "perfume"],
           "enabled": true,
-          "image": "images/prod-005.jpg",
+          "image": "images/prod-005.svg",
           "sourceUrl": ""
         },
         {
@@ -132,7 +132,7 @@
           ],
           "tags": ["pais", "kit", "carteira", "relogio", "fone"],
           "enabled": true,
-          "image": "images/prod-006.jpg",
+          "image": "images/prod-006.svg",
           "sourceUrl": ""
         }
       ]
@@ -154,7 +154,7 @@
           ],
           "tags": ["chocolate", "stitch", "temático", "presente"],
           "enabled": true,
-          "image": "images/prod-007.jpg",
+          "image": "images/prod-007.svg",
           "sourceUrl": ""
         },
         {
@@ -171,7 +171,7 @@
           ],
           "tags": ["chocolate", "coração", "urso", "pelúcia"],
           "enabled": true,
-          "image": "images/prod-008.jpg",
+          "image": "images/prod-008.svg",
           "sourceUrl": ""
         },
         {
@@ -189,7 +189,7 @@
           ],
           "tags": ["chocolate", "caixa", "personalizada", "kitkat", "urso"],
           "enabled": true,
-          "image": "images/prod-009.jpg",
+          "image": "images/prod-009.svg",
           "sourceUrl": ""
         }
       ]
@@ -211,7 +211,7 @@
           ],
           "tags": ["chocolate", "mais-vendida", "pronta-entrega"],
           "enabled": true,
-          "image": "images/prod-010.jpg",
+          "image": "images/prod-010.svg",
           "sourceUrl": ""
         },
         {
@@ -226,7 +226,7 @@
           ],
           "tags": ["especial", "presente", "mais-vendida"],
           "enabled": true,
-          "image": "images/prod-011.jpg",
+          "image": "images/prod-011.svg",
           "sourceUrl": ""
         },
         {
@@ -241,7 +241,7 @@
           ],
           "tags": ["angel", "cesta", "mais-vendida"],
           "enabled": true,
-          "image": "images/prod-012.jpg",
+          "image": "images/prod-012.svg",
           "sourceUrl": ""
         }
       ]
@@ -263,7 +263,7 @@
           ],
           "tags": ["buquê", "chocolate", "presente", "romântico"],
           "enabled": true,
-          "image": "images/prod-013.jpg",
+          "image": "images/prod-013.svg",
           "sourceUrl": ""
         }
       ]
@@ -285,7 +285,7 @@
           ],
           "tags": ["namorados", "cesta", "romântico", "pronta-entrega"],
           "enabled": true,
-          "image": "images/prod-014.jpg",
+          "image": "images/prod-014.svg",
           "sourceUrl": ""
         },
         {
@@ -303,7 +303,7 @@
           ],
           "tags": ["namorados", "maquiagem", "mini", "buquê"],
           "enabled": true,
-          "image": "images/prod-015.jpg",
+          "image": "images/prod-015.svg",
           "sourceUrl": ""
         },
         {
@@ -321,7 +321,7 @@
           ],
           "tags": ["namorados", "maquiagem", "buquê", "beauty"],
           "enabled": true,
-          "image": "images/prod-016.jpg",
+          "image": "images/prod-016.svg",
           "sourceUrl": ""
         },
         {
@@ -340,7 +340,7 @@
           ],
           "tags": ["namorados", "maquiagem", "mini", "buquê", "acessórios"],
           "enabled": true,
-          "image": "images/prod-017.jpg",
+          "image": "images/prod-017.svg",
           "sourceUrl": ""
         }
       ]
@@ -365,7 +365,7 @@
           ],
           "tags": ["mães", "cosméticos", "cesta", "rafaello", "urso"],
           "enabled": true,
-          "image": "images/prod-018.jpg",
+          "image": "images/prod-018.svg",
           "sourceUrl": ""
         },
         {
@@ -380,7 +380,7 @@
           ],
           "tags": ["mães", "especial", "pronta-entrega"],
           "enabled": true,
-          "image": "images/prod-019.jpg",
+          "image": "images/prod-019.svg",
           "sourceUrl": ""
         },
         {
@@ -398,7 +398,7 @@
           ],
           "tags": ["mães", "romântico", "chocolate", "perfume", "personalizado"],
           "enabled": true,
-          "image": "images/prod-020.jpg",
+          "image": "images/prod-020.svg",
           "sourceUrl": ""
         }
       ]
@@ -420,7 +420,7 @@
           ],
           "tags": ["natura", "kit", "presente", "beleza"],
           "enabled": true,
-          "image": "images/prod-021.jpg",
+          "image": "images/prod-021.svg",
           "sourceUrl": ""
         },
         {
@@ -435,7 +435,7 @@
           ],
           "tags": ["beleza", "kit", "completo", "pronta-entrega"],
           "enabled": true,
-          "image": "images/prod-022.jpg",
+          "image": "images/prod-022.svg",
           "sourceUrl": ""
         },
         {
@@ -450,7 +450,7 @@
           ],
           "tags": ["presente", "kit", "versátil", "pronta-entrega"],
           "enabled": true,
-          "image": "images/prod-023.jpg",
+          "image": "images/prod-023.svg",
           "sourceUrl": ""
         }
       ]
@@ -472,7 +472,7 @@
           ],
           "tags": ["perfume", "árabe", "importado", "fixação"],
           "enabled": true,
-          "image": "images/prod-024.jpg",
+          "image": "images/prod-024.svg",
           "sourceUrl": ""
         },
         {
@@ -486,7 +486,7 @@
           ],
           "tags": ["kit", "essencial", "feminino", "completo"],
           "enabled": true,
-          "image": "images/prod-025.jpg",
+          "image": "images/prod-025.svg",
           "sourceUrl": ""
         },
         {
@@ -503,7 +503,7 @@
           ],
           "tags": ["natura", "cesta", "tododia", "body-splash", "una"],
           "enabled": true,
-          "image": "images/prod-026.jpg",
+          "image": "images/prod-026.svg",
           "sourceUrl": ""
         }
       ]
