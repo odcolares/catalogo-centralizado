@@ -6,14 +6,14 @@ export default defineConfig({
   plugins: [tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
+      '@': path.resolve(import.meta.dirname, '.'),
     },
   },
   build: {
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html'),
-        lojista: path.resolve(__dirname, 'lojista.html'),
+        main: path.resolve(import.meta.dirname, 'index.html'),
+        lojista: path.resolve(import.meta.dirname, 'lojista.html'),
       },
     },
   },
