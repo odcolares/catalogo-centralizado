@@ -56,6 +56,9 @@ const impressedProducts = new Set<string>();
 let detailProductId: string | null = null;
 let detailOpen = false;
 
+// Info Modals (Entrega, Garantia, Pagamento)
+let infoModalOpen: 'entrega' | 'garantia' | 'pagamento' | null = null;
+
 // State
 let activeTab: 'catalog' | 'table' | 'engagement' = 'catalog';
 let searchQuery = '';
@@ -134,6 +137,102 @@ function showToast(message: string) {
     toast.style.opacity = '0';
     setTimeout(() => toast.remove(), 300);
   }, 2200);
+}
+
+// ── Info Modals (Entrega, Garantia, Pagamento) ─────────────────────────────────
+interface InfoModalConfig {
+  id: 'entrega' | 'garantia' | 'pagamento';
+  icon: string;
+  title: string;
+  content: string;
+}
+
+function getInfoModalConfig(id: 'entrega' | 'garantia' | 'pagamento'): InfoModalConfig {
+  const store = catalog.store || {};
+  const configs: Record<string, InfoModalConfig> = {
+    entrega: {
+      id: 'entrega',
+      icon: '🚚',
+      title: 'Entrega & Retirada',
+      content: store.delivery || 'Entrega via motoboy (taxa a combinar/consultar) • Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis; não conta sábados e domingos), com teste e embalagem — valor/condições sob consulta.',
+    },
+    garantia: {
+      id: 'garantia',
+      icon: '✅',
+      title: 'Garantia & Trocas',
+      content: store.warranty || 'Defeitos conforme CDC (Lei 8.078/90). Trocas conforme política da loja: até 7 dias para arrependimento (art. 49 CDC); defeitos 30 dias (art. 26 CDC). Produtos de beleza/perfumaria: apenas lacrados.',
+    },
+    pagamento: {
+      id: 'pagamento',
+      icon: '💳',
+      title: 'Formas de Pagamento',
+      content: store.payment || 'PIX na plataforma | Dinheiro/cartão apenas in loco mediante acordo prévio.',
+    },
+  };
+  return configs[id];
+}
+
+function renderInfoModal(): string {
+  if (!infoModalOpen) return '';
+  const config = getInfoModalConfig(infoModalOpen);
+
+  return `
+    <div
+      class="info-modal-overlay fixed inset-0 bg-black/40 z-50 backdrop-blur-sm animate-info-fade-in"
+      data-close-info-modal
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="info-modal-title"
+    >
+      <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 z-51">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-zinc-100 animate-info-slide-up">
+          <!-- Header -->
+          <div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-100 bg-gradient-to-r from-zinc-50 to-white">
+            <div class="flex items-center justify-center w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 shadow-sm">
+              <span class="text-xl">${config.icon}</span>
+            </div>
+            <div>
+              <h3 id="info-modal-title" class="text-lg font-bold text-zinc-900">${config.title}</h3>
+              <p class="text-xs text-zinc-500 font-medium">Informações da loja</p>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="p-5">
+            <p class="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(config.content)}</p>
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="px-5 py-4 border-t border-zinc-100 bg-zinc-50/50 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              data-close-info-modal
+              class="flex-1 sm:flex-none px-4 py-2.5 text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-colors"
+            >
+              Entendi
+            </button>
+            <button
+              type="button"
+              data-close-info-modal
+              class="flex-1 sm:flex-none px-4 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors shadow-sm"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openInfoModal(id: 'entrega' | 'garantia' | 'pagamento'): void {
+  infoModalOpen = id;
+  renderApp();
+}
+
+function closeInfoModal(): void {
+  infoModalOpen = null;
+  renderApp();
 }
 
 // Generate WhatsApp link with structured order message for the clicked product
@@ -576,32 +675,24 @@ function renderApp() {
                class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
               <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
               <span>Atendimento WhatsApp</span>
-            </a>`
+            </a>
+            <button type="button" data-info-modal="entrega"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              <span>🚚 Entrega</span>
+            </button>
+            <button type="button" data-info-modal="garantia"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              <span>✅ Garantia</span>
+            </button>
+            <button type="button" data-info-modal="pagamento"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              <span>💳 Pagamento</span>
+            </button>`
             }
           </div>
           </div>
         </div>
-
-        ${perfil === 'cliente' ? `
-        <!-- Info Badges -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-6 pt-4 border-t border-white/15 font-mono text-[11px] text-emerald-50/90">
-          <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
-            <span>🚚</span>
-            <span><strong class="text-emerald-200">Entrega:</strong> ${escapeHtml(store.delivery || 'Entrega via motoboy (taxa a combinar) • Retirada em loja sob consulta')}</span>
-          </div>
-          <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
-            <span>✅</span>
-            <span><strong class="text-emerald-200">Garantia:</strong> ${escapeHtml(store.warranty || 'Atendimento para defeitos conforme garantia legal. Consulte condições.')}</span>
-          </div>
-          <div class="flex items-center gap-2 bg-black/20 border border-white/10 px-3 py-2 rounded">
-            <span>💳</span>
-            <span><strong class="text-emerald-200">Pagamento:</strong> ${escapeHtml(store.payment || 'Pagamento do pedido: PIX (comprovante para confirmação).')}</span>
-          </div>
-        </div>
-        ` : ''}
-      </div>
-    </header>
-
+        \n
     ${perfil === 'lojista' ? renderFinanceSummary() : ''}
 
     <!-- Main Content Area -->
@@ -620,6 +711,9 @@ function renderApp() {
     ${perfil === 'cliente' ? renderCartDrawer() : ''}
     ${renderProductDrawer()}
 
+    <!-- Info Modals -->
+    ${renderInfoModal()}
+
     <!-- Relatório do pedido (só aparece na impressão → Salvar como PDF) -->
     <div id="order-report" class="hidden print:block">${cart.length > 0 ? buildOrderReportInner() : ''}</div>
   `;
@@ -629,7 +723,7 @@ function renderApp() {
   const nextDetailBody = document.getElementById('product-detail-body');
   if (nextDetailBody) nextDetailBody.scrollTop = detailScroll;
 
-  document.body.style.overflow = cartOpen || detailOpen ? 'hidden' : '';
+  document.body.style.overflow = cartOpen || detailOpen || infoModalOpen ? 'hidden' : '';
 
   attachEventListeners();
 }
@@ -2019,6 +2113,28 @@ function attachEventListeners() {
   });
   const cartOverlay = document.getElementById('cart-overlay');
   if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
+
+  // ── Info Modals (Entrega, Garantia, Pagamento) ──
+  document.querySelectorAll<HTMLButtonElement>('[data-info-modal]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.infoModal as 'entrega' | 'garantia' | 'pagamento' | undefined;
+      if (id) openInfoModal(id);
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-close-info-modal]').forEach((el) => {
+    el.addEventListener('click', closeInfoModal);
+  });
+
+  const infoOverlay = document.querySelector('.info-modal-overlay');
+  if (infoOverlay) infoOverlay.addEventListener('click', closeInfoModal);
+
+  // ESC key to close info modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && infoModalOpen) {
+      closeInfoModal();
+    }
+  });
 
   document.querySelectorAll<HTMLButtonElement>('[data-add-to-cart]').forEach((btn) => {
     btn.addEventListener('click', (e) => {

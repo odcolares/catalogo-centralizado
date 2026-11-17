@@ -193,3 +193,17 @@ main[data-reveal] article {
 .cart-drawer-overlay {
   animation: cart-fade-in 0.18s ease-out;
 }
+
+/* ── Info Modals (Entrega, Garantia, Pagamento) ── */
+@keyframes info-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes info-slide-up {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-info-fade-in { animation: info-fade-in 0.2s ease-out; }
+.animate-info-slide-up { animation: info-slide-up 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); }
