@@ -1,0 +1,37 @@
+# Render configuration for catalogo-centralizado
+# This file version-controls the Render deployment configuration
+
+services:
+  - type: web
+    name: catalogo-centralizado
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: node server.cjs
+    # Branch to deploy from - must match the branch in Render Dashboard
+    # IMPORTANT: Set branch to "base" in Render Dashboard Settings → Build & Deploy
+    # This file documents the intended config; Dashboard setting takes precedence
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      # These must be set in Render Dashboard (Settings → Environment):
+      # LOJISTA_USER
+      # LOJISTA_PASS
+      # SESSION_SECRET
+      # SUPABASE_URL
+      # SUPABASE_SERVICE_ROLE_KEY
+      # DO NOT SET: VITE_DEMO or DEMO (causes empty product list)
+
+# Alternative: Static site configuration (if not using server.cjs)
+# services:
+#   - type: web
+#     name: catalogo-centralizado
+#     env: static
+#     buildCommand: npm ci && npm run build
+#     staticPublishPath: ./dist
+#     # Requires Branch = "base" in Dashboard

@@ -4,6 +4,9 @@
   "description": "Catalogo centralizado de eletronicos Manaus - fonte unica em JSON que gera MD, HTML, API JSON e PDF.",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "predev": "node generator.cjs",
     "dev": "vite --port=3000 --host=0.0.0.0",
