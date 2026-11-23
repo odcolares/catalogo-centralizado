@@ -545,8 +545,19 @@ app.get('/entrar', (req, res) => {
 
 app.post('/api/login', (req, res) => {
   const { user, pass } = req.body || {};
+  const prestadorUser = process.env.PRESTADOR_USER || parseEnvFile().PRESTADOR_USER || 'prestador';
+  const prestadorPass = process.env.PRESTADOR_PASS || parseEnvFile().PRESTADOR_PASS || '';
+  
+  let authenticatedUser = null;
+  
   if (safeEqual(user, env.LOJISTA_USER) && safeEqual(pass, env.LOJISTA_PASS)) {
-    const token = `${env.LOJISTA_USER}.${sign(env.LOJISTA_USER)}`;
+    authenticatedUser = env.LOJISTA_USER;
+  } else if (safeEqual(user, prestadorUser) && safeEqual(pass, prestadorPass)) {
+    authenticatedUser = prestadorUser;
+  }
+  
+  if (authenticatedUser) {
+    const token = `${authenticatedUser}.${sign(authenticatedUser)}`;
     res.cookie('lojista', token, {
       httpOnly: true,
       sameSite: 'lax',
