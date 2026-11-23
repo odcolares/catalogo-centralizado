@@ -40,12 +40,25 @@ export interface CatalogData {
 export type Perfil = 'cliente' | 'lojista';
 
 // Injetado por initApp() — placeholder vazio até o entry fornecer os dados
+// �� Role detection (RBAC) ��
+async function fetchUserRole() {
+  try {
+    const res = await fetch('/api/me');
+    if (res.ok) {
+      const data = await res.json();
+      userRole = data.role === 'prestador' ? 'prestador' : 'lojista';
+    }
+  } catch { /* default lojista */ }
+}
+const isPrestador = () => userRole === 'prestador';
+
 let catalog: CatalogData = {
   store: { name: '', city: '', delivery: '', warranty: '', payment: '', whatsapp: '' },
   categories: [],
 };
 let perfil: Perfil = 'cliente';
 let firstRender = true;
+fetchUserRole();
 
 // Produtos já visualizados em detalhe nesta sessão (evita eventos "view" duplicados)
 const viewedDetailProducts = new Set<string>();
@@ -56,16 +69,26 @@ const impressedProducts = new Set<string>();
 let detailProductId: string | null = null;
 let detailOpen = false;
 
+// Modal de Produto (criar/editar)
+let productModalOpen = false;
+let productModalTab: 'geral' | 'comercial' | 'estoque' | 'midia' = 'geral';
+let productModalEditingId: string | null = null;
+let productModalData: any = {};
+
 // Info Modals (Entrega, Garantia, Pagamento)
 let infoModalOpen: 'entrega' | 'garantia' | 'pagamento' | null = null;
 
-// State
-let activeTab: 'catalog' | 'table' | 'engagement' = 'catalog';
-let searchQuery = '';
-let selectedCategory = 'all';
-let selectedTag = 'all';
+// DataTable (Vitrine lojista)
+let catalogDtSortCol: string = 'name';
+let catalogDtSortDir: 'asc' | 'desc' = 'asc';
+let catalogDtPage = 1;
+const CATALOG_DT_PAGE_SIZE = 20;
+let catalogDtSearch = '';
+let catalogDtCategory = 'all';
+let catalogDtStatus = 'all';
+let activeTab = 'catalog';
 let showCostMargins = false;
-let sortBy: 'default' | 'price-asc' | 'price-desc' | 'name' | 'margin' = 'default';
+let userRole: 'lojista' | 'prestador' = 'lojista';
 
 // Products are shown only when explicitly enabled (enabled !== false)
 function isEnabled(p: Product): boolean {
@@ -440,16 +463,16 @@ export function initApp(data: CatalogData, p: Perfil): void {
 }
 
 function getFilteredProducts(): { category: Category; product: Product }[] {
-  const query = searchQuery.trim().toLowerCase();
+  const query = catalogDtSearch.trim().toLowerCase();
   const results: { category: Category; product: Product }[] = [];
 
   for (const cat of catalog.categories) {
-    if (selectedCategory !== 'all' && cat.id !== selectedCategory) continue;
+    if (catalogDtCategory !== 'all' && cat.id !== catalogDtCategory) continue;
 
     for (const p of cat.products) {
       if (!isEnabled(p)) continue;
 
-      if (selectedTag !== 'all' && !(p.tags || []).includes(selectedTag)) {
+      if (catalogDtStatus !== 'all' && !(p.tags || []).includes(catalogDtStatus)) {
         continue;
       }
 
@@ -474,13 +497,13 @@ function getFilteredProducts(): { category: Category; product: Product }[] {
   }
 
   // Sort
-  if (sortBy === 'price-asc') {
+  if (catalogDtSortCol === 'price-asc') {
     results.sort((a, b) => a.product.price - b.product.price);
-  } else if (sortBy === 'price-desc') {
+  } else if (catalogDtSortCol === 'price-desc') {
     results.sort((a, b) => b.product.price - a.product.price);
-  } else if (sortBy === 'name') {
+  } else if (catalogDtSortCol === 'name') {
     results.sort((a, b) => a.product.name.localeCompare(b.product.name));
-  } else if (sortBy === 'margin') {
+  } else if (catalogDtSortCol === 'margin') {
     results.sort((a, b) => {
       const costA = a.product.cost ?? 0;
       const costB = b.product.cost ?? 0;
@@ -570,7 +593,6 @@ function renderFinanceSummary(): string {
     <div class="max-w-6xl mx-auto px-4 pt-4 print:hidden">
       <div class="flex items-center gap-2 mb-2">
         <span class="text-[11px] font-black uppercase text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">📈 Resumo financeiro</span>
-        <span class="text-[11px] text-zinc-400">base: 1 unidade por produto</span>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         ${card('Custo Total (1un)', brl(totalCost), 'text-zinc-900')}
@@ -605,7 +627,7 @@ function renderApp() {
       <div class="max-w-6xl mx-auto px-4 py-7 relative z-[1]">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div class="inline-flex items-center gap-2 bg-black/25 border border-white/15 text-emerald-50 font-mono text-[11px] tracking-wider px-2.5 py-1 rounded mb-3">
+            <div class="inline-flex items-center gap-2 bg-black/25 border border-white/15 text-white font-mono text-[11px] tracking-wider px-2.5 py-1 rounded mb-3">
               <span class="led" aria-hidden="true"></span>
               <span>📍 ${escapeHtml(store.city || 'Manaus/AM')}</span>
               <span class="opacity-50">/</span>
@@ -615,52 +637,53 @@ function renderApp() {
               <img src="images/Loja_img.png" alt="Logo da loja" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/50 shadow-lg" onerror="this.remove()" />
               <span>${escapeHtml(store.name || 'Catálogo de Eletrônicos')}</span>
             </h1>
-            <p class="text-emerald-50/90 text-sm mt-2 max-w-xl leading-relaxed">
+            <p class="text-white/90 text-sm mt-2 max-w-xl leading-relaxed">
               Catálogo centralizado com estoque, especificações, preços de atacado e venda local em Manaus.
             </p>
           </div>
 
-          <div class="flex flex-col sm:flex-row gap-2">
+          <div class="flex flex-col md:flex-row md:items-center justify-end gap-2 ml-auto">
             ${perfil === 'lojista'
               ? `
-            <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-2.5 rounded-lg border border-emerald-300 whitespace-nowrap">
-              🟢 MODO LOJISTA
-            </span>
-            <div class="inline-flex items-center gap-1 bg-white border border-zinc-300 rounded-lg p-0.5 shadow-sm" role="segmented-control">
+            <div class="inline-flex items-center gap-2" role="segmented-control" data-perfil="lojista">
               <button type="button"
-                      class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
-                        activeTab === 'catalog'
-                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
-                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-                      }" data-tab="catalog">
+                      class="nav-tab inline-flex items-center justify-center gap-2 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap ${activeTab === 'catalog' ? 'bg-[#0a8754] text-white shadow-sm' : 'bg-white text-[#0a8754] hover:bg-emerald-50'}" data-tab="catalog" data-perfil="lojista">
                 🛍️ Vitrine
               </button>
               <button type="button"
-                      class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
-                        activeTab === 'table'
-                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
-                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-                      }" data-tab="table">
+                      class="nav-tab inline-flex items-center justify-center gap-2 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap ${activeTab === 'table' ? 'bg-[#0a8754] text-white shadow-sm' : 'bg-white text-[#0a8754] hover:bg-emerald-50'}" data-tab="table" data-perfil="lojista">
                 📊 Tabela &amp; Margens
               </button>
               <button type="button"
-                      class="nav-tab px-4 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
-                        activeTab === 'engagement'
-                          ? 'bg-emerald-50 text-[#0a8754] font-bold shadow-sm'
-                          : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-                      }" data-tab="engagement">
+                      class="nav-tab inline-flex items-center justify-center gap-2 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap ${activeTab === 'engagement' ? 'bg-[#0a8754] text-white shadow-sm' : 'bg-white text-[#0a8754] hover:bg-emerald-50'}" data-tab="engagement" data-perfil="lojista">
                 📈 Engajamento
               </button>
             </div>
             <button id="toggle-margins-btn"
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-emerald-400/40 hover:bg-emerald-700/50 transition">
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
               ${showCostMargins ? '👁️ Ocultar Custos/Margens' : '📈 Exibir Custos/Margens'}
             </button>
-            <button id="logout-btn"
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-red-600/40 text-red-600 hover:bg-red-600 hover:text-white transition">
+            <button id="publish-btn"
+                     class="inline-flex items-center justify-center gap-2 bg-amber-500 text-white hover:bg-amber-600 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+               🚀 Publicar
+             </button>
+<button id="logout-btn"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-red-600 hover:bg-red-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
               🔒 Sair
             </button>`
               : `
+            <button type="button" data-info-modal="entrega"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              <span>🚚 Entrega</span>
+            </button>
+            <button type="button" data-info-modal="garantia"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              <span>✅ Garantia</span>
+            </button>
+            <button type="button" data-info-modal="pagamento"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              <span>💳 Pagamento</span>
+            </button>
             <button type="button" id="open-cart-btn"
                     class="relative inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
               <span>🛒 Carrinho${cartQty > 0 ? ` (${cartQty})` : ''}</span>
@@ -675,19 +698,7 @@ function renderApp() {
                class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
               <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
               <span>Atendimento WhatsApp</span>
-            </a>
-            <button type="button" data-info-modal="entrega"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>🚚 Entrega</span>
-            </button>
-            <button type="button" data-info-modal="garantia"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>✅ Garantia</span>
-            </button>
-            <button type="button" data-info-modal="pagamento"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>💳 Pagamento</span>
-            </button>`
+            </a>`
             }
           </div>
           </div>
@@ -714,6 +725,9 @@ function renderApp() {
     <!-- Info Modals -->
     ${renderInfoModal()}
 
+    <!-- Product Modal -->
+    ${renderProductModal()}
+
     <!-- Relatório do pedido (só aparece na impressão → Salvar como PDF) -->
     <div id="order-report" class="hidden print:block">${cart.length > 0 ? buildOrderReportInner() : ''}</div>
   `;
@@ -729,6 +743,9 @@ function renderApp() {
 }
 
 function renderTabContent(filtered: { category: Category; product: Product }[]): string {
+  if (activeTab === 'catalog' && perfil === 'lojista') {
+    return renderCatalogDataTable();
+  }
   if (activeTab === 'table' && perfil === 'lojista') {
     return renderTableView();
   }
@@ -736,6 +753,137 @@ function renderTabContent(filtered: { category: Category; product: Product }[]):
     return renderEngagementView();
   }
   return renderCatalogView(filtered);
+}
+
+function renderCatalogDataTable(): string {
+  // Collect all products
+  const allRows: { product: Product; category: Category }[] = [];
+  for (const cat of catalog.categories) {
+    for (const p of cat.products) {
+      allRows.push({ product: p, category: cat });
+    }
+  }
+
+  // Filter
+  const q = catalogDtSearch.trim().toLowerCase();
+  let filtered = allRows.filter(({ product: p, category: cat }) => {
+    if (catalogDtCategory !== 'all' && cat.id !== catalogDtCategory) return false;
+    const status = p.enabled === false ? 'inactive' : 'active';
+    if (catalogDtStatus !== 'all' && status !== catalogDtStatus) return false;
+    if (q) {
+      const matchName = p.name.toLowerCase().includes(q);
+      const matchCode = p.code.toLowerCase().includes(q);
+      if (!matchName && !matchCode) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    let va: any, vb: any;
+    switch (catalogDtSortCol) {
+      case 'name': va = a.product.name; vb = b.product.name; break;
+      case 'price': va = a.product.price; vb = b.product.price; break;
+      case 'cost': va = a.product.cost ?? 0; vb = b.product.cost ?? 0; break;
+      case 'category': va = a.category.name; vb = b.category.name; break;
+      case 'status': va = a.product.enabled === false ? 'inactive' : 'active'; vb = b.product.enabled === false ? 'inactive' : 'active'; break;
+    }
+    let cmp = typeof va === 'string' ? va.localeCompare(vb) : va - vb;
+    return catalogDtSortDir === 'asc' ? cmp : -cmp;
+  });
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / CATALOG_DT_PAGE_SIZE));
+  if (catalogDtPage > totalPages) catalogDtPage = totalPages;
+  if (catalogDtPage < 1) catalogDtPage = 1;
+  const start = (catalogDtPage - 1) * CATALOG_DT_PAGE_SIZE;
+  const pageRows = filtered.slice(start, start + CATALOG_DT_PAGE_SIZE);
+
+  const sortIcon = (col: string) => catalogDtSortCol === col ? (catalogDtSortDir === 'asc' ? '▲' : '▼') : '⇅';
+
+  const th = (col: string, label: string) => `
+    <th class="p-3 text-left text-[11px] uppercase font-bold text-zinc-500 cursor-pointer select-none hover:text-zinc-900" data-dt-sort="${col}">
+      ${label} <span class="text-[10px]">${sortIcon(col)}</span>
+    </th>`;
+
+  const categoryOptions = catalog.categories.map((c) => `<option value="${c.id}" ${catalogDtCategory === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`).join('');
+
+  const rowsHtml = pageRows.map(({ product: p, category: cat }) => {
+    const status = p.enabled === false ? 'inactive' : 'active';
+    const statusLabel = status === 'active' ? 'Ativo' : 'Inativo';
+    return `
+      <tr class="border-b border-zinc-100 text-xs hover:bg-zinc-50">
+        <td class="p-3 font-medium text-zinc-900 cursor-pointer hover:bg-zinc-100" data-inline-edit="name" data-product-id="${p.id}">${escapeHtml(p.name)}</td>
+        <td class="p-3 font-mono text-right text-emerald-700 font-bold cursor-pointer hover:bg-zinc-100" data-inline-edit="price" data-product-id="${p.id}">${brl(p.price)}</td>
+        <td class="p-3 font-mono text-right text-zinc-600 cursor-pointer hover:bg-zinc-100" data-inline-edit="cost" data-product-id="${p.id}">${brl(p.cost)}</td>
+        <td class="p-3 text-center text-zinc-500">—</td>
+        <td class="p-3 text-zinc-600">${cat.icon} ${escapeHtml(cat.name)}</td>
+        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-zinc-100 text-zinc-500'}">${statusLabel}</span></td>
+        <td class="p-3"><button type="button" data-pm-edit="${p.id}" class="px-2 py-1 text-[10px] font-bold text-[#0a8754] border border-[#0a8754] rounded hover:bg-emerald-50">Editar</button></td>
+        <td class="p-3 text-center">
+          <button type="button" data-dt-toggle="${p.id}" class="${status === 'active' ? 'text-red-600 hover:text-red-800' : 'text-emerald-600 hover:text-emerald-800'} font-bold" title="${status === 'active' ? 'Desativar' : 'Reativar'}">${status === 'active' ? '⏸️' : '▶️'}</button>
+        </td>
+      </tr>`;
+  }).join('');
+
+  // Pagination nav
+  const pageBtns: string[] = [];
+  const prevDisabled = catalogDtPage <= 1;
+  const nextDisabled = catalogDtPage >= totalPages;
+  pageBtns.push(`<button class="nav-tab px-3 py-1.5 rounded-lg text-xs font-bold ${prevDisabled ? 'bg-zinc-100 text-zinc-400' : 'bg-white text-[#0a8754] hover:bg-emerald-50'} border border-zinc-200" data-dt-page="${catalogDtPage - 1}" ${prevDisabled ? 'disabled' : ''}>◀ Anterior</button>`);
+  pageBtns.push(`<span class="text-xs text-zinc-500 px-2">Página ${catalogDtPage} de ${totalPages}</span>`);
+  pageBtns.push(`<button class="nav-tab px-3 py-1.5 rounded-lg text-xs font-bold ${nextDisabled ? 'bg-zinc-100 text-zinc-400' : 'bg-white text-[#0a8754] hover:bg-emerald-50'} border border-zinc-200" data-dt-page="${catalogDtPage + 1}" ${nextDisabled ? 'disabled' : ''}>Próxima ▶</button>`);
+
+  return `
+    <div class="space-y-4">
+      <div class="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs space-y-3">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <input type="text" id="dt-search" value="${escapeHtml(catalogDtSearch)}" placeholder="Buscar por nome ou SKU..." class="w-full pl-3 pr-4 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0a8754] text-zinc-900" />
+          </div>
+          <select id="dt-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900">
+            <option value="all" ${catalogDtCategory === 'all' ? 'selected' : ''}>Todas categorias</option>
+            ${categoryOptions}
+          </select>
+          <select id="dt-status" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900">
+            <option value="all" ${catalogDtStatus === 'all' ? 'selected' : ''}>Todos status</option>
+            <option value="active" ${catalogDtStatus === 'active' ? 'selected' : ''}>Ativo</option>
+            <option value="inactive" ${catalogDtStatus === 'inactive' ? 'selected' : ''}>Inativo</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="text-xs text-zinc-500">Exibindo ${pageRows.length} de ${total} produtos</div>
+          <div class="flex gap-2">
+            <button type="button" data-import-csv class="px-3 py-1.5 bg-white text-[#0a8754] text-xs font-bold rounded-lg border border-[#0a8754] hover:bg-emerald-50 transition">📥 Importar CSV</button>
+            <input type="file" id="csv-file-input" accept=".csv" class="hidden" />
+            <button type="button" data-export-csv class="px-3 py-1.5 bg-white border border-zinc-300 text-zinc-700 text-xs font-bold rounded-lg hover:bg-zinc-50 transition">⬇ Exportar CSV</button>
+            <button type="button" data-pm-new class="px-3 py-1.5 bg-[#0a8754] text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition">+ Novo Produto</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-zinc-200 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-zinc-50 border-b border-zinc-200">
+              <tr>
+                ${th('name', 'Nome')}
+                ${th('price', 'Preço')}
+                ${th('cost', 'Custo')}
+                <th class="p-3 text-[11px] uppercase font-bold text-zinc-500">Estoque</th>
+                ${th('category', 'Categoria')}
+                ${th('status', 'Status')}
+                 <th class="p-3 text-[11px] uppercase font-bold text-zinc-500">Ações</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml || '<tr><td colspan="7" class="p-6 text-center text-zinc-500">Nenhum produto encontrado</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center gap-2">${pageBtns.join('')}</div>
+    </div>
+  `;
 }
 
 function renderCatalogView(filtered: { category: Category; product: Product }[]): string {
@@ -755,7 +903,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
     .map(
       (cat) => `
       <button class="cat-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition border ${
-        selectedCategory === cat.id
+        catalogDtCategory === cat.id
           ? 'bg-[#0a8754] text-white border-[#0a8754] shadow-xs'
           : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
       }" data-cat="${cat.id}">
@@ -769,7 +917,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
   // Sidebar vertical de categorias (desktop ≥lg) — mesma classe p/ listeners
   const categoryList = categories
     .map((cat) => {
-      const active = selectedCategory === cat.id;
+      const active = catalogDtCategory === cat.id;
       return `
       <button class="cat-filter-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition border ${
         active
@@ -808,7 +956,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
           : tag.charAt(0).toUpperCase() + tag.slice(1);
       return `
         <button class="tag-filter-btn px-2.5 py-1 rounded-md text-xs font-medium transition ${
-          selectedTag === tag
+          catalogDtStatus === tag
             ? 'bg-zinc-900 text-white'
             : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
         }" data-tag="${tag}">
@@ -971,11 +1119,11 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
             </span>
             <input type="text"
                    id="search-input"
-                   value="${escapeHtml(searchQuery)}"
+                   value="${escapeHtml(catalogDtSearch)}"
                    placeholder="Buscar modelo, código ou característica (ex: Smartwatch, D20, 60h, Type-C)..."
                    class="w-full pl-9 pr-4 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]" />
             ${
-              searchQuery
+              catalogDtSearch
                 ? `<button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600">✕</button>`
                 : ''
             }
@@ -984,11 +1132,11 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
           <div class="flex gap-2">
             <select id="sort-select"
                     class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-700 focus:outline-none focus:ring-2 focus:ring-[#0a8754]">
-              <option value="default" ${sortBy === 'default' ? 'selected' : ''}>Ordenação Padrão</option>
-              <option value="price-asc" ${sortBy === 'price-asc' ? 'selected' : ''}>Menor Preço</option>
-              <option value="price-desc" ${sortBy === 'price-desc' ? 'selected' : ''}>Maior Preço</option>
-              <option value="name" ${sortBy === 'name' ? 'selected' : ''}>Nome (A-Z)</option>
-              ${perfil === 'lojista' ? `<option value="margin" ${sortBy === 'margin' ? 'selected' : ''}>Maior Margem %</option>` : ''}
+              <option value="default" ${catalogDtSortCol === 'default' ? 'selected' : ''}>Ordenação Padrão</option>
+              <option value="price-asc" ${catalogDtSortCol === 'price-asc' ? 'selected' : ''}>Menor Preço</option>
+              <option value="price-desc" ${catalogDtSortCol === 'price-desc' ? 'selected' : ''}>Maior Preço</option>
+              <option value="name" ${catalogDtSortCol === 'name' ? 'selected' : ''}>Nome (A-Z)</option>
+              ${perfil === 'lojista' ? `<option value="margin" ${catalogDtSortCol === 'margin' ? 'selected' : ''}>Maior Margem %</option>` : ''}
             </select>
           </div>
         </div>
@@ -1009,7 +1157,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
       <div class="flex items-center justify-between text-xs text-zinc-500 px-1">
         <span>Exibindo <strong>${filtered.length}</strong> de ${totalProducts} produtos</span>
         ${
-          selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery
+          catalogDtCategory !== 'all' || catalogDtStatus !== 'all' || catalogDtSearch
             ? `<button id="reset-all-filters-btn" class="text-emerald-700 font-semibold hover:underline">Limpar todos os filtros</button>`
             : ''
         }
@@ -1897,9 +2045,276 @@ function renderProductDrawer(): string {
 }
 
 
+function openProductModal(editId?: string | null) {
+  productModalOpen = true;
+  productModalTab = 'geral';
+  productModalEditingId = editId || null;
+  if (editId) {
+    const found = findProduct(editId);
+    const p = found?.product;
+    productModalData = p ? { ...p, category_id: found?.category.id } : {};
+  } else {
+    productModalData = { name: '', code: '', category_id: catalog.categories[0]?.id || '', cost: 0, price: 0, price_max: 0, qty_on_hand: 0, track_stock: true, highlights: [], tags: [], image_url: '', status: 'active' };
+  }
+  renderApp();
+}
+
+function closeProductModal() {
+  productModalOpen = false;
+  productModalEditingId = null;
+  productModalData = {};
+  renderApp();
+}
+
+function renderProductModal(): string {
+  if (!productModalOpen) return '';
+  const d = productModalData || {};
+  const isEdit = !!productModalEditingId;
+  const tabBtn = (id: string, label: string) => `
+    <button type="button" data-pm-tab="${id}" class="px-4 py-2 text-sm font-bold rounded-lg transition ${productModalTab === id ? 'bg-[#0a8754] text-white' : 'bg-white text-zinc-700 hover:bg-zinc-50 border border-zinc-200'}">${label}</button>`;
+  const field = (label: string, input: string) => `<div><label class="block text-[11px] font-semibold text-zinc-600 mb-1">${label}</label>${input}</div>`;
+  const inputCls = 'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0a8754]';
+
+  let body = '';
+  if (productModalTab === 'geral') {
+    const catOpts = catalog.categories.map((c) => `<option value="${c.id}" ${d.category_id === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`).join('');
+    body = `
+      ${field('Nome', `<input id="pm-name" type="text" value="${escapeHtml(d.name || '')}" class="${inputCls}" />`)}
+      ${field('Código', `<input id="pm-code" type="text" value="${escapeHtml(d.code || '')}" class="${inputCls}" />`)}
+      ${field('Categoria', `<select id="pm-category" class="${inputCls}">${catOpts}</select>`)}
+    `;
+  } else if (productModalTab === 'comercial') {
+    body = `
+      ${field('Custo', `<input id="pm-cost" type="number" step="0.01" value="${d.cost ?? 0}" class="${inputCls}" />`)}
+      ${field('Preço', `<input id="pm-price" type="number" step="0.01" value="${d.price ?? 0}" class="${inputCls}" />`)}
+      ${field('Preço Máximo', `<input id="pm-price-max" type="number" step="0.01" value="${d.price_max ?? 0}" class="${inputCls}" />`)}
+    `;
+  } else if (productModalTab === 'estoque') {
+    body = `
+      ${field('Qtd em estoque', `<input id="pm-qty" type="number" value="${d.qty_on_hand ?? 0}" class="${inputCls}" />`)}
+      <div class="flex items-center gap-2">
+        <input id="pm-track" type="checkbox" ${d.track_stock ? 'checked' : ''} />
+        <label for="pm-track" class="text-sm text-zinc-700">Controlar estoque</label>
+      </div>
+    `;
+  } else {
+    body = `
+      ${field('URL da imagem', `<input id="pm-image" type="text" value="${escapeHtml(d.image_url || d.image || '')}" class="${inputCls}" />`)}
+      ${field('Destaques (vírgula)', `<input id="pm-highlights" type="text" value="${escapeHtml((d.highlights || []).join(', '))}" class="${inputCls}" />`)}
+      ${field('Tags (vírgula)', `<input id="pm-tags" type="text" value="${escapeHtml((d.tags || []).join(', '))}" class="${inputCls}" />`)}
+    `;
+  }
+
+  return `
+    <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+        <div class="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
+          <h3 class="text-lg font-bold text-zinc-900">${isEdit ? 'Editar Produto' : 'Novo Produto'}</h3>
+          <button type="button" data-pm-close class="text-zinc-400 hover:text-zinc-700 font-bold">✕</button>
+        </div>
+        <div class="p-5 space-y-4">
+          <div class="flex gap-2 flex-wrap">${tabBtn('geral','Geral')}${tabBtn('comercial','Comercial')}${tabBtn('estoque','Estoque')}${tabBtn('midia','Mídia')}</div>
+          <div class="space-y-3">${body}</div>
+        </div>
+        <div class="px-5 py-4 border-t border-zinc-100 flex items-center justify-end gap-2 bg-zinc-50">
+          <button type="button" data-pm-cancel class="px-4 py-2 text-sm font-semibold text-zinc-600 hover:text-zinc-900">Cancelar</button>
+          <button type="button" data-pm-save class="px-4 py-2 text-sm font-bold text-white bg-[#0a8754] hover:bg-emerald-700 rounded-lg shadow-sm">${isEdit ? 'Salvar' : 'Criar'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = '';
+  let inQuotes = false;
+  let i = 0;
+  const pushField = () => { row.push(field); field = ''; };
+  const pushRow = () => { if (row.length) rows.push(row); row = []; };
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ',') pushField();
+      else if (c === '\n') { pushField(); pushRow(); }
+      else if (c === '\r') { /* skip */ }
+      else field += c;
+    }
+    i++;
+  }
+  if (field !== '' || row.length > 0) { pushField(); if (row.length > 0) pushRow(); }
+  return rows;
+}
+
+function mapCsvRow(obj: Record<string, string>): Record<string, unknown> {
+  const p: Record<string, unknown> = {};
+  if (obj.id) p.id = obj.id; else p.id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+  if (obj.code) p.code = obj.code;
+  if (obj.name) p.name = obj.name;
+  if (obj.category_id) p.category_id = obj.category_id;
+  if (obj.cost !== undefined && obj.cost !== '') p.cost = parseFloat(obj.cost);
+  if (obj.price !== undefined && obj.price !== '') p.price = parseFloat(obj.price);
+  if (obj.price_max !== undefined && obj.price_max !== '') p.price_max = parseFloat(obj.price_max);
+  if (obj.status) p.status = obj.status;
+  if (obj.visible_to_client !== undefined && obj.visible_to_client !== '') {
+    p.visible_to_client = obj.visible_to_client === 'true' || obj.visible_to_client === '1';
+  }
+  return p;
+}
+
 function attachEventListeners() {
+  // DataTable (Vitrine lojista)
+  const dtSearch = document.getElementById('dt-search') as HTMLInputElement | null;
+  if (dtSearch) {
+    dtSearch.addEventListener('input', (e) => {
+      catalogDtSearch = (e.target as HTMLInputElement).value;
+      catalogDtPage = 1;
+      renderApp();
+      const ns = document.getElementById('dt-search') as HTMLInputElement | null;
+      if (ns) { ns.focus(); ns.setSelectionRange(ns.value.length, ns.value.length); }
+    });
+  }
+  const dtCat = document.getElementById('dt-category') as HTMLSelectElement | null;
+  if (dtCat) {
+    dtCat.addEventListener('change', (e) => {
+      catalogDtCategory = (e.target as HTMLSelectElement).value;
+      catalogDtPage = 1;
+      renderApp();
+    });
+  }
+  const dtStatus = document.getElementById('dt-status') as HTMLSelectElement | null;
+  if (dtStatus) {
+    dtStatus.addEventListener('change', (e) => {
+      catalogDtStatus = (e.target as HTMLSelectElement).value;
+      catalogDtPage = 1;
+      renderApp();
+    });
+  }
+  document.querySelectorAll<HTMLElement>('[data-dt-sort]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const col = el.dataset.dtSort as any;
+      if (catalogDtSortCol === col) {
+        catalogDtSortDir = catalogDtSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        catalogDtSortCol = col;
+        catalogDtSortDir = 'asc';
+      }
+      renderApp();
+    });
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-dt-page]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const p = parseInt(btn.dataset.dtPage || '1', 10);
+      if (!isNaN(p)) { catalogDtPage = p; renderApp(); }
+    });
+  });
+
+  // Soft delete (Desativar) via API
+  document.querySelectorAll<HTMLButtonElement>('[data-dt-toggle]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.dtToggle || '';
+      if (!id) return;
+      let product = null;
+      for (const cat of catalog.categories) {
+        const p = cat.products.find((x) => x.id === id);
+        if (p) { product = p; break; }
+      }
+      if (!product) return;
+      try {
+        const isActive = product.enabled !== false;
+        if (!window.confirm(isActive ? 'Desativar este produto?' : 'Reativar este produto?')) return;
+        const res = await fetch(`/api/admin/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: isActive ? 'discontinued' : 'active' }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        // Remove from in-memory catalog
+        for (const cat of catalog.categories) {
+          const idx = cat.products.findIndex((p) => p.id === id);
+          if (idx >= 0) { cat.products[idx].enabled = false; break; }
+        }
+        showToast('Produto desativado com sucesso.');
+        renderApp();
+      } catch (err) {
+        showToast('Falha ao desativar produto.');
+      }
+    });
+  });
+
+  // ── Inline edit (preço, custo, nome) ──
+  document.querySelectorAll<HTMLElement>('[data-inline-edit]').forEach((cell) => {
+    cell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const field = cell.dataset.inlineEdit as 'name' | 'price' | 'cost';
+      const pid = cell.dataset.productId || '';
+      const found = findProduct(pid);
+      if (!found) return;
+      const current = field === 'name' ? found.product.name : (field === 'price' ? found.product.price : (found.product.cost ?? 0));
+      const input = document.createElement('input');
+      input.type = field === 'name' ? 'text' : 'number';
+      input.step = '0.01';
+      input.value = String(current ?? '');
+      input.className = 'w-full border border-emerald-400 rounded px-1 py-0.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500';
+      const status = document.createElement('span');
+      status.className = 'ml-1 text-[10px]';
+      cell.innerHTML = '';
+      cell.appendChild(input);
+      cell.appendChild(status);
+      input.focus();
+      input.select();
+
+      const cancel = () => renderApp();
+      const save = async () => {
+        const raw = input.value.trim();
+        const value = field === 'name' ? raw : parseFloat(raw);
+        if (field !== 'name' && isNaN(value as number)) { status.textContent = '✗'; status.className = 'ml-1 text-[10px] text-red-600'; return; }
+        status.textContent = '…';
+        status.className = 'ml-1 text-[10px] text-zinc-500';
+        input.disabled = true;
+        try {
+          const res = await fetch(`/api/admin/products/${pid}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ [field]: value }),
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          // Atualiza estado local
+          if (field === 'name') found.product.name = raw;
+          else if (field === 'price') found.product.price = value as number;
+          else found.product.cost = value as number;
+          status.textContent = '✓';
+          status.className = 'ml-1 text-[10px] text-emerald-600';
+          setTimeout(() => renderApp(), 400);
+        } catch (err) {
+          status.textContent = '✗';
+          status.className = 'ml-1 text-[10px] text-red-600';
+          input.disabled = false;
+        }
+      };
+
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') { ev.preventDefault(); save(); }
+        else if (ev.key === 'Escape') { ev.preventDefault(); cancel(); }
+      });
+      input.addEventListener('blur', () => {
+        // Salva ao perder foco apenas se valor mudou
+        const newVal = field === 'name' ? input.value.trim() : parseFloat(input.value);
+        if (newVal !== current) save();
+        else cancel();
+      });
+    });
+  });
+
   // Tabs
-  document.querySelectorAll<HTMLButtonElement>('.nav-tab').forEach((btn) => {
+  document.querySelectorAll<HTMLElement>('.nav-tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       activeTab = btn.dataset.tab as any;
       renderApp();
@@ -1968,6 +2383,28 @@ function attachEventListeners() {
     });
   }
 
+  // Botão Publicar — dispara regeneração do catálogo
+  const publishBtn = document.getElementById('publish-btn') as HTMLButtonElement | null;
+  if (publishBtn) {
+    publishBtn.addEventListener('click', async () => {
+      if (!window.confirm('Publicar o catálogo agora? Isso regenera os arquivos (HTML, MD, JSON).')) return;
+      const originalHtml = publishBtn.innerHTML;
+      publishBtn.disabled = true;
+      publishBtn.innerHTML = '⏳ Publicando...';
+      try {
+        const res = await fetch('/api/regenerate', { method: 'POST' });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false) throw new Error(data.error || data.message || `HTTP ${res.status}`);
+        showToast(data.message || 'Catálogo publicado com sucesso!');
+      } catch (err) {
+        showToast('Falha ao publicar catálogo.');
+      } finally {
+        publishBtn.disabled = false;
+        publishBtn.innerHTML = originalHtml;
+      }
+    });
+  }
+
   // Logout do modo lojista (limpa cookie no servidor)
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
@@ -1981,7 +2418,7 @@ function attachEventListeners() {
   // Category filter
   document.querySelectorAll<HTMLButtonElement>('.cat-filter-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      selectedCategory = btn.dataset.cat || 'all';
+      catalogDtCategory = btn.dataset.cat || 'all';
       renderApp();
     });
   });
@@ -1989,7 +2426,7 @@ function attachEventListeners() {
   // Tag filter
   document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      selectedTag = btn.dataset.tag || 'all';
+      catalogDtStatus = btn.dataset.tag || 'all';
       renderApp();
     });
   });
@@ -1998,7 +2435,7 @@ function attachEventListeners() {
   const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-      searchQuery = (e.target as HTMLInputElement).value;
+      catalogDtSearch = (e.target as HTMLInputElement).value;
       // Re-render without losing focus
       renderApp();
       const newSearch = document.getElementById('search-input') as HTMLInputElement | null;
@@ -2013,7 +2450,7 @@ function attachEventListeners() {
   const clearSearchBtn = document.getElementById('clear-search-btn');
   if (clearSearchBtn) {
     clearSearchBtn.addEventListener('click', () => {
-      searchQuery = '';
+      catalogDtSearch = '';
       renderApp();
     });
   }
@@ -2022,7 +2459,7 @@ function attachEventListeners() {
   const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
   if (sortSelect) {
     sortSelect.addEventListener('change', (e) => {
-      sortBy = (e.target as HTMLSelectElement).value as any;
+      catalogDtSortCol = (e.target as HTMLSelectElement).value as any;
       renderApp();
     });
   }
@@ -2031,9 +2468,9 @@ function attachEventListeners() {
   const clearFiltersBtn = document.getElementById('clear-filters-btn');
   if (clearFiltersBtn) {
     clearFiltersBtn.addEventListener('click', () => {
-      selectedCategory = 'all';
-      selectedTag = 'all';
-      searchQuery = '';
+      catalogDtCategory = 'all';
+      catalogDtStatus = 'all';
+      catalogDtSearch = '';
       renderApp();
     });
   }
@@ -2041,9 +2478,9 @@ function attachEventListeners() {
   const resetAllBtn = document.getElementById('reset-all-filters-btn');
   if (resetAllBtn) {
     resetAllBtn.addEventListener('click', () => {
-      selectedCategory = 'all';
-      selectedTag = 'all';
-      searchQuery = '';
+      catalogDtCategory = 'all';
+      catalogDtStatus = 'all';
+      catalogDtSearch = '';
       renderApp();
     });
   }
@@ -2142,6 +2579,116 @@ function attachEventListeners() {
       addToCart(btn.dataset.addToCart || '');
     });
   });
+
+  // Product Modal
+  document.querySelectorAll<HTMLButtonElement>('[data-pm-new]').forEach((btn) => {
+    btn.addEventListener('click', () => openProductModal(null));
+  });
+
+  // Export CSV via endpoint
+  document.querySelectorAll<HTMLButtonElement>('[data-export-csv]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/admin/products/export');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `catalogo-export-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('CSV exportado com sucesso!');
+      } catch (err) {
+        showToast('Falha ao exportar CSV');
+      }
+    });
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-pm-edit]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openProductModal(btn.dataset.pmEdit || null);
+    });
+  });
+
+  // ── Import CSV ──
+  const importCsvBtn = document.querySelector<HTMLButtonElement>('[data-import-csv]');
+  const csvFileInput = document.getElementById('csv-file-input') as HTMLInputElement | null;
+  if (importCsvBtn && csvFileInput) {
+    importCsvBtn.addEventListener('click', () => csvFileInput.click());
+    csvFileInput.addEventListener('change', async () => {
+      const file = csvFileInput.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const rows = parseCsv(text);
+        if (rows.length < 2) { showToast('CSV vazio ou sem dados'); return; }
+        const headers = rows[0].map((h) => h.trim());
+        const products = rows.slice(1)
+          .filter((r) => r.some((c) => c.trim() !== ''))
+          .map((r) => {
+            const obj: Record<string, string> = {};
+            headers.forEach((h, i) => { obj[h] = (r[i] ?? '').trim(); });
+            return mapCsvRow(obj);
+          });
+        if (products.length === 0) { showToast('Nenhum produto válido no CSV'); return; }
+        showToast(`Importando ${products.length} produtos...`);
+        const res = await fetch('/api/admin/products/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ products }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        showToast(`Importados ${data?.count ?? products.length} produtos com sucesso.`);
+        renderApp();
+      } catch (err) {
+        showToast('Erro ao importar CSV');
+      } finally {
+        csvFileInput.value = '';
+      }
+    });
+  }
+  document.querySelectorAll<HTMLElement>('[data-pm-close], [data-pm-cancel]').forEach((el) => {
+    el.addEventListener('click', closeProductModal);
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-pm-tab]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      productModalTab = btn.dataset.pmTab as any;
+      renderApp();
+    });
+  });
+  const pmSave = document.querySelector<HTMLButtonElement>('[data-pm-save]');
+  if (pmSave) {
+    pmSave.addEventListener('click', async () => {
+      const get = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value || '';
+      const data: any = {
+        name: get('pm-name'),
+        code: get('pm-code'),
+        category_id: get('pm-category'),
+        cost: parseFloat(get('pm-cost') || '0'),
+        price: parseFloat(get('pm-price') || '0'),
+        price_max: parseFloat(get('pm-price-max') || '0'),
+        qty_on_hand: parseInt(get('pm-qty') || '0', 10),
+        track_stock: (document.getElementById('pm-track') as HTMLInputElement | null)?.checked || false,
+        image_url: get('pm-image'),
+        highlights: get('pm-highlights').split(',').map((s) => s.trim()).filter(Boolean),
+        tags: get('pm-tags').split(',').map((s) => s.trim()).filter(Boolean),
+      };
+      try {
+        const url = productModalEditingId ? `/api/admin/products/${productModalEditingId}` : '/api/admin/products';
+        const method = productModalEditingId ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        if (!res.ok) throw new Error('Falha ao salvar');
+        showToast(productModalEditingId ? 'Produto atualizado' : 'Produto criado');
+        closeProductModal();
+      } catch (err) {
+        showToast('Erro ao salvar produto');
+      }
+    });
+  }
   document.querySelectorAll<HTMLButtonElement>('[data-cart-inc]').forEach((btn) => {
     btn.addEventListener('click', () => changeCartQty(btn.dataset.cartInc || '', 1));
   });
@@ -2508,6 +3055,24 @@ function attachEventListeners() {
     refreshBtn?.addEventListener('click', loadEngagementStats);
     const exportBtn = document.getElementById('eng-export-csv');
     exportBtn?.addEventListener('click', () => exportEngagementToCsv());
+
+    // Carrinho - botões de remover/alterar quantidade/fechar
+    document.querySelectorAll<HTMLButtonElement>('[data-cart-remove]').forEach((btn) => {
+      btn.addEventListener('click', () => removeCartItem(btn.dataset.cartRemove || ''));
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-cart-dec]').forEach((btn) => {
+      btn.addEventListener('click', () => changeCartQty(btn.dataset.cartDec || '', -1));
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-cart-inc]').forEach((btn) => {
+      btn.addEventListener('click', () => changeCartQty(btn.dataset.cartInc || '', 1));
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-close-cart]').forEach((btn) => {
+      btn.addEventListener('click', () => { cartOpen = false; renderApp(); });
+    });
+    const openCartBtn = document.getElementById('open-cart-btn');
+    if (openCartBtn) {
+      openCartBtn.addEventListener('click', () => { cartOpen = true; renderApp(); });
+    }
   }
 }
 

@@ -1,0 +1,30 @@
+{
+  "id": "gestao-catalogo-07",
+  "seq": "07",
+  "title": "Botão Publicar (dispara generator + build)",
+  "status": "pending",
+  "depends_on": [],
+  "parallel": true,
+  "suggested_agent": "CoderAgent",
+  "context_files": [
+    "src/app.ts",
+    "src/style.css",
+    "server.cjs",
+    "src/types/supabase.ts"
+  ],
+  "reference_files": [
+    "src/app.ts",
+    "server.cjs",
+    "supabase/migrations/20261118132420_create_catalog_schema.sql",
+    "catalog-data.json",
+    "package.json"
+  ],
+  "acceptance_criteria": [
+    "Botão Publicar visível na área do Lojista",
+    "Dispara endpoint /api/admin/publish (generator + build)",
+    "Feedback de progresso (loading state)",
+    "Mensagem de sucesso/erro",
+    "Manter class nav-tab nos botões de navegação"
+  ],
+  "deliverables": ["src/app.ts (publish handler)"]
+}

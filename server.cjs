@@ -9,10 +9,21 @@ const { main: runGenerator } = require('./generator.cjs');
 // ── Supabase (opcional; se não configurado, usa arquivo JSON local como fallback) ──
 let supabase = null;
 let supabaseEnabled = false;
+let SUPABASE_URL_GLOBAL = '';
+let SUPABASE_SERVICE_KEY_GLOBAL = '';
 try {
   const { createClient } = require('@supabase/supabase-js');
-  const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Lê .env diretamente (parseEnvFile definido mais abaixo)
+  const _envLines = require('fs').readFileSync(require('path').join(__dirname, '.env'), 'utf8').split(/\r?\n/);
+  const _envMap = {};
+  for (const _l of _envLines) {
+    const _m = _l.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (_m) _envMap[_m[1]] = _m[2].replace(/^["']|["']$/g, '');
+  }
+  const SUPABASE_URL = process.env.SUPABASE_URL || _envMap.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || _envMap.SUPABASE_SERVICE_ROLE_KEY;
+  SUPABASE_URL_GLOBAL = SUPABASE_URL;
+  SUPABASE_SERVICE_KEY_GLOBAL = SUPABASE_SERVICE_KEY;
   if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
     supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     supabaseEnabled = true;
@@ -552,6 +563,16 @@ app.post('/api/logout', (req, res) => {
   res.redirect('/');
 });
 
+// �� Identidade do usuário logado (role) ��
+app.get('/api/me', (req, res) => {
+  const user = getSessionUser(req);
+  if (!user) return res.status(401).json({ error: 'Não autorizado' });
+  // Role: se o usuário for o prestador (configurado via env), retorna 'prestador'
+  const prestadorUser = process.env.PRESTADOR_USER || parseEnvFile().PRESTADOR_USER || 'prestador';
+  const role = (user === prestadorUser) ? 'prestador' : 'lojista';
+  return res.json({ user, role });
+});
+
 // ── Engajamento de produtos ──
 app.use(express.json());
 
@@ -604,11 +625,7 @@ app.get('/catalogo', (req, res) => {
 });
 
 // ── APIs públicas (sempre as versões SEM custo) ──
-app.get('/api/catalog', (req, res) => {
-  const jsonFile = path.join(OUT_DIR, 'catalog-api.json');
-  if (fs.existsSync(jsonFile)) return res.sendFile(jsonFile);
-  res.status(404).json({ error: 'Catalog data not found' });
-});
+
 
 app.get('/api/markdown', (req, res) => {
   const mdFile = path.join(OUT_DIR, 'catalogo-consolidado.md');
@@ -639,6 +656,220 @@ app.use('/images', express.static(path.join(ROOT, 'public', 'images')));
 app.use(express.static(OUT_DIR));
 app.use(express.static(path.join(ROOT, 'public')));
 
+// �� APIs Admin (Supabase CRUD) ��
+// Middleware: apenas lojista autenticado
+function requireAuth(req, res, next) {
+  const user = getSessionUser(req);
+  if (!user) return res.status(401).json({ error: 'Não autorizado' });
+  req.sessionUser = user;
+  next();
+}
+
+// GET /api/admin/products — lista paginada + filtros
+app.get('/api/admin/products', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { category, status, search, page = 1, limit = 50 } = req.query;
+    let query = supabase.from('products').select('*, categories(name)', { count: 'exact' });
+    if (category) query = query.eq('category_id', category);
+    if (status) query = query.eq('status', status);
+    if (search) query = query.ilike('name', `%${search}%`);
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    query = query.range(offset, offset + parseInt(limit) - 1).order('created_at', { ascending: false });
+    const { data, error, count } = await query;
+    if (error) throw error;
+    return res.json({ products: data || [], total: count || 0, page: parseInt(page), limit: parseInt(limit) });
+  } catch (err) {
+    console.error('[Admin] GET products:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/admin/products/export — export CSV
+app.get('/api/admin/products/export', requireAuth, async (req, res) => {
+    try {
+      if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase not configured' });
+      const { data, error } = await supabase.from('products').select('id, code, name, category_id, cost, price, price_max, status, visible_to_client');
+      if (error) throw error;
+      const headers = ['id', 'code', 'name', 'category_id', 'cost', 'price', 'price_max', 'status', 'visible_to_client'];
+      const csvRows = [headers.join(',')];
+      for (const p of (data || [])) {
+        csvRows.push(headers.map(h => {
+          const v = p[h];
+          if (v === null || v === undefined) return '';
+          const s = String(v);
+          return s.includes(',') ? '"' + s + '"' : s;
+        }).join(','));
+      }
+      res.type('text/csv').set('Content-Disposition', 'attachment; filename="catalogo-export.csv"').send(csvRows.join('\n'));
+    } catch (err) {
+      console.error('[Admin] EXPORT:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+// GET /api/admin/products/:id — detalhe
+app.get('/api/admin/products/:id', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { data, error } = await supabase.from('products').select('*, categories(name)').eq('id', req.params.id).single();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Produto não encontrado' });
+    return res.json(data);
+  } catch (err) {
+    console.error('[Admin] GET product:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/admin/products — criar
+app.post('/api/admin/products', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const product = { ...req.body, updated_by: req.sessionUser };
+    const { data, error } = await supabase.from('products').insert([product]).select().single();
+    if (error) throw error;
+    return res.status(201).json(data);
+  } catch (err) {
+    console.error('[Admin] POST product:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/admin/products/:id — atualizar
+app.put('/api/admin/products/:id', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const updates = { ...req.body, updated_by: req.sessionUser, updated_at: new Date().toISOString() };
+    const { data, error } = await supabase.from('products').update(updates).eq('id', req.params.id).select().single();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Produto não encontrado' });
+    return res.json(data);
+  } catch (err) {
+    console.error('[Admin] PUT product:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/products/:id - soft delete
+
+
+// POST /api/admin/products/bulk — import CSV (bulk upsert)
+app.post('/api/admin/products/bulk', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { products } = req.body || {};
+    if (!Array.isArray(products) || products.length === 0) return res.status(400).json({ error: 'products array required' });
+    const rows = products.map(p => ({ ...p, updated_by: req.sessionUser }));
+    const { data, error } = await supabase.from('products').upsert(rows, { onConflict: 'id' }).select();
+    if (error) throw error;
+    return res.json({ ok: true, count: data?.length || 0 });
+  } catch (err) {
+    console.error('[Admin] BULK import:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+
+// GET /api/admin/categories — listar
+app.get('/api/admin/categories', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { data, error } = await supabase.from('categories').select('*').order('sort_order');
+    if (error) throw error;
+    return res.json({ categories: data || [] });
+  } catch (err) {
+    console.error('[Admin] GET categories:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/admin/categories — criar
+app.post('/api/admin/categories', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { data, error } = await supabase.from('categories').insert([req.body]).select().single();
+    if (error) throw error;
+    return res.status(201).json(data);
+  } catch (err) {
+    console.error('[Admin] POST category:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/admin/categories/:id — atualizar
+app.put('/api/admin/categories/:id', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { data, error } = await supabase.from('categories').update(req.body).eq('id', req.params.id).select().single();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Categoria não encontrada' });
+    return res.json(data);
+  } catch (err) {
+    console.error('[Admin] PUT category:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/categories/:id — deletar
+app.delete('/api/admin/categories/:id', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const { error } = await supabase.from('categories').delete().eq('id', req.params.id);
+    if (error) throw error;
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('[Admin] DELETE category:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/admin/sync-whatsapp — placeholder (Fase 5)
+app.post('/api/admin/sync-whatsapp', requireAuth, async (req, res) => {
+  const { url, category_id } = req.body || {};
+  if (!url) return res.status(400).json({ error: 'url required' });
+  // TODO: Fase 5 — Playwright scraper + image downloader + catalog merger
+  return res.json({ ok: true, message: 'Sync enfileirado (Fase 5 — em desenvolvimento)', url, category_id });
+});
+
+// GET /api/catalog — leitura pública (cliente) do Supabase
+app.get('/api/catalog', async (req, res) => {
+  try {
+    if (supabaseEnabled && supabase) {
+      const { data: cats, error: catErr } = await supabase.from('categories').select('*').order('sort_order');
+      if (catErr) throw catErr;
+      const { data: prods, error: prodErr } = await supabase.from('products').select('*').eq('status', 'active').eq('visible_to_client', true);
+      if (prodErr) throw prodErr;
+      // Agrupa produtos por categoria
+      const catalog = (cats || []).map(c => ({
+        id: c.id,
+        name: c.name,
+        products: (prods || []).filter(p => p.category_id === c.id).map(p => ({
+          id: p.id,
+          code: p.code,
+          name: p.name,
+          price: p.price,
+          price_max: p.price_max,
+          highlights: p.highlights,
+          tags: p.tags,
+          image_url: p.image_url,
+        }))
+      })).filter(c => c.products.length > 0);
+      return res.json({ categories: catalog });
+    }
+    // Fallback: arquivo estático
+    const jsonFile = path.join(OUT_DIR, 'catalog-api.json');
+    if (fs.existsSync(jsonFile)) return res.sendFile(jsonFile);
+    res.status(404).json({ error: 'Catalog data not found' });
+  } catch (err) {
+    console.error('[Catalog] GET:', err.message);
+    // Fallback
+    const jsonFile = path.join(OUT_DIR, 'catalog-api.json');
+    if (fs.existsSync(jsonFile)) return res.sendFile(jsonFile);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Startup ──
 if (!fs.existsSync(path.join(OUT_DIR, 'catalogo-digital.html'))) {
   try {
@@ -648,6 +879,21 @@ if (!fs.existsSync(path.join(OUT_DIR, 'catalogo-digital.html'))) {
     console.error('Falha ao gerar catálogo na inicialização:', err.message);
   }
 }
+
+app.get('/api/admin/products/test', (req, res) => res.json({ ok: true }));
+// DELETE /api/admin/products/:id - soft delete
+app.delete('/api/admin/products/:id', requireAuth, async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase nao configurado' });
+    const { data, error } = await supabase.from('products').update({ status: 'discontinued', updated_by: req.sessionUser, updated_at: new Date().toISOString() }).eq('id', req.params.id).select().single();
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Produto nao encontrado' });
+    return res.json({ ok: true, product: data });
+  } catch (err) {
+    console.error('[Admin] DELETE product:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 app.listen(PORT, HOST, () => {
   console.log(`Catálogo Centralizado rodando em http://${HOST}:${PORT}`);

@@ -1,0 +1,33 @@
+{
+  "id": "gestao-catalogo",
+  "name": "Gestão de Catálogo (Fase 3)",
+  "status": "active",
+  "objective": "Implementar interface de gestão de catálogo na área do Lojista: DataTable, modal de produto, inline edit, soft delete, import/export CSV, botão publicar",
+  "context_files": [
+    "src/app.ts",
+    "src/style.css",
+    "server.cjs",
+    "src/types/supabase.ts"
+  ],
+  "reference_files": [
+    "src/app.ts",
+    "server.cjs",
+    "supabase/migrations/20261118132420_create_catalog_schema.sql",
+    "catalog-data.json",
+    "package.json"
+  ],
+  "exit_criteria": [
+    "DataTable funcional com sort/filter/search/paginação",
+    "Modal de criação/edição de produto funcional",
+    "Soft delete com confirmação",
+    "Inline edit de preço/custo/nome",
+    "Import CSV funcional",
+    "Export CSV funcional",
+    "Botão Publicar funcional",
+    "npm run build ✓",
+    "npx tsc --noEmit ✓"
+  ],
+  "subtask_count": 7,
+  "completed_count": 0,
+  "created_at": "2026-11-18T00:00:00Z"
+}

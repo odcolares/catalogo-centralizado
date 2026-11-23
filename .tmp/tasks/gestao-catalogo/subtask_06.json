@@ -1,0 +1,29 @@
+{
+  "id": "gestao-catalogo-06",
+  "seq": "06",
+  "title": "Export CSV (download via endpoint)",
+  "status": "pending",
+  "depends_on": [],
+  "parallel": true,
+  "suggested_agent": "CoderAgent",
+  "context_files": [
+    "src/app.ts",
+    "src/style.css",
+    "server.cjs",
+    "src/types/supabase.ts"
+  ],
+  "reference_files": [
+    "src/app.ts",
+    "server.cjs",
+    "supabase/migrations/20261118132420_create_catalog_schema.sql",
+    "catalog-data.json",
+    "package.json"
+  ],
+  "acceptance_criteria": [
+    "Botão Exportar CSV",
+    "Download do arquivo via endpoint /api/admin/products/export",
+    "Inclui filtros ativos (opcional)",
+    "Nome de arquivo com data"
+  ],
+  "deliverables": ["src/app.ts (export CSV handler)"]
+}

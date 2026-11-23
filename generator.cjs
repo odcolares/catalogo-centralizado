@@ -2,6 +2,31 @@
 
 const fs = require('fs');
 const path = require('path');
+
+// �� Supabase (opcional; fallback para JSON local) ��
+let supabaseGen = null;
+let supabaseGenEnabled = false;
+try {
+  const { createClient } = require('@supabase/supabase-js');
+  // Lê .env
+  const envLines = fs.readFileSync(path.join(__dirname, '.env'), 'utf8').split(/\r?\n/);
+  const envMap = {};
+  for (const l of envLines) {
+    const m = l.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (m) envMap[m[1]] = m[2].replace(/^["']|["']$/g, '');
+  }
+  const url = process.env.SUPABASE_URL || envMap.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || envMap.SUPABASE_SERVICE_ROLE_KEY;
+  if (url && key) {
+    supabaseGen = createClient(url, key);
+    supabaseGenEnabled = true;
+    console.log('[Generator] Supabase conectado - carregando dados do DB');
+  } else {
+    console.log('[Generator] Supabase não configurado - usando catalog-data.json local');
+  }
+} catch (e) {
+  console.log('[Generator] Supabase indisponível - usando fallback JSON local');
+}
 // const puppeteer = require('puppeteer'); // STRIPPED: puppeteer browser unavailable in container
 
 const ROOT = __dirname;

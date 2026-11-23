@@ -1,0 +1,32 @@
+{
+  "id": "gestao-catalogo-02",
+  "seq": "02",
+  "title": "Modal de Produto (criar/editar com abas Geral, Comercial, Estoque, Mídia)",
+  "status": "in_progress",
+  "agent_id": "coder-agent",
+  "started_at": "2026-01-28T00:00:00Z",
+  "depends_on": ["01"],
+  "parallel": false,
+  "suggested_agent": "CoderAgent",
+  "context_files": [
+    "src/app.ts",
+    "src/style.css",
+    "server.cjs",
+    "src/types/supabase.ts"
+  ],
+  "reference_files": [
+    "src/app.ts",
+    "server.cjs",
+    "supabase/migrations/20261118132420_create_catalog_schema.sql",
+    "catalog-data.json",
+    "package.json"
+  ],
+  "acceptance_criteria": [
+    "Modal abre para criar novo produto e editar existente",
+    "Abas: Geral, Comercial, Estoque, Mídia",
+    "Campos validados antes de salvar",
+    "Salva via /api/admin/products (POST/PUT)",
+    "Fecha e atualiza DataTable após salvar"
+  ],
+  "deliverables": ["src/app.ts (modal de produto)"]
+}
