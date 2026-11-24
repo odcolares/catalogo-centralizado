@@ -254,7 +254,8 @@ function getSessionUser(req) {
   const expected = sign(user);
   if (sig.length !== expected.length) return null;
   if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
-  if (!safeEqual(user, env.LOJISTA_USER)) return null;
+  const prestadorUser = process.env.PRESTADOR_USER || parseEnvFile().PRESTADOR_USER || 'prestador';
+  if (!safeEqual(user, env.LOJISTA_USER) && !safeEqual(user, prestadorUser)) return null;
   return user;
 }
 
