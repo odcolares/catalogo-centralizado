@@ -37,7 +37,7 @@ export interface CatalogData {
   categories: Category[];
 }
 
-export type Perfil = 'cliente' | 'lojista';
+export type Perfil = 'cliente' | 'lojista' | 'prestador';
 
 // Injetado por initApp() — placeholder vazio até o entry fornecer os dados
 // �� Role detection (RBAC) ��
@@ -47,6 +47,9 @@ async function fetchUserRole() {
     if (res.ok) {
       const data = await res.json();
       userRole = data.role === 'prestador' ? 'prestador' : 'lojista';
+      perfil = (data.role === 'prestador' || data.role === 'lojista' || data.role === 'cliente')
+        ? data.role as Perfil
+        : 'lojista';
     }
   } catch { /* default lojista */ }
 }
