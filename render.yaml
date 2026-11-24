@@ -10,7 +10,7 @@ services:
     buildCommand: npm ci && npm run build
     startCommand: node server.cjs
     # Branch to deploy from - must match the branch in Render Dashboard
-    # IMPORTANT: Set branch to "base" in Render Dashboard Settings → Build & Deploy
+    # IMPORTANT: Set branch to "master" in Render Dashboard Settings → Build & Deploy
     # This file documents the intended config; Dashboard setting takes precedence
     autoDeploy: true
     healthCheckPath: /health
