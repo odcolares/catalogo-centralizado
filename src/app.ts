@@ -688,9 +688,6 @@ function renderApp() {
               🔒 Sair
             </button>`
               : `
-            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-100 text-amber-900 text-[10px] font-bold border border-amber-200 shadow-sm">
-              👤 Prestador
-            </span>
             <button type="button" data-info-modal="entrega"
                     class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
               <span>🚚 Entrega</span>
@@ -717,7 +714,14 @@ function renderApp() {
                class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
               <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
               <span>Atendimento WhatsApp</span>
-            </a>`
+            </a>
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-100 text-amber-900 text-[10px] font-bold border border-amber-200 shadow-sm">
+              👤 Prestador
+            </span>
+            <button id="logout-btn"
+                    class="inline-flex items-center justify-center gap-2 bg-white text-red-600 hover:bg-red-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
+              🔒 Sair
+            </button>`
             }
           </div>
           </div>
