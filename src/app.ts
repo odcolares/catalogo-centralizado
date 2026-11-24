@@ -41,7 +41,7 @@ export type Perfil = 'cliente' | 'lojista' | 'prestador';
 
 // Injetado por initApp() — placeholder vazio até o entry fornecer os dados
 // �� Role detection (RBAC) ��
-async function fetchUserRole() {
+async function fetchUserRole(): Promise<void> {
   try {
     const res = await fetch('/api/me');
     if (res.ok) {
@@ -50,8 +50,18 @@ async function fetchUserRole() {
       perfil = (data.role === 'prestador' || data.role === 'lojista' || data.role === 'cliente')
         ? data.role as Perfil
         : 'lojista';
+      renderApp(); // re-renderiza após detectar o papel
+    } else {
+      // 401/unauthenticated — resetar perfil
+      userRole = 'lojista';
+      perfil = 'cliente';
+      renderApp();
     }
-  } catch { /* default lojista */ }
+  } catch {
+    userRole = 'lojista';
+    perfil = 'cliente';
+    renderApp();
+  }
 }
 const isPrestador = () => userRole === 'prestador';
 
@@ -2419,7 +2429,7 @@ function attachEventListeners() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       fetch('/api/logout', { method: 'POST' }).finally(() => {
-        window.location.href = '/';
+        window.location.href = '/entrar';
       });
     });
   }
