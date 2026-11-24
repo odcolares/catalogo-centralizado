@@ -2227,8 +2227,8 @@ function attachEventListeners() {
         if (p) { product = p; break; }
       }
       if (!product) return;
+      const isActive = product.enabled !== false;
       try {
-        const isActive = product.enabled !== false;
         if (!window.confirm(isActive ? 'Desativar este produto?' : 'Reativar este produto?')) return;
         const res = await fetch(`/api/admin/products/${id}`, {
           method: 'PUT',
@@ -2236,15 +2236,15 @@ function attachEventListeners() {
           body: JSON.stringify({ status: isActive ? 'discontinued' : 'active' }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        // Remove from in-memory catalog
+        // Update in-memory catalog (toggle)
         for (const cat of catalog.categories) {
           const idx = cat.products.findIndex((p) => p.id === id);
-          if (idx >= 0) { cat.products[idx].enabled = false; break; }
+          if (idx >= 0) { cat.products[idx].enabled = !isActive; break; }
         }
-        showToast('Produto desativado com sucesso.');
+        showToast(isActive ? 'Produto desativado com sucesso.' : 'Produto reativado com sucesso.');
         renderApp();
       } catch (err) {
-        showToast('Falha ao desativar produto.');
+        showToast(`Falha ao ${isActive ? 'desativar' : 'reativar'} produto.`);
       }
     });
   });
