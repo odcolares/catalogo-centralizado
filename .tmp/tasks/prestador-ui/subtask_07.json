@@ -1,0 +1,15 @@
+{
+  "seq": 7,
+  "title": "Relatórios — chamada API e exibição de dados",
+  "description": "Implementar chamada GET /api/engagement/stats com parâmetros de filtro, parse da resposta e exibição em tabela dos produtos mais engajados (visualizações/cliques)",
+  "status": "pending",
+  "depends_on": [6],
+  "parallel": false,
+  "context_files": ["src/app.ts", "server.cjs"],
+  "reference_files": ["server.cjs (linhas 605-610 endpoint engagement stats)"],
+  "exit_criteria": [
+    "Chama GET /api/engagement/stats com periodDays e category",
+    "Tabela exibe produtos com contagem de eventos",
+    "Estado vazio mostrado quando não há dados"
+  ]
+}

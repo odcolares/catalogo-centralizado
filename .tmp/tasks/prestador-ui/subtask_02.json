@@ -1,0 +1,15 @@
+{
+  "seq": 2,
+  "title": "Modificar header para abas do Prestador",
+  "description": "Substituir botões cliente (Entrega/Garantia/Pagamento/Carrinho/WhatsApp) por abas próprias do prestador quando perfil === 'prestador'. Manter badge e botão Sair.",
+  "status": "pending",
+  "depends_on": [1],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["src/app.ts (linhas 690-721 bloco else do header)"],
+  "exit_criteria": [
+    "Header mostra abas do prestador quando logado como prestador",
+    "Cliente continua vendo botões Entrega/Garantia/Pagamento/Carrinho/WhatsApp",
+    "Badge 👤 Prestador e botão Sair visíveis"
+  ]
+}

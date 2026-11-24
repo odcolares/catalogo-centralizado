@@ -1,0 +1,15 @@
+{
+  "seq": 5,
+  "title": "Execução Bulk Import via API",
+  "description": "Implementar chamada POST /api/admin/products/bulk com os dados do CSV, mapeamento de colunas, e feedback de sucesso/erro via toast",
+  "status": "pending",
+  "depends_on": [4],
+  "parallel": false,
+  "context_files": ["src/app.ts", "server.cjs"],
+  "reference_files": ["server.cjs (linhas 770-783 endpoint bulk)"],
+  "exit_criteria": [
+    "Chama POST /api/admin/products/bulk com array de produtos",
+    "Toast mostra quantidade importada/atualizada",
+    "Erro é capturado e exibido via toast"
+  ]
+}

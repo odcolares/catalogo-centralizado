@@ -1,0 +1,14 @@
+{
+  "seq": 10,
+  "title": "Integrar abas do prestador no renderApp()",
+  "description": "Garantir que renderTabContent() chame renderPrestadorTabs() quando perfil === 'prestador' e activeTab corresponder a uma aba do prestador",
+  "status": "pending",
+  "depends_on": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["src/app.ts (renderTabContent linhas 745-756)"],
+  "exit_criteria": [
+    "renderTabContent() roteia corretamente para abas do prestador",
+    "Troca de aba funciona sem recarregar página"
+  ]
+}

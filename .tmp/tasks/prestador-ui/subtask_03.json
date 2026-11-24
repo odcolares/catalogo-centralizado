@@ -1,0 +1,14 @@
+{
+  "seq": 3,
+  "title": "Adicionar função renderPrestadorTabs()",
+  "description": "Criar função que renderiza o conteúdo das 3 abas do prestador: Gestão (container vazio), Sync WhatsApp (UI simples), Relatórios (UI com filtro)",
+  "status": "pending",
+  "depends_on": [1, 2],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["src/app.ts (renderCatalogDataTable, renderEngagementView como referência)"],
+  "exit_criteria": [
+    "Função renderPrestadorTabs() existe e é chamada por renderTabContent()",
+    "Cada aba retorna HTML válido"
+  ]
+}

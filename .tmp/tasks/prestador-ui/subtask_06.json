@@ -1,0 +1,15 @@
+{
+  "seq": 6,
+  "title": "UI Relatórios — filtro período e categoria",
+  "description": "Criar UI na aba Relatórios: select de período (30/60/90 dias), select de categoria, botão buscar",
+  "status": "pending",
+  "depends_on": [3],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["server.cjs (GET /api/engagement/stats)"],
+  "exit_criteria": [
+    "Select período: 30, 60, 90 dias",
+    "Select categoria preenchido com categorias do catálogo",
+    "Botão buscar chama a API"
+  ]
+}

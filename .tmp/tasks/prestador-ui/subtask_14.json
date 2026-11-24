@@ -1,0 +1,15 @@
+{
+  "seq": 14,
+  "title": "Limpeza e documentação",
+  "description": "Remover arquivos temporários (.py, .mjs criados durante desenvolvimento), atualizar README se necessário, marcar sessão como concluída",
+  "status": "pending",
+  "depends_on": [13],
+  "parallel": false,
+  "context_files": [],
+  "reference_files": [],
+  "exit_criteria": [
+    "Arquivos temporários removidos",
+    "context.md atualizado com status completed",
+    "Próximo passo definido (Fase 5 ou Fase 7)"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "seq": 11,
+  "title": "Build + TypeScript + teste local",
+  "description": "Rodar npm run build e npx tsc --noEmit. Testar localmente: login prestador, ver abas, testar bulk import, relatórios, sync WB",
+  "status": "pending",
+  "depends_on": [10],
+  "parallel": false,
+  "context_files": ["src/app.ts", "server.cjs"],
+  "reference_files": [],
+  "exit_criteria": [
+    "npm run build passa",
+    "npx tsc --noEmit passa",
+    "Login prestador@demo funciona",
+    "Prestador vê UI própria (não igual ao cliente)",
+    "Todas as 3 funcionalidades funcionam localmente"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "seq": 1,
+  "title": "Modificar renderTabContent para abas do Prestador",
+  "description": "Estender renderTabContent() para renderizar conteúdo quando perfil === 'prestador' com abas: Gestão, Sync WhatsApp, Relatórios",
+  "status": "pending",
+  "depends_on": [],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["src/app.ts (linhas 745-756 renderTabContent)", "src/app.ts (linhas 658-720 header)"],
+  "exit_criteria": [
+    "renderTabContent() tem branches para perfil === 'prestador'",
+    "Abas do prestador: Gestão, Sync WhatsApp, Relatórios"
+  ]
+}

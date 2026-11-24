@@ -1,0 +1,22 @@
+{
+  "feature": "prestador-ui",
+  "session": "2026-11-24-prestador-ui",
+  "description": "UI própria para perfil Prestador + Bulk Import + Relatórios + Sync WB simples",
+  "status": "planned",
+  "subtasks": [
+    {"seq": 1, "file": "subtask_01.json", "parallel": false},
+    {"seq": 2, "file": "subtask_02.json", "parallel": false},
+    {"seq": 3, "file": "subtask_03.json", "parallel": false},
+    {"seq": 4, "file": "subtask_04.json", "parallel": false},
+    {"seq": 5, "file": "subtask_05.json", "parallel": false},
+    {"seq": 6, "file": "subtask_06.json", "parallel": false},
+    {"seq": 7, "file": "subtask_07.json", "parallel": false},
+    {"seq": 8, "file": "subtask_08.json", "parallel": false},
+    {"seq": 9, "file": "subtask_09.json", "parallel": false},
+    {"seq": 10, "file": "subtask_10.json", "parallel": false},
+    {"seq": 11, "file": "subtask_11.json", "parallel": false},
+    {"seq": 12, "file": "subtask_12.json", "parallel": false},
+    {"seq": 13, "file": "subtask_13.json", "parallel": false},
+    {"seq": 14, "file": "subtask_14.json", "parallel": false}
+  ]
+}

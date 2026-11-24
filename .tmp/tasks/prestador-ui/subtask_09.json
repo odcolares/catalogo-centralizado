@@ -1,0 +1,15 @@
+{
+  "seq": 9,
+  "title": "Sync WB — chamada endpoint e feedback",
+  "description": "Implementar chamada POST /api/admin/sync-whatsapp com URL e category_id, exibir retorno via toast (sucesso ou erro)",
+  "status": "pending",
+  "depends_on": [8],
+  "parallel": false,
+  "context_files": ["src/app.ts", "server.cjs"],
+  "reference_files": ["server.cjs (linhas 839-845 endpoint sync-whatsapp)"],
+  "exit_criteria": [
+    "Chama POST /api/admin/sync-whatsapp com { url, category_id }",
+    "Toast mostra mensagem de retorno da API",
+    "Loading state durante a chamada"
+  ]
+}

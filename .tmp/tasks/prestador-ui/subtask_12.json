@@ -1,0 +1,15 @@
+{
+  "seq": 12,
+  "title": "Commit e push para base",
+  "description": "Fazer commit de todas as alterações e push para branch base (Render auto-deploy)",
+  "status": "pending",
+  "depends_on": [11],
+  "parallel": false,
+  "context_files": [],
+  "reference_files": [],
+  "exit_criteria": [
+    "git commit realizado",
+    "git push origin base realizado",
+    "Render auto-deploy iniciado"
+  ]
+}

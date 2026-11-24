@@ -1,0 +1,15 @@
+{
+  "seq": 13,
+  "title": "Validar deploy no Render",
+  "description": "Aguardar deploy no Render e testar: login prestador, abas, bulk import, relatórios, sync WB",
+  "status": "pending",
+  "depends_on": [12],
+  "parallel": false,
+  "context_files": [],
+  "reference_files": [],
+  "exit_criteria": [
+    "Deploy succeeded no Render",
+    "Login prestador@demo funciona na URL de produção",
+    "Todas as funcionalidades funcionam em produção"
+  ]
+}

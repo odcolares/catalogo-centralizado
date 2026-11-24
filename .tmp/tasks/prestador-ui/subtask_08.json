@@ -1,0 +1,15 @@
+{
+  "seq": 8,
+  "title": "UI Sync WhatsApp Business — input e categoria",
+  "description": "Criar UI na aba Sync WhatsApp: input para URL do catálogo WB, select de categoria destino, botão Sincronizar",
+  "status": "pending",
+  "depends_on": [3],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["server.cjs (POST /api/admin/sync-whatsapp placeholder)"],
+  "exit_criteria": [
+    "Input text para URL do WhatsApp Business",
+    "Select de categoria destino",
+    "Botão Sincronizar desabilitado até URL ser preenchida"
+  ]
+}

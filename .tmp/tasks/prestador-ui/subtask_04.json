@@ -1,0 +1,15 @@
+{
+  "seq": 4,
+  "title": "UI Bulk Import — upload CSV e preview",
+  "description": "Criar UI na aba Gestão: input file (CSV), botão para ler arquivo, preview das primeiras linhas em tabela, seleção de categoria destino",
+  "status": "pending",
+  "depends_on": [3],
+  "parallel": false,
+  "context_files": ["src/app.ts"],
+  "reference_files": ["server.cjs (POST /api/admin/products/bulk)", "src/app.ts (modal de produto como referência de UI)"],
+  "exit_criteria": [
+    "Input file aceita .csv",
+    "Preview mostra até 10 linhas do CSV",
+    "Select de categoria destino preenchido com categorias existentes"
+  ]
+}

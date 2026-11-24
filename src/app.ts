@@ -468,6 +468,7 @@ let totalProducts = 0;
 export function initApp(data: CatalogData, p: Perfil): void {
   catalog = data;
   perfil = p;
+  activeTab = perfil === 'prestador' ? 'gestao' : 'catalog';
   totalProducts = catalog.categories.reduce(
     (acc, c) => acc + c.products.filter(isEnabled).length,
     0
@@ -688,33 +689,20 @@ function renderApp() {
               🔒 Sair
             </button>`
               : `
-            <button type="button" data-info-modal="entrega"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>🚚 Entrega</span>
-            </button>
-            <button type="button" data-info-modal="garantia"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>✅ Garantia</span>
-            </button>
-            <button type="button" data-info-modal="pagamento"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>💳 Pagamento</span>
-            </button>
-            <button type="button" id="open-cart-btn"
-                    class="relative inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <span>🛒 Carrinho${cartQty > 0 ? ` (${cartQty})` : ''}</span>
-              ${
-                cartQty > 0
-                  ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[10px] font-black min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center ring-2 ring-[#0a8754]">${cartQty}</span>`
-                  : ''
-              }
-            </button>
-            <a href="https://wa.me/${(store.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Vi o catálogo e quero fazer um pedido — pode me atender?')}"
-               target="_blank" rel="noopener"
-               class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
-              <span>Atendimento WhatsApp</span>
-            </a>
+            <div class="inline-flex items-center gap-2" role="segmented-control" data-perfil="prestador">
+              <button type="button"
+                      class="nav-tab inline-flex items-center justify-center gap-2 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap ${activeTab === 'gestao' ? 'bg-[#0a8754] text-white shadow-sm' : 'bg-white text-[#0a8754] hover:bg-emerald-50'}" data-tab="gestao" data-perfil="prestador">
+                📦 Gestão
+              </button>
+              <button type="button"
+                      class="nav-tab inline-flex items-center justify-center gap-2 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap ${activeTab === 'sync' ? 'bg-[#0a8754] text-white shadow-sm' : 'bg-white text-[#0a8754] hover:bg-emerald-50'}" data-tab="sync" data-perfil="prestador">
+                📱 Sync WB
+              </button>
+              <button type="button"
+                      class="nav-tab inline-flex items-center justify-center gap-2 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap ${activeTab === 'relatorios' ? 'bg-[#0a8754] text-white shadow-sm' : 'bg-white text-[#0a8754] hover:bg-emerald-50'}" data-tab="relatorios" data-perfil="prestador">
+                📊 Relatórios
+              </button>
+            </div>
             <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-100 text-amber-900 text-[10px] font-bold border border-amber-200 shadow-sm">
               👤 Prestador
             </span>
@@ -766,6 +754,12 @@ function renderApp() {
 }
 
 function renderTabContent(filtered: { category: Category; product: Product }[]): string {
+  if (perfil === 'prestador') {
+    if (activeTab === 'gestao') return renderPrestadorGestao();
+    if (activeTab === 'sync') return renderPrestadorSync();
+    if (activeTab === 'relatorios') return renderPrestadorRelatorios();
+    return renderPrestadorGestao(); // default
+  }
   if (activeTab === 'catalog' && perfil === 'lojista') {
     return renderCatalogDataTable();
   }
@@ -776,6 +770,114 @@ function renderTabContent(filtered: { category: Category; product: Product }[]):
     return renderEngagementView();
   }
   return renderCatalogView(filtered);
+}
+
+// ════════════════════════════════════════════════════════════════
+// PRESTADOR — TABS PRÓPRIAS (Gestão / Sync WhatsApp / Relatórios)
+// ════════════════════════════════════════════════════════════════
+
+function renderPrestadorGestao(): string {
+  const cats = catalog.categories.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  return `
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-bold text-zinc-900 mb-4">📦 Gestão de Importação</h2>
+      <p class="text-zinc-500 text-sm mb-6">Importar produtos em massa via CSV. O arquivo deve conter colunas: id, code, name, price, cost, category_id, status.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">Selecionar arquivo CSV</label>
+          <input type="file" id="bulk-csv-file" accept=".csv" class="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"/>
+          <p class="mt-2 text-xs text-zinc-400">Máximo 500 linhas por upload.</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">Categoria destino</label>
+          <select id="bulk-category-select" class="w-full p-2 border border-zinc-200 rounded bg-zinc-50 text-zinc-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <option value="">(usar category_id do CSV)</option>
+            ${cats}
+          </select>
+        </div>
+      </div>
+
+      <div id="bulk-preview" class="hidden mt-6">
+        <h3 class="text-sm font-semibold text-zinc-700 mb-2">Pré-visualização (primeiras 10 linhas)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border border-zinc-200 rounded">
+            <thead class="bg-zinc-50">
+              <tr><th class="p-3 border-b border-zinc-200 text-left text-zinc-500">#</th><th class="p-3 border-b border-zinc-200 text-left text-zinc-500">code</th><th class="p-3 border-b border-zinc-200 text-left text-zinc-500">name</th><th class="p-3 border-b border-zinc-200 text-left text-zinc-500">price</th><th class="p-3 border-b border-zinc-200 text-left text-zinc-500">category</th></tr>
+            </thead>
+            <tbody id="bulk-preview-body" class="text-zinc-600"></tbody>
+          </table>
+        </div>
+        <p id="bulk-preview-count" class="mt-2 text-xs text-zinc-400"></p>
+      </div>
+
+      <button id="bulk-import-btn" class="mt-6 px-6 py-2.5 bg-emerald-600 text-white font-bold rounded hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        🚀 Importar Produtos
+      </button>
+      <div id="bulk-result" class="mt-4 hidden"></div>
+    </div>
+  `;
+}
+
+function renderPrestadorSync(): string {
+  return `
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-bold text-zinc-900 mb-4">📱 Sync WhatsApp Business</h2>
+      <p class="text-zinc-500 text-sm mb-6">Sincronizar produtos de um catálogo do WhatsApp Business para esta loja.</p>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">URL do catálogo WB</label>
+          <input type="text" id="sync-wb-url" placeholder="https://wa.me/..." class="w-full p-2 border border-zinc-200 rounded bg-zinc-50 text-zinc-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">Categoria destino</label>
+          <select id="sync-category-select" class="w-full p-2 border border-zinc-200 rounded bg-zinc-50 text-zinc-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <option value="">(selecionar categoria)</option>
+            ${catalog.categories.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}
+          </select>
+        </div>
+        <button id="sync-wb-btn" class="px-6 py-2.5 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          🔄 Sincronizar
+        </button>
+        <div id="sync-result" class="mt-4 hidden p-3 rounded bg-amber-50 border border-amber-100 text-amber-800 text-sm"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPrestadorRelatorios(): string {
+  return `
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-bold text-zinc-900 mb-4">📊 Relatórios de Engajamento</h2>
+      <p class="text-zinc-500 text-sm mb-6">Produtos mais visualizados e clicados no período selecionado.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">Período</label>
+          <select id="report-period" class="w-full p-2 border border-zinc-200 rounded bg-zinc-50 text-zinc-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <option value="30">Últimos 30 dias</option>
+            <option value="60">Últimos 60 dias</option>
+            <option value="90">Últimos 90 dias</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">Categoria</label>
+          <select id="report-category" class="w-full p-2 border border-zinc-200 rounded bg-zinc-50 text-zinc-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <option value="">Todas</option>
+            ${catalog.categories.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}
+          </select>
+        </div>
+        <button id="report-fetch-btn" class="px-6 py-2.5 bg-emerald-600 text-white font-bold rounded hover:bg-emerald-700">🔍 Buscar</button>
+      </div>
+
+      <div id="report-loading" class="hidden flex items-center gap-2 text-sm text-zinc-500">⏳ Carregando...</div>
+      <div id="report-result" class="mt-4"></div>
+      <div id="report-empty" class="hidden mt-8 text-center py-8">
+        <p class="text-zinc-400 text-sm">Nenhum dado de engajamento encontrado.</p>
+      </div>
+    </div>
+  `;
 }
 
 function renderCatalogDataTable(): string {
@@ -2343,6 +2445,163 @@ function attachEventListeners() {
       renderApp();
     });
   });
+
+  // ── Prestador: Bulk Import ──
+  const bulkFileInput = document.getElementById('bulk-csv-file') as HTMLInputElement | null;
+  const bulkPreview = document.getElementById('bulk-preview') as HTMLDivElement | null;
+  const bulkPreviewBody = document.getElementById('bulk-preview-body') as HTMLTableSectionElement | null;
+  const bulkPreviewCount = document.getElementById('bulk-preview-count') as HTMLParagraphElement | null;
+  const bulkImportBtn = document.getElementById('bulk-import-btn') as HTMLButtonElement | null;
+  const bulkResult = document.getElementById('bulk-result') as HTMLDivElement | null;
+  const bulkCategorySelect = document.getElementById('bulk-category-select') as HTMLSelectElement | null;
+
+  let bulkParsedRows: any[] = [];
+
+  if (bulkFileInput && bulkPreview && bulkPreviewBody && bulkImportBtn) {
+    bulkFileInput.addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      const lines = text.split('\n').filter((l) => l.trim());
+      if (lines.length < 2) {
+        bulkResult!.innerHTML = `<p class="text-red-500 text-sm">CSV vazio ou sem cabeçalho.</p>`;
+        bulkResult!.classList.remove('hidden');
+        return;
+      }
+      const headers = lines[0].split(',').map((h) => h.trim());
+      bulkParsedRows = lines.slice(1).map((line, i) => {
+        const vals = line.split(',').map((v) => v.trim());
+        const row: any = {};
+        headers.forEach((h, idx) => { row[h] = vals[idx] || ''; });
+        row['_row'] = i + 2;
+        return row;
+      });
+
+      bulkPreviewBody!.innerHTML = bulkParsedRows.slice(0, 10).map((r, i) => `
+        <tr><td class="p-2 border-b border-zinc-100">${r._row}</td><td class="p-2 border-b border-zinc-100 font-mono">${r.code || '-'}</td><td class="p-2 border-b border-zinc-100">${r.name || '-'}</td><td class="p-2 border-b border-zinc-100 text-right">${r.price || '-'}</td><td class="p-2 border-b border-zinc-100">${r.category_id || '-'}</td></tr>
+      `).join('');
+      bulkPreviewCount!.textContent = `${bulkParsedRows.length} linha(s) detectada(s). Mostrando até 10.`;
+      bulkPreview!.classList.remove('hidden');
+      bulkImportBtn!.disabled = false;
+      bulkResult!.classList.add('hidden');
+    });
+
+    bulkImportBtn.addEventListener('click', async () => {
+      if (bulkParsedRows.length === 0) return;
+      const categoryOverride = bulkCategorySelect?.value || undefined;
+      const products = bulkParsedRows.map((r) => ({
+        id: r.id || `bulk-${Date.now()}-${r._row}`,
+        code: r.code,
+        name: r.name,
+        price: parseFloat(r.price) || 0,
+        cost: parseFloat(r.cost) || 0,
+        category_id: categoryOverride || r.category_id || '',
+        status: r.status || 'active',
+        visible_to_client: r.visible_to_client !== 'false',
+      }));
+      try {
+        const res = await fetch('/api/admin/products/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ products }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        bulkResult!.innerHTML = `<p class="text-emerald-600 text-sm font-bold">✅ ${data.count} produto(s) importado(s) com sucesso.</p>`;
+        bulkResult!.classList.remove('hidden');
+        bulkFileInput!.value = '';
+        bulkParsedRows = [];
+        bulkImportBtn!.disabled = true;
+        bulkPreview!.classList.add('hidden');
+      } catch (err: any) {
+        bulkResult!.innerHTML = `<p class="text-red-500 text-sm">❌ ${err.message}</p>`;
+        bulkResult!.classList.remove('hidden');
+      }
+    });
+  }
+
+  // ── Prestador: Sync WhatsApp ──
+  const syncUrlInput = document.getElementById('sync-wb-url') as HTMLInputElement | null;
+  const syncCategorySelect = document.getElementById('sync-category-select') as HTMLSelectElement | null;
+  const syncBtn = document.getElementById('sync-wb-btn') as HTMLButtonElement | null;
+  const syncResult = document.getElementById('sync-result') as HTMLDivElement | null;
+
+  if (syncUrlInput && syncBtn && syncResult) {
+    syncUrlInput.addEventListener('input', () => {
+      syncBtn!.disabled = !syncUrlInput!.value.trim();
+      syncResult!.classList.add('hidden');
+    });
+
+    syncBtn.addEventListener('click', async () => {
+      const url = syncUrlInput!.value.trim();
+      const category_id = syncCategorySelect?.value || undefined;
+      try {
+        syncBtn!.disabled = true;
+        syncBtn!.textContent = '⏳ Sincronizando...';
+        const res = await fetch('/api/admin/sync-whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, category_id }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        syncResult!.innerHTML = `<p class="text-emerald-600 text-sm font-bold">✅ ${data.message}</p>`;
+        syncResult!.classList.remove('hidden');
+      } catch (err: any) {
+        syncResult!.innerHTML = `<p class="text-red-500 text-sm">❌ ${err.message}</p>`;
+        syncResult!.classList.remove('hidden');
+      } finally {
+        syncBtn!.disabled = !syncUrlInput!.value.trim();
+        syncBtn!.textContent = '🔄 Sincronizar';
+      }
+    });
+  }
+
+  // ── Prestador: Relatórios ──
+  const reportPeriodSelect = document.getElementById('report-period') as HTMLSelectElement | null;
+  const reportCategorySelect = document.getElementById('report-category') as HTMLSelectElement | null;
+  const reportFetchBtn = document.getElementById('report-fetch-btn') as HTMLButtonElement | null;
+  const reportLoading = document.getElementById('report-loading') as HTMLDivElement | null;
+  const reportResult = document.getElementById('report-result') as HTMLDivElement | null;
+  const reportEmpty = document.getElementById('report-empty') as HTMLDivElement | null;
+
+  if (reportFetchBtn && reportResult && reportLoading && reportEmpty) {
+    reportFetchBtn.addEventListener('click', async () => {
+      const period = reportPeriodSelect?.value || '30';
+      const category = reportCategorySelect?.value || '';
+      const params = new URLSearchParams({ periodDays: period });
+      if (category) params.set('category', category);
+      try {
+        reportLoading!.classList.remove('hidden');
+        reportResult!.innerHTML = '';
+        reportEmpty!.classList.add('hidden');
+        const res = await fetch(`/api/engagement/stats?${params}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const stats = data.stats || [];
+        if (stats.length === 0) {
+          reportEmpty!.classList.remove('hidden');
+          return;
+        }
+        reportResult!.innerHTML = `
+          <table class="w-full text-sm border border-zinc-200 rounded">
+            <thead class="bg-zinc-50">
+              <tr><th class="p-3 border-b border-zinc-200 text-left text-zinc-500">Produto</th><th class="p-3 border-b border-zinc-200 text-right text-zinc-500">Eventos</th><th class="p-3 border-b border-zinc-200 text-right text-zinc-500">Último evento</th></tr>
+            </thead>
+            <tbody>
+              ${stats.map((s: any) => `
+                <tr><td class="p-2 border-b border-zinc-100">${s.product_name || s.product_id || '-'}</td><td class="p-2 border-b border-zinc-100 text-right font-bold">${s.count || 0}</td><td class="p-2 border-b border-zinc-100 text-right text-zinc-400 text-xs">${s.last_event || '-'}</td></tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } catch (err: any) {
+        reportResult!.innerHTML = `<p class="text-red-500 text-sm">❌ ${err.message}</p>`;
+      } finally {
+        reportLoading!.classList.add('hidden');
+      }
+    });
+  }
 
   // ── Rastreamento de engajamento ──
   // Clique no card abre detalhes do produto (view = abertura do detalhe, 1x por sessão/produto)
