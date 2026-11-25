@@ -1434,7 +1434,7 @@ function renderEngagementView(): string {
         <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div class="flex items-center gap-2">
             <label for="eng-period" class="text-xs font-semibold text-zinc-500">Período</label>
-            <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+            <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754]">
               <option value="7">Últimos 7 dias</option>
               <option value="30" selected>Últimos 30 dias</option>
               <option value="90">Últimos 90 dias</option>
@@ -1442,7 +1442,7 @@ function renderEngagementView(): string {
           </div>
           <div class="flex items-center gap-2 w-full sm:w-auto">
             <label for="eng-category" class="text-xs font-semibold text-zinc-500">Categoria</label>
-            <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754] flex-1 sm:flex-auto">
+            <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754] flex-1 sm:flex-auto">
               <option value="">Todas as categorias</option>
               ${categoryOptions}
             </select>
@@ -1455,7 +1455,7 @@ function renderEngagementView(): string {
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
           <div class="flex items-center gap-2">
             <label for="eng-chart-metric" class="text-xs font-semibold text-zinc-500">Exibir gráfico por</label>
-            <select id="eng-chart-metric" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+            <select id="eng-chart-metric" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754]">
               <option value="views">Visualizações (detalhe)</option>
               <option value="impressions">Impressões</option>
               <option value="whatsapp_clicks">Cliques WhatsApp</option>
@@ -1465,7 +1465,7 @@ function renderEngagementView(): string {
           </div>
           <div class="flex items-center gap-2">
             <label for="eng-top-n" class="text-xs font-semibold text-zinc-500">Top</label>
-            <select id="eng-top-n" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-[#0a8754]">
+            <select id="eng-top-n" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754]">
               <option value="5">5</option>
               <option value="10" selected>10</option>
               <option value="20">20</option>
@@ -1941,7 +1941,7 @@ function renderCartDrawer(): string {
     .join('');
 
   const fieldClass =
-    'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]';
+    'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]';
 
   return `
     <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 cart-drawer-overlay print:hidden"></div>
@@ -2198,7 +2198,7 @@ function renderProductModal(): string {
   const tabBtn = (id: string, label: string) => `
     <button type="button" data-pm-tab="${id}" class="px-4 py-2 text-sm font-bold rounded-lg transition ${productModalTab === id ? 'bg-[#0a8754] text-white' : 'bg-white text-zinc-700 hover:bg-zinc-50 border border-zinc-200'}">${label}</button>`;
   const field = (label: string, input: string) => `<div><label class="block text-[11px] font-semibold text-zinc-600 mb-1">${label}</label>${input}</div>`;
-  const inputCls = 'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0a8754]';
+  const inputCls = 'w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#0a8754]';
 
   let body = '';
   if (productModalTab === 'geral') {
