@@ -1,26 +1,5 @@
 [
   {
-    "id": "d20",
-    "name": "Smartwatch D20 Bluetooth",
-    "price": 49.9,
-    "price_max": 149.9,
-    "category": "smartwatches",
-    "categoryName": "Smartwatches",
-    "tags": [
-      "entrada",
-      "mais-vendido",
-      "smartwatches",
-      "v18-smart-d20",
-      "smartwatch",
-      "d20",
-      "bluetooth",
-      "com-faixa"
-    ],
-    "image": "images/d20.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/relogio-inteligente-smartwatch-d20-bluetooth-diversas-cores-caxia-fechado-d20-caxia100pc-12-1200reais",
-    "cost": 13.8
-  },
-  {
     "id": "s11mini",
     "name": "Smart Watch S11 Mini",
     "price": 109.9,
@@ -38,7 +17,7 @@
       "com-faixa"
     ],
     "image": "images/s11mini.png",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/smart-watch-relogio-s11-mini-inteligente-39mm-series-10-2025-2-pulseiras",
+    "sourceUrl": null,
     "cost": 33
   },
   {
@@ -65,6 +44,27 @@
     "cost": 136
   },
   {
+    "id": "d20",
+    "name": "Smartwatch D20 Bluetooth",
+    "price": 49.9,
+    "price_max": 149.9,
+    "category": "smartwatches",
+    "categoryName": "Smartwatches",
+    "tags": [
+      "entrada",
+      "mais-vendido",
+      "smartwatches",
+      "v18-smart-d20",
+      "smartwatch",
+      "d20",
+      "bluetooth",
+      "com-faixa"
+    ],
+    "image": "images/d20.jpg",
+    "sourceUrl": null,
+    "cost": 13.8
+  },
+  {
     "id": "m19",
     "name": "Fone M19 com Visor Digital LED",
     "price": 39.9,
@@ -84,7 +84,7 @@
       "led"
     ],
     "image": "images/m19.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-sem-fio-m19-com-visor-digital-led-em-compativel-fones-microfone-para-sistema-android-ios-windows",
+    "sourceUrl": null,
     "cost": 14.5
   },
   {
@@ -105,7 +105,7 @@
       "com-faixa"
     ],
     "image": "images/imenso-52.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-imenso-bluetooth-5-ponto-2-original",
+    "sourceUrl": null,
     "cost": 65
   },
   {
@@ -125,7 +125,7 @@
       "15"
     ],
     "image": "images/st15.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/fone-de-ouvido-bluetooth-esportivo-st-15-com-60h-de-musica-som-hi-fi-leve-e-resistente-5-ponto-3",
+    "sourceUrl": null,
     "cost": 36.8
   },
   {
@@ -148,7 +148,7 @@
       "4g"
     ],
     "image": "images/mouse-kapbom.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/mouse-sem-fio-kapbom-ka-611-2-ponto-4g-gamer-ergonomico-alta-precisao-usb",
+    "sourceUrl": null,
     "cost": 11.8
   },
   {
@@ -171,30 +171,8 @@
       "com-faixa"
     ],
     "image": "images/tec-rgb-bmax.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/teclado-semi-mecanico-rgb-b-max",
+    "sourceUrl": null,
     "cost": 32
-  },
-  {
-    "id": "tablet-101",
-    "name": "Tablet 10.1\" 5G + Teclado + Mouse",
-    "price": 899,
-    "price_max": null,
-    "category": "informatica",
-    "categoryName": "Informática",
-    "tags": [
-      "premium",
-      "tablet",
-      "kit",
-      "informatica",
-      "mm-pb101",
-      "10",
-      "5g",
-      "teclado",
-      "mouse"
-    ],
-    "image": "images/tablet-101.png",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/tablet-10-ponto-1-5g-com-teclado-mais-mouse-16gb-ram-512gb-android-camera-50mp",
-    "cost": 599.99
   },
   {
     "id": "proj-astro",
@@ -214,7 +192,7 @@
       "xia"
     ],
     "image": "images/proj-astro.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/projetor-night-light-astronauta-galaxy-starry-sky-star-light",
+    "sourceUrl": null,
     "cost": 43
   },
   {
@@ -235,30 +213,32 @@
       "5w"
     ],
     "image": "images/caixa-mini.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/caixa-som-mini-clorido-qualidade",
+    "sourceUrl": null,
     "cost": 11.8
   },
   {
-    "id": "caixa-bass20",
-    "name": "Caixa Extra Bass 20W RGB",
-    "price": 249.9,
-    "price_max": null,
+    "id": "caixa-300w",
+    "name": "Caixa 300W + 2 Mics + FM + USB",
+    "price": 799,
+    "price_max": 899,
     "category": "eletronicos",
     "categoryName": "Eletrônicos",
     "tags": [
       "premium",
       "caixa-som",
-      "rgb",
+      "kit",
       "eletronicos",
-      "r32-jbl-p-pro-7",
+      "r87-el-1144",
       "caixa",
-      "extra",
-      "bass",
-      "20w"
+      "300w",
+      "mics",
+      "fm",
+      "usb",
+      "com-faixa"
     ],
-    "image": "images/caixa-bass20.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/caixa-de-som-bluetooth-grande-extra-bass-20w-com-led-rgb-p-pro-10-tem-um-video-por-tras-disso",
-    "cost": 118
+    "image": null,
+    "sourceUrl": null,
+    "cost": 335
   },
   {
     "id": "webcam1",
@@ -280,7 +260,7 @@
       "com-faixa"
     ],
     "image": "images/webcam1.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/webcam-camera-full-hd-computador-1080p-usb-visao-360o-videoconferencia-videos-pc-notebook",
+    "sourceUrl": null,
     "cost": 20.5
   },
   {
@@ -302,7 +282,7 @@
       "noturna"
     ],
     "image": "images/cam-seg-noite.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/camera-de-seguranca-visao-noturna-lampada-facil-instalacao",
+    "sourceUrl": null,
     "cost": 45
   },
   {
@@ -323,7 +303,7 @@
       "4k"
     ],
     "image": "images/cam-acao.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/camera-de-acao-filmadora-esportes-4k-mergulho-trilha-moto-cor-preto",
+    "sourceUrl": null,
     "cost": 73
   },
   {
@@ -347,7 +327,7 @@
       "1m"
     ],
     "image": "images/carreg-20w-cabo.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/carregador-celular-tipo-c-turbo-20w-com-cabo-1m",
+    "sourceUrl": null,
     "cost": 18.5
   },
   {
@@ -368,31 +348,28 @@
       "gan"
     ],
     "image": "images/carreg-2ent-20w.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/carregador-turbo-2-entradas-usb-e-tipo-c-kaidi-cq-1501cl-cube-pro-20w-gan-com-cabo-tipo-c-para-lightning",
+    "sourceUrl": null,
     "cost": 19.99
   },
   {
-    "id": "cabo-v8-3a",
-    "name": "Cabo USB V8 Turbo Rápido 3A",
-    "price": 17.9,
+    "id": "sup-brac",
+    "name": "Braçadeira Suporte Celular 7\"",
+    "price": 19.9,
     "price_max": null,
     "category": "acessorios",
     "categoryName": "Acessórios para Celular",
     "tags": [
       "entrada",
-      "cabo",
-      "mais-vendido",
+      "suporte",
       "acessorios",
-      "z52-kd-355m",
-      "usb",
-      "v8",
-      "turbo",
-      "pido",
-      "3a"
+      "s137-bt001",
+      "bra",
+      "adeira",
+      "celular"
     ],
     "image": null,
     "sourceUrl": null,
-    "cost": 3.99
+    "cost": 5.3
   },
   {
     "id": "sd-8gb-onex",
@@ -416,13 +393,77 @@
       "com-faixa"
     ],
     "image": "images/sd-8gb-onex.png",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/cartao-micro-sd-8gb-original-100-porcento",
+    "sourceUrl": null,
     "cost": 9.99
+  },
+  {
+    "id": "otg-light-sd",
+    "name": "Adaptador OTG Lightning para Micro SD",
+    "price": 39.9,
+    "price_max": null,
+    "category": "armazenamento",
+    "categoryName": "Armazenamento de Dados",
+    "tags": [
+      "entrada",
+      "otg",
+      "adaptador",
+      "armazenamento",
+      "c47-pei-ct09",
+      "lightning",
+      "micro",
+      "sd"
+    ],
+    "image": null,
+    "sourceUrl": null,
+    "cost": 14.99
+  },
+  {
+    "id": "hub-ugreen-4",
+    "name": "Hub 4 em 1 Ugreen USB-C 4x USB 3.0",
+    "price": 129.9,
+    "price_max": null,
+    "category": "armazenamento",
+    "categoryName": "Armazenamento de Dados",
+    "tags": [
+      "intermediario",
+      "hub",
+      "type-c",
+      "armazenamento",
+      "bm-8640",
+      "ugreen",
+      "usb",
+      "4x"
+    ],
+    "image": "images/hub-ugreen-4.jpg",
+    "sourceUrl": null,
+    "cost": 26
+  },
+  {
+    "id": "hub-c-8em1",
+    "name": "Adaptador Hub USB Tipo-C 8 em 1",
+    "price": 89.9,
+    "price_max": 119,
+    "category": "armazenamento",
+    "categoryName": "Armazenamento de Dados",
+    "tags": [
+      "intermediario",
+      "hub",
+      "type-c",
+      "armazenamento",
+      "c29-hub-8in1",
+      "adaptador",
+      "usb",
+      "tipo",
+      "com-faixa"
+    ],
+    "image": null,
+    "sourceUrl": null,
+    "cost": 26
   },
   {
     "id": "hub-c-6em1",
     "name": "Hub USB 3.0 Tipo-C 6 em 1 (RJ45 + HDMI)",
-    "price": 89.9,
+    "price": 99.9,
     "price_max": 119,
     "category": "armazenamento",
     "categoryName": "Armazenamento de Dados",
@@ -440,28 +481,7 @@
       "com-faixa"
     ],
     "image": "images/hub-c-6em1.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/hub-3-ponto-0-de-porta-usb-tipo-c-6-em-1-rj45-adaptador-hdmi-para-laptop-adequado-laptops-e-computadores",
+    "sourceUrl": null,
     "cost": 26.5
-  },
-  {
-    "id": "hub-ugreen-4",
-    "name": "Hub 4 em 1 Ugreen USB-C 4x USB 3.0",
-    "price": 119.9,
-    "price_max": null,
-    "category": "armazenamento",
-    "categoryName": "Armazenamento de Dados",
-    "tags": [
-      "premium",
-      "hub",
-      "ugreen",
-      "sob-consulta",
-      "armazenamento",
-      "bm-8640",
-      "usb",
-      "4x"
-    ],
-    "image": "images/hub-ugreen-4.jpg",
-    "sourceUrl": "https://www.luizeletronicos.com.br/products/hub-4em-1-ugreen-usb-c-para-4-estrela-usb-3-ponto-0",
-    "cost": 45
   }
 ]

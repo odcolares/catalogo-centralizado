@@ -1,4 +1,5 @@
 import './style.css';
+import Chart from 'chart.js/auto';
 
 export interface Product {
   id: string;
@@ -90,6 +91,7 @@ let productModalData: any = {};
 
 // Info Modals (Entrega, Garantia, Pagamento)
 let infoModalOpen: 'entrega' | 'garantia' | 'pagamento' | null = null;
+let publishConfirmOpen = false;
 
 // DataTable (Vitrine lojista)
 let catalogDtSortCol: string = 'name';
@@ -271,6 +273,66 @@ function closeInfoModal(): void {
   renderApp();
 }
 
+function openPublishConfirm(): void {
+  publishConfirmOpen = true;
+  renderApp();
+}
+
+function closePublishConfirm(): void {
+  publishConfirmOpen = false;
+  renderApp();
+}
+
+function renderPublishConfirmModal(): string {
+  if (!publishConfirmOpen) return '';
+  return `
+    <div
+      class="info-modal-overlay fixed inset-0 bg-black/40 z-50 backdrop-blur-sm animate-info-fade-in"
+      data-close-publish-confirm
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="publish-confirm-title"
+    >
+      <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 z-51">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-zinc-100 animate-info-slide-up">
+          <!-- Header -->
+          <div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-100 bg-gradient-to-r from-zinc-50 to-white">
+            <div class="flex items-center justify-center w-11 h-11 rounded-xl bg-amber-50 text-amber-600 shadow-sm">
+              <span class="text-xl">🚀</span>
+            </div>
+            <div>
+              <h3 id="publish-confirm-title" class="text-lg font-bold text-zinc-900">Publicar catálogo</h3>
+              <p class="text-xs text-zinc-500 font-medium">Regeneração dos arquivos</p>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="p-5">
+            <p class="text-zinc-700 text-sm leading-relaxed">Publicar o catálogo agora? Isso regenera os arquivos (HTML, MD, JSON).</p>
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="px-5 py-4 border-t border-zinc-100 bg-zinc-50/50 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              data-close-publish-confirm
+              class="flex-1 sm:flex-none px-4 py-2.5 text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              data-publish-confirm
+              class="flex-1 sm:flex-none px-4 py-2.5 text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-lg transition-colors shadow-sm"
+            >
+              Publicar agora
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 // Generate WhatsApp link with structured order message for the clicked product
 function getWhatsAppUrl(product: Product): string {
   const store = catalog.store || {};
@@ -299,10 +361,12 @@ interface ClientInfo {
   bairro: string;
   entrega: 'motoboy' | 'retirada';
   obs: string;
+  deliveryFee: number; // taxa de entrega em reais
 }
 
 const CART_KEY = 'carrinho-v1';
 const CLIENT_KEY = 'dados-cliente-v1';
+const DELIVERY_FEE_KEY = 'delivery-fee-v1';
 const SEQ_KEY = 'pedido-seq-v1';
 const ORDER_KEY = 'pedido-atual-v1';
 
@@ -341,6 +405,7 @@ let clientInfo: ClientInfo = {
   bairro: asStr(loadedClient.bairro),
   entrega: loadedClient.entrega === 'retirada' ? 'retirada' : 'motoboy',
   obs: asStr(loadedClient.obs),
+  deliveryFee: Number.isFinite(Number(loadedClient.deliveryFee)) ? Number(loadedClient.deliveryFee) : 0,
 };
 const loadedSeq = loadJson<number>(SEQ_KEY, 0);
 let orderSeq: number = Number.isFinite(loadedSeq) ? loadedSeq : 0;
@@ -714,21 +779,22 @@ function renderApp() {
                : `
             <button type="button" data-info-modal="entrega"
                     class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>Entrega</span>
+              <span>🚚 Entrega</span>
             </button>
             <button type="button" data-info-modal="garantia"
                     class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>Garantia</span>
+              <span>✅ Garantia</span>
             </button>
             <button type="button" data-info-modal="pagamento"
                     class="inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm whitespace-nowrap">
-              <span>Pagamento</span>
+              <span>💳 Pagamento</span>
             </button>
             <button type="button" id="open-cart-btn"
                     class="relative inline-flex items-center justify-center gap-2 bg-white text-[#0a8754] hover:bg-emerald-50 font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
-              <span>Carrinho</span>
+              <span>🛒 Carrinho</span>
+              <span id="cart-badge" class="absolute top-0 right-0 flex items-center justify-center min-w-5 h-5 bg-red-600 text-white text-[10px] font-bold rounded-full pointer-events-none ${cartCount() === 0 ? 'hidden' : ''}">${cartCount()}</span>
             </button>
-            <a href="https://wa.me/"
+            <a href="https://wa.me/c/559285617019"
                target="_blank" rel="noopener"
                class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold px-4 py-2.5 rounded-lg shadow transition text-sm">
               <img src="images/Loja_img.png" alt="" class="w-4 h-4 rounded-full object-cover" onerror="this.remove()" />
@@ -760,6 +826,8 @@ function renderApp() {
     <!-- Info Modals -->
     ${renderInfoModal()}
 
+    <!-- Publish Confirm Modal -->
+    ${renderPublishConfirmModal()}
     <!-- Product Modal -->
     ${renderProductModal()}
 
@@ -772,7 +840,7 @@ function renderApp() {
   const nextDetailBody = document.getElementById('product-detail-body');
   if (nextDetailBody) nextDetailBody.scrollTop = detailScroll;
 
-  document.body.style.overflow = cartOpen || detailOpen || infoModalOpen ? 'hidden' : '';
+  document.body.style.overflow = cartOpen || detailOpen || infoModalOpen || publishConfirmOpen ? 'hidden' : '';
 
   attachEventListeners();
 }
@@ -1270,7 +1338,7 @@ function renderCatalogView(filtered: { category: Category; product: Product }[])
                    id="search-input"
                    value="${escapeHtml(catalogDtSearch)}"
                    placeholder="Buscar modelo, código ou característica (ex: Smartwatch, D20, 60h, Type-C)..."
-                   class="w-full pl-9 pr-4 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]" />
+                   class="w-full pl-9 pr-4 py-2 border border-zinc-300 rounded-lg text-sm bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#0a8754] focus:border-[#0a8754]" />
             ${
               catalogDtSearch
                 ? `<button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600">✕</button>`
@@ -1455,36 +1523,13 @@ function renderEngagementView(): string {
 
       <!-- Filtros -->
       <div class="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs">
-        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
           <div class="flex items-center gap-2">
             <label for="eng-period" class="text-xs font-semibold text-zinc-500">Período</label>
             <select id="eng-period" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754]">
               <option value="7">Últimos 7 dias</option>
               <option value="30" selected>Últimos 30 dias</option>
               <option value="90">Últimos 90 dias</option>
-            </select>
-          </div>
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-            <label for="eng-category" class="text-xs font-semibold text-zinc-500">Categoria</label>
-            <select id="eng-category" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754] flex-1 sm:flex-auto">
-              <option value="">Todas as categorias</option>
-              ${categoryOptions}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filtros secundários: métrica do gráfico, Top N e busca -->
-      <div class="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs">
-        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
-          <div class="flex items-center gap-2">
-            <label for="eng-chart-metric" class="text-xs font-semibold text-zinc-500">Exibir gráfico por</label>
-            <select id="eng-chart-metric" class="border border-zinc-300 rounded-lg px-3 py-2 text-sm bg-white text-zinc-900 focus:ring-2 focus:ring-[#0a8754]">
-              <option value="views">Visualizações (detalhe)</option>
-              <option value="impressions">Impressões</option>
-              <option value="whatsapp_clicks">Cliques WhatsApp</option>
-              <option value="cart_adds">Adicionou Carrinho</option>
-              <option value="orders">Pedidos via WA</option>
             </select>
           </div>
           <div class="flex items-center gap-2">
@@ -1542,25 +1587,60 @@ function renderEngagementView(): string {
         </div>
       </div>
 
-      <!-- Gráfico de tendência -->
+      <!-- Gráficos de engajamento (um por métrica) -->
       <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-xs">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-zinc-900">📊 Top produtos por visualizações de detalhe</h3>
+          <h3 class="text-lg font-bold text-zinc-900">📊 Top produtos por métrica</h3>
           <span id="eng-chart-period" class="text-xs text-zinc-500 font-mono"></span>
         </div>
-        <div id="eng-chart-container" class="h-64 w-full flex items-end justify-between gap-2 px-4 pb-6" role="status" aria-live="polite" aria-busy="true">
-          <!-- Skeleton do gráfico -->
-          <div class="w-full flex items-end justify-between gap-2 px-4 pb-6 h-full">
-            <div class="w-1/5 skeleton-bar"></div>
-            <div class="w-1/4 skeleton-bar"></div>
-            <div class="w-1/3 skeleton-bar"></div>
-            <div class="w-1/4 skeleton-bar"></div>
-            <div class="w-1/5 skeleton-bar"></div>
-            <div class="w-1/4 skeleton-bar"></div>
-            <div class="w-1/3 skeleton-bar"></div>
-            <div class="w-1/4 skeleton-bar"></div>
-            <div class="w-1/5 skeleton-bar"></div>
-            <div class="w-1/4 skeleton-bar"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-3">
+            <h4 class="text-sm font-bold text-zinc-900 mb-2">Visualizações (detalhe)</h4>
+            <div class="h-56 w-full relative">
+              <canvas id="eng-chart-views" class="w-full h-full"></canvas>
+            </div>
+          </div>
+          <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-3">
+            <h4 class="text-sm font-bold text-zinc-900 mb-2">Impressões</h4>
+            <div class="h-56 w-full relative">
+              <canvas id="eng-chart-impressions" class="w-full h-full"></canvas>
+            </div>
+          </div>
+          <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-3">
+            <h4 class="text-sm font-bold text-zinc-900 mb-2">Cliques WhatsApp</h4>
+            <div class="h-56 w-full relative">
+              <canvas id="eng-chart-whatsapp" class="w-full h-full"></canvas>
+            </div>
+          </div>
+          <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-3">
+            <h4 class="text-sm font-bold text-zinc-900 mb-2">Adicionou Carrinho</h4>
+            <div class="h-56 w-full relative">
+              <canvas id="eng-chart-cart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+          <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-3">
+            <h4 class="text-sm font-bold text-zinc-900 mb-2">Pedidos via WA</h4>
+            <div class="h-56 w-full relative">
+              <canvas id="eng-chart-orders" class="w-full h-full"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de destaque do gráfico -->
+      <div id="eng-chart-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="eng-chart-modal-title">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-close-chart-modal></div>
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 shrink-0">
+              <h3 id="eng-chart-modal-title" class="text-lg font-bold text-zinc-900"></h3>
+              <button type="button" data-close-chart-modal class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 transition text-zinc-500 font-bold" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="flex-1 p-6 overflow-hidden">
+              <div class="h-[60vh] w-full relative">
+                <canvas id="eng-chart-modal-canvas" class="w-full h-full"></canvas>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1725,51 +1805,100 @@ function buildOrderMessage(): string | null {
     return null;
   }
 
+  const store = catalog.store || {};
   const now = new Date();
   const dateStr = now.toLocaleDateString('pt-BR');
-  const entrega = deliveryLabel(clientInfo.entrega);
+  const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const entregaLabel = deliveryLabel(clientInfo.entrega);
+  const pagamentoLabel = orderPaymentLabel();
+  const subtotal = cartSubtotal();
+  const total = subtotal;
+
+  const waDigits = (store.whatsapp || '').replace(/\D/g, '');
+  const pixKey = waDigits ? waDigits : '';
 
   const lines: string[] = [
-    'Olá! Quero fazer um pedido:',
+    'Novo Pedido — ' + (store.name || 'Loja'),
+    '=============================',
+    'Pedido: ' + formatOrderNo() + ' · ' + dateStr + ' · ' + timeStr,
+    (store.city || 'Manaus/AM') + ' · WhatsApp: ' + formatWhatsAppNumber(store.whatsapp || waDigits) + '',
     '',
-    `📄 Pedido: ${formatOrderNo()} - ${dateStr}`,
-    '',
+    'Itens:',
   ];
 
+  let itemNum = 1;
   for (const it of cart) {
     const found = findProduct(it.id);
     const name = found ? found.product.name : it.id;
     const code = found ? found.product.code : '-';
+    const itemTotal = it.price * it.qty;
     lines.push(
-      `• ${it.qty}x ${name} (${code}) - ${brl(it.price)} = ${brl(it.price * it.qty)}`
+      itemNum + '. ' + it.qty + 'x ' + name + ' (' + code + ') — ' + brl(it.price) + ' = ' + brl(itemTotal)
     );
+    itemNum++;
+  }
+
+  lines.push(
+    '=============================',
+    'Subtotal: ' + brl(subtotal),
+    'Entrega: ' + entregaLabel,
+    '*Total: ' + brl(total) + '*',
+    'Pagamento: ' + pagamentoLabel,
+  );
+
+  if (pixKey) {
+    lines.push('   Chave PIX: ' + pixKey);
   }
 
   lines.push(
     '',
-    `💰 Subtotal: ${brl(cartSubtotal())}`,
-    `🚚 Entrega: ${entrega}`,
-    `💳 ${orderPaymentLabel()}`,
-    '',
-    `👤 Cliente: ${clientInfo.nome.trim()}`,
-    `📞 Telefone: ${clientInfo.telefone.trim()}`
+    'Cliente:',
+    '   Nome: ' + clientInfo.nome.trim(),
+    '   Telefone: ' + clientInfo.telefone.trim(),
   );
 
   if (clientInfo.bairro.trim()) {
-    lines.push(`📍 Bairro/endereço: ${clientInfo.bairro.trim()}`);
+    lines.push('   Endereço/Bairro: ' + clientInfo.bairro.trim());
   }
   if (clientInfo.obs.trim()) {
-    lines.push(`📝 Obs: ${clientInfo.obs.trim()}`);
+    lines.push('   Observação: ' + clientInfo.obs.trim());
   }
 
+  const prazo = clientInfo.entrega === 'retirada'
+    ? 'Retirada em loja: a partir de 24h após confirmação do pagamento (dias úteis).'
+    : 'Entrega prevista para hoje, até 20h (motoboy — taxa a combinar).';
   lines.push(
     '',
-    'Pode confirmar a disponibilidade, as condições de entrega/retirada em Manaus e os dados para pagamento via PIX?'
+    'Prazo: ' + prazo,
+    '',
+    'Garantia/Troca: ' + (store.warranty || 'Conforme garantia legal e política da loja. Teste o produto na entrega.'),
+    '',
+    '=============================',
+    'Pode confirmar a disponibilidade, as condições de entrega/retirada e os dados para pagamento via PIX?',
   );
 
   return lines.join('\n');
 }
 
+
+// ── Helpers de formatação (telefone e CEP) ────────────────────────────────────
+
+function formatPhone(raw: string): string {
+  const d = String(raw || '').replace(/\D/g, '');
+  if (d.length === 11) return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  if (d.length === 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return raw || '-';
+}
+
+function formatCep(raw: string): string {
+  const d = String(raw || '').replace(/\D/g, '');
+  if (d.length === 8) return `${d.slice(0, 5)}-${d.slice(5)}`;
+  return raw || '-';
+}
+
+// ── Relatório do pedido (impressão A4) ─────────────────────────────────────────
+// Design inspirado no modelo Jotform "Recibo de Entrega"
+// Cores: #f16351 coral (destaque), #60d3ef ciano (secundário), #04052d marinho (texto)
 
 function buildOrderReportInner(): string {
   const store = catalog.store || {};
@@ -1778,8 +1907,11 @@ function buildOrderReportInner(): string {
     hour: '2-digit',
     minute: '2-digit',
   })}`;
-  const entrega = deliveryLabel(clientInfo.entrega);
-  const pagamento = orderPaymentLabel();
+  const entregaTipo = clientInfo.entrega;
+  const entregaCurto = entregaTipo === 'retirada' ? 'Retirada em loja' : 'Entrega (motoboy)';
+  const pagamentoCurto = clientInfo.entrega === 'retirada' ? 'Pagamento na retirada' : 'PIX';
+  const deliveryFee = clientInfo.deliveryFee || 0;
+  const deliveryLabel = deliveryFee > 0 ? `Taxa de entrega: ${brl(deliveryFee)}` : 'Taxa de entrega: a combinar';
 
   const rows = cart
     .map((it) => {
@@ -1788,101 +1920,111 @@ function buildOrderReportInner(): string {
       const code = found ? found.product.code : '-';
       return `
         <tr>
-          <td>${escapeHtml(name)}</td>
-          <td>${escapeHtml(code)}</td>
-          <td class="text-center">${it.qty}</td>
-          <td class="text-right">${brl(it.price)}</td>
-          <td class="text-right">${brl(it.price * it.qty)}</td>
+          <td class="p-2 border-b border-zinc-100 text-zinc-900">${escapeHtml(name)}</td>
+          <td class="p-2 border-b border-zinc-100 text-center text-[10px] text-zinc-500">${escapeHtml(code)}</td>
+          <td class="p-2 border-b border-zinc-100 text-center">${it.qty}</td>
+          <td class="p-2 border-b border-zinc-100 text-right">${brl(it.price)}</td>
+          <td class="p-2 border-b border-zinc-100 text-right font-semibold">${brl(it.price * it.qty)}</td>
         </tr>`;
     })
     .join('');
 
-  const field = (label: string, value: string) => `
-    <div>
-      <div class="text-[10px] uppercase font-bold text-zinc-500">${label}</div>
-      <div class="text-sm text-zinc-900">${value || '-'}</div>
-    </div>`;
+  const subtotal = cartSubtotal();
+  const total = subtotal + deliveryFee;
+
+  const clienteNome = escapeHtml(clientInfo.nome.trim());
+  const clienteTelefone = formatPhone(clientInfo.telefone);
+  const clienteCep = formatCep(clientInfo.bairro || '');
+  const clienteEndereco = escapeHtml(clientInfo.bairro.trim());
+  const clienteObs = escapeHtml(clientInfo.obs.trim());
 
   return `
-    <div class="max-w-[190mm] mx-auto text-zinc-900">
+    <div class="max-w-[190mm] mx-auto text-[#04052d]">
       <!-- Cabeçalho -->
-      <div class="flex items-start justify-between gap-4 border-b-[3px] border-[#0a8754] pb-3">
-        <div class="flex items-center gap-3">
-          <img src="images/Loja_img.png" alt="" class="w-12 h-12 rounded-full object-cover border-2 border-[#0a8754]" onerror="this.remove()" />
+      <div class="flex items-start justify-between gap-4 border-b-[6px] border-[#f16351] pb-3 mb-5">
+        <div class="flex items-start gap-3">
+          <img src="/images/Loja_img.png" alt="" class="h-10 w-auto rounded-sm object-contain border border-[#f16351]/40 shadow-sm" onerror="this.remove()" />
           <div>
-            <div class="text-2xl font-black leading-none text-[#0a8754]">${escapeHtml(store.name || '[Nome da Loja]')}</div>
-            <div class="text-[11px] text-zinc-600 mt-1 font-semibold">Eletrônicos • ${escapeHtml(store.city || 'Manaus/AM')}</div>
+            <div class="text-xl font-black leading-none text-[#04052d]">${escapeHtml(store.name || '[Nome da Loja]')}</div>
+            <div class="text-[9px] text-zinc-500 mt-0.5 uppercase tracking-wider">Eletrônicos • ${escapeHtml(store.city || 'Manaus/AM')}</div>
           </div>
         </div>
         <div class="text-right">
-          <div class="text-lg font-black leading-none">PEDIDO ${escapeHtml(formatOrderNo())}</div>
-          <div class="text-[11px] text-zinc-600 mt-1">${dateStr}</div>
+          <div class="text-lg font-bold text-[#04052d] leading-none">RECIBO DE ENTREGA</div>
+          <div class="flex items-center gap-2 mt-1">
+            <div class="w-6 h-6 rounded-full bg-[#60d3ef]/20 flex items-center justify-center text-[8px] font-bold text-[#04052d]">#</div>
+            <div class="text-sm font-bold text-[#04052d]">${escapeHtml(formatOrderNo())}</div>
+          </div>
+          <div class="text-[9px] text-zinc-500 mt-1">${dateStr}</div>
         </div>
       </div>
 
-      <!-- Dados do cliente -->
-      <div class="mt-4 border border-zinc-300 rounded p-3">
-        <div class="text-[11px] font-black uppercase text-[#0a8754] mb-2">Dados do cliente</div>
-        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-          ${field('Nome', escapeHtml(clientInfo.nome.trim()))}
-          ${field('Telefone', escapeHtml(clientInfo.telefone.trim()))}
-          ${field('Entrega/Retirada', escapeHtml(entrega))}
-          ${field('Pagamento do pedido', escapeHtml(pagamento))}
-          ${field('Bairro / Endereço', escapeHtml(clientInfo.bairro.trim()))}
+      <!-- Dados do cliente (grid 2 colunas) -->
+      <div class="grid grid-cols-2 gap-x-5 gap-y-3 mb-5">
+        <div class="border border-zinc-200 rounded-lg p-3">
+          <div class="text-[9px] uppercase font-bold text-zinc-500 mb-1.5">Nome</div>
+          <div class="text-base font-semibold text-[#04052d]">${clienteNome || '-'}</div>
         </div>
-        ${
-          clientInfo.obs.trim()
-            ? `<div class="mt-2 pt-2 border-t border-zinc-200">${field(
-                'Observações',
-                escapeHtml(clientInfo.obs.trim()).replace(/\n/g, '<br>')
-              )}</div>`
-            : ''
-        }
+        <div class="border border-zinc-200 rounded-lg p-3">
+          <div class="text-[9px] uppercase font-bold text-zinc-500 mb-1.5">Telefone</div>
+          <div class="text-base font-semibold text-[#04052d]">${clienteTelefone}</div>
+        </div>
+        <div class="border border-zinc-200 rounded-lg p-3">
+          <div class="text-[9px] uppercase font-bold text-zinc-500 mb-1.5">CEP</div>
+          <div class="text-base font-semibold text-[#04052d]">${clienteCep}</div>
+        </div>
+        <div class="border border-zinc-200 rounded-lg p-3 col-span-2">
+          <div class="text-[9px] uppercase font-bold text-zinc-500 mb-1.5">Endereço / Bairro</div>
+          <div class="text-base text-[#04052d]">${clienteEndereco || '-'}</div>
+        </div>
+        ${clienteObs ? `
+        <div class="border border-zinc-200 rounded-lg p-3 col-span-2">
+          <div class="text-[9px] uppercase font-bold text-zinc-500 mb-1.5">Observações</div>
+          <div class="text-base text-[#04052d]">${clienteObs.replace(/\n/g, '<br>')}</div>
+        </div>
+        ` : ''}
       </div>
 
       <!-- Itens do pedido -->
-      <table class="w-full mt-4 border-collapse text-sm">
+      <table class="w-full mb-5 border-collapse text-sm">
         <thead>
-          <tr class="bg-[#0a8754] text-white text-[11px] uppercase">
-            <th class="p-2 text-left">Produto</th>
-            <th class="p-2 text-left">Código</th>
-            <th class="p-2 text-center">Qtd</th>
-            <th class="p-2 text-right">Unitário</th>
-            <th class="p-2 text-right">Subtotal</th>
+          <tr class="bg-[#f16351] text-white text-[9px] uppercase tracking-wider">
+            <th class="p-2.5 text-left">Produto</th>
+            <th class="p-2.5 text-left text-[8px]">Código</th>
+            <th class="p-2.5 text-center text-[8px]">Qtd</th>
+            <th class="p-2.5 text-right text-[8px]">Unitário</th>
+            <th class="p-2.5 text-right text-[8px]">Subtotal</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
 
-      <!-- Totais -->
-      <div class="flex justify-end mt-3">
-        <div class="w-72 border border-zinc-300 rounded p-3 text-sm">
-          <div class="flex justify-between">
-            <span>Subtotal</span>
-            <strong>${brl(cartSubtotal())}</strong>
-          </div>
-          <div class="mt-1 text-xs text-zinc-600 border-t border-zinc-200 pt-1.5 space-y-1">
-            <div><strong>Entrega/Retirada:</strong> ${escapeHtml(entrega)}</div>
-            <div><strong>Pagamento:</strong> ${escapeHtml(pagamento)}</div>
-          </div>
-          <div class="flex justify-between border-t border-zinc-300 mt-2 pt-2 text-base font-black">
-            <span>TOTAL</span>
-            <span class="text-[#0a8754]">${brl(cartSubtotal())}</span>
-          </div>
+      <!-- Totais alinhados à direita -->
+      <table class="w-full mt-1 text-right">
+        <tbody>
+          <tr>
+            <td class="text-[9px] text-zinc-500 uppercase py-0.5">Subtotal</td>
+            <td class="text-base font-semibold text-[#04052d] py-0.5">${brl(subtotal)}</td>
+          </tr>
+          ${deliveryFee > 0 ? `
+          <tr>
+            <td class="text-[9px] text-[#04052d]/80 uppercase py-0.5">Taxa de entrega</td>
+            <td class="text-base font-semibold text-[#04052d] py-0.5">${brl(deliveryFee)}</td>
+          </tr>
+          ` : ''}
+          <tr class="border-t border-[#f16351]/30 pt-1">
+            <td class="text-sm font-black text-[#04052d] py-1">Total a pagar</td>
+            <td class="text-lg font-black text-[#f16351] py-1">${brl(total)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Rodapé: Garantia (apenas texto, já vem com o rótulo) + WhatsApp -->
+      <div class="mt-6 border-t border-zinc-200 pt-3">
+        <div class="text-xs text-[#04052d] leading-relaxed">${escapeHtml(store.warranty || 'Garantia: conforme garantia legal e política da loja.')}</div>
+        <div class="border-t border-[#f16351] pt-2 mt-3 text-center text-[9px] text-zinc-500 uppercase tracking-wider">
+          WhatsApp: ${escapeHtml(formatWhatsAppNumber(store.whatsapp))} • Recibo gerado em ${dateStr}
         </div>
-      </div>
-
-      <!-- Condições da loja -->
-      <div class="mt-4 text-[11px] text-zinc-700 border-t border-zinc-300 pt-3 leading-relaxed space-y-1">
-        <div><strong>Entrega:</strong> ${escapeHtml(store.delivery || 'Entrega e retirada sob consulta.')}</div>
-        <div><strong>Garantia:</strong> ${escapeHtml(store.warranty || 'Consulte condições de garantia.')}</div>
-        <div><strong>Pagamento:</strong> ${escapeHtml(store.payment || 'Pagamento do pedido via PIX.')}</div>
-        ${store.minOrder ? `<div><strong>Pedido mínimo:</strong> ${brl(store.minOrder)}</div>` : ''}
-      </div>
-
-      <!-- Rodapé -->
-      <div class="mt-4 border-t-2 border-[#0a8754] pt-2 text-center text-[10px] text-zinc-500">
-        WhatsApp: ${escapeHtml(formatWhatsAppNumber(store.whatsapp))} • Relatório gerado pelo catálogo digital em ${dateStr}
       </div>
     </div>
   `;
@@ -2013,6 +2155,11 @@ function renderCartDrawer(): string {
           <div>
             <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-bairro">Bairro / Endereço</label>
             <input id="client-bairro" type="text" value="${escapeHtml(clientInfo.bairro)}" placeholder="Bairro, rua e número" class="${fieldClass}" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-delivery-fee">Taxa de entrega (R$)</label>
+            <input id="client-delivery-fee" type="text" value="${clientInfo.deliveryFee > 0 ? clientInfo.deliveryFee.toFixed(2) : ''}" placeholder="0,00" class="${fieldClass}" />
+            <p class="mt-1 text-[11px] text-zinc-500">Somente para entrega via motoboy.</p>
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-zinc-600 mb-1" for="client-entrega">Entrega/Retirada</label>
@@ -2692,22 +2839,8 @@ function attachEventListeners() {
   // Botão Publicar — dispara regeneração do catálogo
   const publishBtn = document.getElementById('publish-btn') as HTMLButtonElement | null;
   if (publishBtn) {
-    publishBtn.addEventListener('click', async () => {
-      if (!window.confirm('Publicar o catálogo agora? Isso regenera os arquivos (HTML, MD, JSON).')) return;
-      const originalHtml = publishBtn.innerHTML;
-      publishBtn.disabled = true;
-      publishBtn.innerHTML = '⏳ Publicando...';
-      try {
-        const res = await fetch('/api/regenerate', { method: 'POST' });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) throw new Error(data.error || data.message || `HTTP ${res.status}`);
-        showToast(data.message || 'Catálogo publicado com sucesso!');
-      } catch (err) {
-        showToast('Falha ao publicar catálogo.');
-      } finally {
-        publishBtn.disabled = false;
-        publishBtn.innerHTML = originalHtml;
-      }
+    publishBtn.addEventListener('click', () => {
+      openPublishConfirm();
     });
   }
 
@@ -2872,10 +3005,48 @@ function attachEventListeners() {
   const infoOverlay = document.querySelector('.info-modal-overlay');
   if (infoOverlay) infoOverlay.addEventListener('click', closeInfoModal);
 
+  // Publish confirm modal
+  document.querySelectorAll<HTMLElement>('[data-close-publish-confirm]').forEach((el) => {
+    el.addEventListener('click', closePublishConfirm);
+  });
+
+  const publishConfirmBtn = document.querySelector<HTMLButtonElement>('[data-publish-confirm]');
+  if (publishConfirmBtn) {
+    publishConfirmBtn.addEventListener('click', async () => {
+      const publishBtn = document.getElementById('publish-btn') as HTMLButtonElement | null;
+      const originalHtml = publishBtn?.innerHTML || '🚀 Publicar';
+      if (publishBtn) {
+        publishBtn.disabled = true;
+        publishBtn.innerHTML = '⏳ Publicando...';
+      }
+      publishConfirmBtn.disabled = true;
+      publishConfirmBtn.innerHTML = '⏳ Publicando...';
+      try {
+        const res = await fetch('/api/regenerate', { method: 'POST' });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false) throw new Error(data.error || data.message || `HTTP ${res.status}`);
+        showToast(data.message || 'Catálogo publicado com sucesso!');
+        closePublishConfirm();
+      } catch (err) {
+        showToast('Falha ao publicar catálogo.');
+      } finally {
+        if (publishBtn) {
+          publishBtn.disabled = false;
+          publishBtn.innerHTML = originalHtml;
+        }
+        publishConfirmBtn.disabled = false;
+        publishConfirmBtn.innerHTML = 'Publicar agora';
+      }
+    });
+  }
+
   // ESC key to close info modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && infoModalOpen) {
       closeInfoModal();
+    }
+    if (e.key === 'Escape' && publishConfirmOpen) {
+      closePublishConfirm();
     }
   });
 
@@ -3022,26 +3193,212 @@ function attachEventListeners() {
     clientInfo.obs = v;
   });
 
+  bindClientField('client-delivery-fee', (v) => {
+    clientInfo.deliveryFee = Number.parseFloat(v.replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
+    saveJson(CLIENT_KEY, clientInfo);
+  });
+
   const sendWaBtn = document.getElementById('cart-send-wa');
   if (sendWaBtn) {
-    sendWaBtn.addEventListener('click', () => {
-      const msg = buildOrderMessage();
-      if (msg === null) return;
+    sendWaBtn.addEventListener('click', async () => {
+      if (cart.length === 0) {
+        showToast('Carrinho vazio!');
+        return;
+      }
       const store = catalog.store || {};
       const waNumber = (store.whatsapp || '').replace(/\D/g, '');
+      const report = document.getElementById('order-report');
+      if (report) report.innerHTML = buildOrderReportInner();
+      const html = report ? report.innerHTML : '';
+      if (!html.trim()) {
+        showToast('Não foi possível gerar o recibo.');
+        return;
+      }
       // Rastreamento: pedido via WhatsApp (um evento por produto no carrinho)
       for (const item of cart) {
         trackEvent(item.id, 'order_wa');
       }
-      window.open(
-        `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`,
-        '_blank',
-        'noopener'
-      );
-      showToast('Pedido aberto no WhatsApp — revise e envie!');
+      try {
+        // Gera o HTML do recibo
+        const fullHtml = `
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Pedido ${formatOrderNo()} - ${store.name || 'Loja'}</title>
+            <style>
+              @page { size: A4; margin: 12mm; }
+              * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing: border-box; }
+              body { font-family: 'Archivo', 'Trebuchet MS', ui-sans-serif, system-ui, sans-serif; font-size: 14px; color: #1f2937; margin: 0; padding: 0; background: #fff; }
+              .max-w-190mm { max-width: 190mm; margin: 0 auto; }
+              .border-b-6 { border-bottom: 6px solid #f16351; }
+              .border-t-2 { border-top: 2px solid #f16351; }
+              .border-t { border-top: 1px solid #d1d5db; }
+              .border { border: 1px solid #d1d5db; }
+              .border-zinc-200 { border-color: #e5e7eb; }
+              .border-zinc-300 { border-color: #d1d5db; }
+              .border-b { border-bottom: 1px solid #e5e7eb; }
+              .border-[#f16351] { border-color: #f16351; }
+              .border-[#f16351]/40 { border-color: rgba(241, 99, 81, 0.4); }
+              .border-[#f16351]/30 { border-color: rgba(241, 99, 81, 0.3); }
+              .border-[#60d3ef]/30 { border-color: rgba(96, 211, 239, 0.3); }
+              .bg-[#f16351] { background-color: #f16351; }
+              .bg-[#f16351]/10 { background-color: rgba(241, 99, 81, 0.1); }
+              .bg-[#f16351]/20 { background-color: rgba(241, 99, 81, 0.2); }
+              .bg-[#60d3ef]/10 { background-color: rgba(96, 211, 239, 0.1); }
+              .bg-[#60d3ef]/20 { background-color: rgba(96, 211, 239, 0.2); }
+              .text-[#f16351] { color: #f16351; }
+              .text-[#f16351]/90 { color: rgba(241, 99, 81, 0.9); }
+              .text-[#f16351]/80 { color: rgba(241, 99, 81, 0.8); }
+              .text-[#f16351]/60 { color: rgba(241, 99, 81, 0.6); }
+              .text-[#60d3ef] { color: #60d3ef; }
+              .text-[#60d3ef]/90 { color: rgba(96, 211, 239, 0.9); }
+              .text-[#60d3ef]/60 { color: rgba(96, 211, 239, 0.6); }
+              .text-[#04052d] { color: #04052d; }
+              .text-zinc-500 { color: #6b7280; }
+              .text-zinc-600 { color: #4b5563; }
+              .text-zinc-700 { color: #374151; }
+              .text-zinc-900 { color: #111827; }
+              .text-4xl { font-size: 2.25rem; }
+              .text-3xl { font-size: 1.875rem; }
+              .text-2xl { font-size: 1.5rem; }
+              .text-xl { font-size: 1.25rem; }
+              .text-lg { font-size: 1.125rem; }
+              .text-base { font-size: 1rem; }
+              .text-sm { font-size: 0.875rem; }
+              .text-xs { font-size: 0.75rem; }
+              .text-[#0a8754] { color: #0a8754; }
+              .text-[#0a8754]/60 { color: rgba(10, 135, 84, 0.6); }
+              .text-[#0a8754]/80 { color: rgba(10, 135, 84, 0.8); }
+              .text-[#0a8754].text-white { color: #fff; }
+              .bg-[#0a8754].text-white { background: #0a8754; color: #fff; }
+              .font-black { font-weight: 900; }
+              .font-semibold { font-weight: 600; }
+              .font-bold { font-weight: 700; }
+              .leading-none { line-height: 1; }
+              .leading-relaxed { line-height: 1.625; }
+              .uppercase { text-transform: uppercase; }
+              .tracking-wider { letter-spacing: 0.05em; }
+              .text-right { text-align: right; }
+              .text-center { text-align: center; }
+              .text-left { text-align: left; }
+              .flex { display: flex; }
+              .flex-1 { flex: 1 1 0%; }
+              .items-start { align-items: flex-start; }
+              .items-center { align-items: center; }
+              .items-end { align-items: flex-end; }
+              .justify-between { justify-content: space-between; }
+              .gap-6 { gap: 1.5rem; }
+              .gap-5 { gap: 1.25rem; }
+              .gap-4 { gap: 1rem; }
+              .gap-3 { gap: 0.75rem; }
+              .gap-1_5 { gap: 0.375rem; }
+              .w-6 { width: 1.5rem; }
+              .w-8 { width: 2rem; }
+              .w-10 { width: 2.5rem; }
+              .w-12 { width: 3rem; }
+              .w-72 { width: 18rem; }
+              .w-full { width: 100%; }
+              .h-6 { height: 1.5rem; }
+              .h-8 { height: 2rem; }
+              .h-10 { height: 2.5rem; }
+              .h-12 { height: 3rem; }
+              .rounded-sm { border-radius: 0.125rem; }
+              .rounded { border-radius: 0.25rem; }
+              .rounded-lg { border-radius: 0.5rem; }
+              .rounded-xl { border-radius: 0.75rem; }
+              .rounded-2xl { border-radius: 1rem; }
+              .rounded-full { border-radius: 9999px; }
+              .object-cover { object-fit: cover; }
+              .shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+              .shadow-xs { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+              .col-span-2 { grid-column: span 2; }
+              .table { width: 100%; border-collapse: collapse; }
+              .break-all { word-break: break-all; }
+              img { max-width: 100%; height: auto; }
+              .mt-1 { margin-top: 0.25rem; }
+              .mt-3 { margin-top: 0.75rem; }
+              .mt-4 { margin-top: 1rem; }
+              .mt-5 { margin-top: 1.25rem; }
+              .mt-6 { margin-top: 1.5rem; }
+              .mb-1 { margin-bottom: 0.25rem; }
+              .mb-2 { margin-bottom: 0.5rem; }
+              .mb-4 { margin-bottom: 1rem; }
+              .mb-5 { margin-bottom: 1.25rem; }
+              .p-2_5 { padding: 0.625rem; }
+              .p-3 { padding: 0.75rem; }
+              .p-4 { padding: 1rem; }
+              .pt-2 { padding-top: 0.5rem; }
+              .pt-3 { padding-top: 0.75rem; }
+              .pb-3 { padding-bottom: 0.75rem; }
+              .opacity-50 { opacity: 0.5; }
+              .space-y-1 > * + * { margin-top: 0.25rem; }
+              .space-y-2 > * + * { margin-top: 0.5rem; }
+              .gap-x-4 { column-gap: 1rem; }
+              .gap-y-2 { row-gap: 0.5rem; }
+              .leading-none { line-height: 1; }
+              @media print {
+                body { background: #fff !important; }
+                .no-print { display: none !important; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="max-w-190mm">
+              ${html}
+            </div>
+            <script>
+              window.onload = function() { window.print(); setTimeout(function(){ window.close(); }, 1000); };
+            </script>
+          </body>
+          </html>
+        `;
+
+        // Envia o PDF para o servidor (Supabase Storage) para obter URL pública
+        const msg = buildOrderMessage();
+        if (msg === null) return;
+        let pdfUrl = '';
+        try {
+          const resp = await fetch('/api/temp-pdf?orderNo=' + encodeURIComponent(formatOrderNo()), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/pdf' },
+            body: fullHtml,
+          });
+          const result = await resp.json();
+          if (result.ok && result.url) {
+            pdfUrl = result.url;
+            showToast('Recibo enviado para o servidor!');
+          } else {
+            console.error('[Temp PDF] servidor retornou erro:', result.error);
+            showToast('Falha ao hospedar recibo. Enviando sem link.');
+          }
+        } catch (err) {
+          console.error('[Temp PDF] erro ao enviar:', err.message);
+          showToast('Falha ao hospedar recibo. Enviando sem link.');
+        }
+        const msgWithPdf = pdfUrl
+          ? `${msg}\n\n📄 Recibo do pedido (PDF): ${pdfUrl}\nAbra o link para visualizar e baixar o recibo completo.`
+          : msg;
+        window.open(
+          `https://wa.me/${waNumber}?text=${encodeURIComponent(msgWithPdf)}`,
+          '_blank',
+          'noopener'
+        );
+        showToast('Pedido aberto no WhatsApp!');
+      } catch (err) {
+        console.error('[WhatsApp PDF] erro:', err.message);
+        const msg = buildOrderMessage();
+        if (msg === null) return;
+        window.open(
+          `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`,
+          '_blank',
+          'noopener'
+        );
+        showToast('Pedido aberto no WhatsApp (sem anexo PDF).');
+      }
     });
   }
-
   const printBtn = document.getElementById('cart-print-pdf');
   if (printBtn) {
     printBtn.addEventListener('click', () => {
@@ -3052,7 +3409,153 @@ function attachEventListeners() {
       // Atualiza o relatório com os dados atuais do formulário antes de imprimir
       const report = document.getElementById('order-report');
       if (report) report.innerHTML = buildOrderReportInner();
-      window.print();
+      const html = report ? report.innerHTML : '';
+      if (!html.trim()) {
+        showToast('Não foi possível gerar o relatório.');
+        return;
+      }
+      const store = catalog.store || {};
+      const win = window.open('', '_blank', 'width=800,height=900');
+      if (!win) {
+        showToast('Popup bloqueado pelo navegador. Permita pop-ups neste site.');
+        return;
+      }
+      win.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Pedido ${formatOrderNo()} - ${store.name || 'Loja'}</title>
+          <style>
+            @page { size: A4; margin: 12mm; }
+            * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing: border-box; }
+            body { font-family: 'Archivo', 'Trebuchet MS', ui-sans-serif, system-ui, sans-serif; font-size: 14px; color: #1f2937; margin: 0; padding: 0; background: #fff; }
+            .max-w-190mm { max-width: 190mm; margin: 0 auto; }
+            .border-b-6 { border-bottom: 6px solid #f16351; }
+            .border-t-2 { border-top: 2px solid #f16351; }
+            .border-t { border-top: 1px solid #d1d5db; }
+            .border { border: 1px solid #d1d5db; }
+            .border-zinc-200 { border-color: #e5e7eb; }
+            .border-zinc-300 { border-color: #d1d5db; }
+            .border-b { border-bottom: 1px solid #e5e7eb; }
+            .border-\[\#f16351\] { border-color: #f16351; }
+            .border-\[\#f16351\]\/40 { border-color: rgba(241, 99, 81, 0.4); }
+            .border-\[\#f16351\]\/30 { border-color: rgba(241, 99, 81, 0.3); }
+            .border-\[\#60d3ef\]\/30 { border-color: rgba(96, 211, 239, 0.3); }
+            .bg-\[\#f16351\] { background-color: #f16351; }
+            .bg-\[\#f16351\]\/10 { background-color: rgba(241, 99, 81, 0.1); }
+            .bg-\[\#f16351\]\/20 { background-color: rgba(241, 99, 81, 0.2); }
+            .bg-\[\#60d3ef\]\/10 { background-color: rgba(96, 211, 239, 0.1); }
+            .bg-\[\#60d3ef\]\/20 { background-color: rgba(96, 211, 239, 0.2); }
+            .text-\[\#f16351\] { color: #f16351; }
+            .text-\[\#f16351\]\/90 { color: rgba(241, 99, 81, 0.9); }
+            .text-\[\#f16351\]\/80 { color: rgba(241, 99, 81, 0.8); }
+            .text-\[\#f16351\]\/60 { color: rgba(241, 99, 81, 0.6); }
+            .text-\[\#60d3ef\] { color: #60d3ef; }
+            .text-\[\#60d3ef\]\/90 { color: rgba(96, 211, 239, 0.9); }
+            .text-\[\#60d3ef\]\/60 { color: rgba(96, 211, 239, 0.6); }
+            .text-\[\#04052d\] { color: #04052d; }
+            .text-zinc-500 { color: #6b7280; }
+            .text-zinc-600 { color: #4b5563; }
+            .text-zinc-700 { color: #374151; }
+            .text-zinc-900 { color: #111827; }
+            .text-4xl { font-size: 2.25rem; }
+            .text-3xl { font-size: 1.875rem; }
+            .text-2xl { font-size: 1.5rem; }
+            .text-xl { font-size: 1.25rem; }
+            .text-lg { font-size: 1.125rem; }
+            .text-base { font-size: 1rem; }
+            .text-sm { font-size: 0.875rem; }
+            .text-xs { font-size: 0.75rem; }
+            .text-\[\#0a8754\] { color: #0a8754; }
+            .text-\[\#0a8754\]\/60 { color: rgba(10, 135, 84, 0.6); }
+            .text-\[\#0a8754\]\/80 { color: rgba(10, 135, 84, 0.8); }
+            .text-\[\#0a8754\].text-white { color: #fff; }
+            .bg-\[\#0a8754\].text-white { background: #0a8754; color: #fff; }
+            .font-black { font-weight: 900; }
+            .font-semibold { font-weight: 600; }
+            .font-bold { font-weight: 700; }
+            .leading-none { line-height: 1; }
+            .leading-relaxed { line-height: 1.625; }
+            .uppercase { text-transform: uppercase; }
+            .tracking-wider { letter-spacing: 0.05em; }
+            .text-right { text-align: right; }
+            .text-center { text-align: center; }
+            .text-left { text-align: left; }
+            .flex { display: flex; }
+            .flex-1 { flex: 1 1 0%; }
+            .items-start { align-items: flex-start; }
+            .items-center { align-items: center; }
+            .items-end { align-items: flex-end; }
+            .justify-between { justify-content: space-between; }
+            .gap-6 { gap: 1.5rem; }
+            .gap-5 { gap: 1.25rem; }
+            .gap-4 { gap: 1rem; }
+            .gap-3 { gap: 0.75rem; }
+            .gap-1_5 { gap: 0.375rem; }
+            .w-6 { width: 1.5rem; }
+            .w-8 { width: 2rem; }
+            .w-10 { width: 2.5rem; }
+            .w-12 { width: 3rem; }
+            .w-72 { width: 18rem; }
+            .w-full { width: 100%; }
+            .h-6 { height: 1.5rem; }
+            .h-8 { height: 2rem; }
+            .h-10 { height: 2.5rem; }
+            .h-12 { height: 3rem; }
+            .rounded-sm { border-radius: 0.125rem; }
+            .rounded { border-radius: 0.25rem; }
+            .rounded-lg { border-radius: 0.5rem; }
+            .rounded-xl { border-radius: 0.75rem; }
+            .rounded-2xl { border-radius: 1rem; }
+            .rounded-full { border-radius: 9999px; }
+            .object-cover { object-fit: cover; }
+            .shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+            .shadow-xs { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+            .col-span-2 { grid-column: span 2; }
+            .table { width: 100%; border-collapse: collapse; }
+            .break-all { word-break: break-all; }
+            img { max-width: 100%; height: auto; }
+            .mt-1 { margin-top: 0.25rem; }
+            .mt-3 { margin-top: 0.75rem; }
+            .mt-4 { margin-top: 1rem; }
+            .mt-5 { margin-top: 1.25rem; }
+            .mt-6 { margin-top: 1.5rem; }
+            .mb-1 { margin-bottom: 0.25rem; }
+            .mb-2 { margin-bottom: 0.5rem; }
+            .mb-4 { margin-bottom: 1rem; }
+            .mb-5 { margin-bottom: 1.25rem; }
+            .p-2_5 { padding: 0.625rem; }
+            .p-3 { padding: 0.75rem; }
+            .p-4 { padding: 1rem; }
+            .pt-2 { padding-top: 0.5rem; }
+            .pt-3 { padding-top: 0.75rem; }
+            .pb-3 { padding-bottom: 0.75rem; }
+            .opacity-50 { opacity: 0.5; }
+            .space-y-1 > * + * { margin-top: 0.25rem; }
+            .space-y-2 > * + * { margin-top: 0.5rem; }
+            .gap-x-4 { column-gap: 1rem; }
+            .gap-y-2 { row-gap: 0.5rem; }
+            .leading-none { line-height: 1; }
+            @media print {
+              body { background: #fff !important; }
+              .no-print { display: none !important; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="max-w-190mm">
+            ${html}
+          </div>
+          <script>
+            window.onload = function() { window.print(); setTimeout(function(){ window.close(); }, 1000); };
+          </script>
+        </body>
+        </html>
+      `);
+      win.document.close();
+      showToast('Relatório aberto para impressão (PDF).');
     });
   }
 
@@ -3079,8 +3582,6 @@ function attachEventListeners() {
   // ── Engajamento: buscar e renderizar dados da aba Engajamento ──
   if (activeTab === 'engagement' && perfil === 'lojista') {
     const periodSelect = document.getElementById('eng-period') as HTMLSelectElement | null;
-    const categorySelect = document.getElementById('eng-category') as HTMLSelectElement | null;
-    const chartMetricSelect = document.getElementById('eng-chart-metric') as HTMLSelectElement | null;
     const topNSelect = document.getElementById('eng-top-n') as HTMLSelectElement | null;
     const searchInput = document.getElementById('eng-search') as HTMLInputElement | null;
     const refreshBtn = document.getElementById('eng-refresh') as HTMLButtonElement | null;
@@ -3097,8 +3598,6 @@ function attachEventListeners() {
 
     async function loadEngagementStats() {
       const period = periodSelect?.value || '30';
-      const category = categorySelect?.value || '';
-      const chartMetric = chartMetricSelect?.value || 'views';
       const topN = parseInt(topNSelect?.value || '10', 10);
       const search = searchInput?.value?.toLowerCase().trim() || '';
       const chartPeriodEl = document.getElementById('eng-chart-period');
@@ -3118,7 +3617,7 @@ function attachEventListeners() {
 
       try {
         const res = await fetch(
-          `/api/engagement/stats?period=${period}&category=${encodeURIComponent(category)}`
+          `/api/engagement/stats?period=${period}`
         );
 
         // Verifica se a resposta é JSON (evita quebrar se o servidor retornar HTML/404)
@@ -3131,8 +3630,8 @@ function attachEventListeners() {
 
         const { stats, periodDays } = await res.json();
         lastEngagementStats = stats || [];
-        lastEngagementParams = { period, category, chartMetric, topN };
-        renderEngagementData(lastEngagementStats, parseInt(period, 10), chartMetric, topN, search);
+        lastEngagementParams = { period, category: '', chartMetric: 'views', topN };
+        renderEngagementData(lastEngagementStats, parseInt(period, 10), 'views', topN, search);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.error('[Engajamento] Erro:', msg);
@@ -3169,22 +3668,13 @@ function attachEventListeners() {
       topN: number = 10,
       search: string = ''
     ) {
-      const METRIC_FIELD: Record<string, string> = {
-        views: 'views',
-        impressions: 'impressions',
-        whatsapp_clicks: 'whatsapp_clicks',
-        cart_adds: 'cart_adds',
-        orders: 'orders',
-      };
-      const field = METRIC_FIELD[chartMetric] || 'views';
-
       // Busca por produto (case-insensitive)
       const filtered = search
         ? stats.filter((s) => String(s.product_name || s.product_id || '').toLowerCase().includes(search))
         : stats;
 
-      // Ordena pela métrica selecionada (desc)
-      filtered.sort((a, b) => (b[field] || 0) - (a[field] || 0));
+      // Ordena pela métrica padrão (desc) — cada gráfico reordena por sua própria métrica
+      filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
 
       // Retenção para exportação
       lastEngagementFiltered = filtered;
@@ -3243,62 +3733,246 @@ function attachEventListeners() {
       }
 
       // Gráfico de barras (top produtos pela métrica selecionada)
-      renderEngagementChart(filtered.slice(0, topN), periodDays, field);
+      renderEngagementCharts(filtered, periodDays, topN, search);
     }
 
-    function renderEngagementChart(stats: any[], periodDays: number, metricField: string = 'views') {
-      const container = document.getElementById('eng-chart-container');
-      if (!container) return;
+    // Instâncias globais dos gráficos para destruir antes de re-renderizar
+    let engChartInstances: Record<string, any> = {};
+    let engChartModalInstance: any = null;
+    let engChartData: Record<string, { labels: string[]; values: number[]; metric: typeof CHART_METRICS[0] }> = {};
 
-      const topStats = stats;
-      if (topStats.length === 0) {
-        container.innerHTML =
-          '<div class="text-center text-zinc-400 text-sm">Sem dados no período</div>';
-        return;
+    const CHART_METRICS = [
+      { key: 'views', canvasId: 'eng-chart-views', label: 'Visualizações (detalhe)', color: '#0a8754', hoverColor: '#f16351' },
+      { key: 'impressions', canvasId: 'eng-chart-impressions', label: 'Impressões', color: '#60d3ef', hoverColor: '#f16351' },
+      { key: 'whatsapp_clicks', canvasId: 'eng-chart-whatsapp', label: 'Cliques WhatsApp', color: '#25D366', hoverColor: '#f16351' },
+      { key: 'cart_adds', canvasId: 'eng-chart-cart', label: 'Adicionou Carrinho', color: '#f59e0b', hoverColor: '#f16351' },
+      { key: 'orders', canvasId: 'eng-chart-orders', label: 'Pedidos via WA', color: '#0a8754', hoverColor: '#60d3ef' },
+    ];
+
+    function renderEngagementCharts(stats: any[], periodDays: number, topN: number = 10, search: string = '') {
+      const filtered = search
+        ? stats.filter((s: any) => String(s.product_name || s.product_id || '').toLowerCase().includes(search))
+        : stats;
+
+      // Destroi todos os gráficos anteriores
+      Object.values(engChartInstances).forEach((chart: any) => {
+        if (chart && typeof chart.destroy === 'function') chart.destroy();
+      });
+      engChartInstances = {};
+      engChartData = {};
+
+      CHART_METRICS.forEach((metric) => {
+        const canvas = document.getElementById(metric.canvasId) as HTMLCanvasElement | null;
+        if (!canvas) return;
+
+        const sorted = [...filtered].sort((a, b) => (b[metric.key] || 0) - (a[metric.key] || 0)).slice(0, topN);
+        const labels = sorted.map((s: any) => String(s.product_name || s.product_id).substring(0, 16));
+        const values = sorted.map((s: any) => s[metric.key] || 0);
+        const maxVal = Math.max(...values, 1);
+
+        // Armazena dados para o modal
+        engChartData[metric.key] = { labels, values, metric };
+
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx ? ctx.createLinearGradient(0, 0, 0, canvas.height) : null;
+        if (gradient) {
+          gradient.addColorStop(0, metric.color);
+          gradient.addColorStop(1, metric.color + '40');
+        }
+
+        const chart = new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: metric.label,
+                data: values,
+                backgroundColor: gradient || metric.color,
+                borderColor: metric.color,
+                borderWidth: 1,
+                borderRadius: 4,
+                hoverBackgroundColor: metric.hoverColor,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+              duration: 600,
+              easing: 'easeOutQuart',
+            },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: metric.label,
+                font: {
+                  size: 11,
+                  weight: 'bold',
+                  family: "'Archivo', 'Trebuchet MS', sans-serif",
+                },
+                color: '#04052d',
+              },
+              tooltip: {
+                backgroundColor: '#04052d',
+                titleFont: { size: 11, weight: 'bold' },
+                bodyFont: { size: 10 },
+                padding: 6,
+                cornerRadius: 4,
+                callbacks: {
+                  label: (item: any) => item.dataset.label + ': ' + item.parsed.y,
+                },
+              },
+            },
+            scales: {
+              x: {
+                ticks: {
+                  font: { size: 8, family: "'IBM Plex Mono', monospace" },
+                  color: '#6b7280',
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+                grid: { display: false },
+              },
+              y: {
+                beginAtZero: true,
+                max: Math.ceil(maxVal * 1.1),
+                ticks: {
+                  font: { size: 9, family: "'IBM Plex Mono', monospace" },
+                  color: '#6b7280',
+                  precision: 0,
+                },
+                grid: {
+                  color: 'rgba(10, 135, 84, 0.08)',
+                },
+              },
+            },
+            onClick: (_event: any, elements: any[]) => {
+              if (elements.length > 0) {
+                openChartModal(metric.key);
+              }
+            },
+          },
+        });
+
+        engChartInstances[metric.key] = chart;
+
+        // Click no canvas abre modal
+        canvas.style.cursor = 'pointer';
+        canvas.onclick = () => openChartModal(metric.key);
+      });
+    }
+
+    function openChartModal(metricKey: string) {
+      const modal = document.getElementById('eng-chart-modal');
+      const titleEl = document.getElementById('eng-chart-modal-title');
+      const modalCanvas = document.getElementById('eng-chart-modal-canvas') as HTMLCanvasElement | null;
+      if (!modal || !modalCanvas) return;
+
+      const data = engChartData[metricKey];
+      if (!data) return;
+
+      // Destroi gráfico anterior do modal
+      if (engChartModalInstance) {
+        engChartModalInstance.destroy();
+        engChartModalInstance = null;
       }
 
-      const maxViews = Math.max(...topStats.map((s) => s[metricField] || 0), 1);
-      const chartHeight = 260;
-      const padding = { top: 30, right: 20, bottom: 60, left: 70 };
-      const barWidth = 36;
-      const gap = 14;
-      // Largura do viewBox cresce com o número de barras (evita comprimir em telas pequenas)
-      const svgWidth = Math.max(720, padding.left + padding.right + topStats.length * (barWidth + gap));
+      // Define título
+      if (titleEl) titleEl.textContent = data.metric.label + ' — Top ' + data.values.length + ' produtos';
 
-      let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 ${svgWidth} ${chartHeight}" xmlns="http://www.w3.org/2000/svg" class="w-full" role="img" aria-labelledby="eng-chart-title">
-        <title id="eng-chart-title">Top produtos por ${metricField.replace(/_/g, ' ')} no período selecionado</title>
-        <defs>
-          <linearGradient id="gradViews" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0a8754" stop-opacity="0.85"/>
-            <stop offset="100%" stop-color="#0a8754" stop-opacity="0.25"/>
-          </linearGradient>
-        </defs>
+      // Mostra modal
+      modal.classList.remove('hidden');
 
-        <!-- Eixo Y -->
-        <text x="15" y="24" class="text-[10px] text-zinc-500 font-mono">${maxViews}</text>
-        <text x="15" y="${chartHeight - 12}" class="text-[10px] text-zinc-500 font-mono">0</text>
+      // Cria gráfico ampliado
+      const ctx = modalCanvas.getContext('2d');
+      const gradient = ctx ? ctx.createLinearGradient(0, 0, 0, modalCanvas.height) : null;
+      if (gradient) {
+        gradient.addColorStop(0, data.metric.color);
+        gradient.addColorStop(1, data.metric.color + '40');
+      }
 
-        <!-- Barras -->
-        ${topStats
-          .map((s, i) => {
-            const value = s[metricField] || 0;
-            const x = padding.left + i * (barWidth + gap);
-            const h = (value / maxViews) * (chartHeight - padding.top - padding.bottom);
-            const y = chartHeight - padding.bottom - h;
-            const label = escapeHtml(String(s.product_name || s.product_id));
-            return `
-              <rect x="${x}" y="${y}" width="${barWidth - 4}" height="${h}" fill="url(#gradViews)" rx="2" title="${label}: ${value}"/>
-              <text x="${x + (barWidth - 4) / 2}" y="${chartHeight - padding.bottom + 18}" 
-                    class="text-[10px] text-zinc-500 font-mono" text-anchor="middle" transform="rotate(-45 ${x + (barWidth - 4) / 2},${chartHeight - padding.bottom + 18})">${escapeHtml(String(s.product_name || s.product_id).substring(0, 14))}</text>
-              <text x="${x + (barWidth - 4) / 2}" y="${y - 6}" 
-                    class="text-[10px] text-[#0a8754] font-bold font-mono" text-anchor="middle">${value}</text>
-            `;
-          })
-          .join('')
-        }
-      </svg>`;
+      engChartModalInstance = new Chart(modalCanvas, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: data.metric.label,
+              data: data.values,
+              backgroundColor: gradient || data.metric.color,
+              borderColor: data.metric.color,
+              borderWidth: 1,
+              borderRadius: 6,
+              hoverBackgroundColor: data.metric.hoverColor,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 600,
+            easing: 'easeOutQuart',
+          },
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: data.metric.label + ' — Top ' + data.values.length + ' produtos',
+              font: {
+                size: 16,
+                weight: 'bold',
+                family: "'Archivo', 'Trebuchet MS', sans-serif",
+              },
+              color: '#04052d',
+            },
+            tooltip: {
+              backgroundColor: '#04052d',
+              titleFont: { size: 13, weight: 'bold' },
+              bodyFont: { size: 12 },
+              padding: 10,
+              cornerRadius: 6,
+              callbacks: {
+                label: (item: any) => item.dataset.label + ': ' + item.parsed.y,
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { size: 11, family: "'IBM Plex Mono', monospace" },
+                color: '#6b7280',
+                maxRotation: 45,
+                minRotation: 0,
+              },
+              grid: { display: false },
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                font: { size: 11, family: "'IBM Plex Mono', monospace" },
+                color: '#6b7280',
+                precision: 0,
+              },
+              grid: {
+                color: 'rgba(10, 135, 84, 0.08)',
+              },
+            },
+          },
+        },
+      });
+    }
 
-      container.innerHTML = svg;
+    function closeChartModal() {
+      const modal = document.getElementById('eng-chart-modal');
+      if (modal) modal.classList.add('hidden');
+      if (engChartModalInstance) {
+        engChartModalInstance.destroy();
+        engChartModalInstance = null;
+      }
     }
 
     function exportEngagementToCsv() {
@@ -3354,13 +4028,24 @@ function attachEventListeners() {
 
     // Wire filtros
     periodSelect?.addEventListener('change', loadEngagementStats);
-    categorySelect?.addEventListener('change', loadEngagementStats);
-    chartMetricSelect?.addEventListener('change', loadEngagementStats);
     topNSelect?.addEventListener('change', loadEngagementStats);
     searchInput?.addEventListener('input', loadEngagementStats);
     refreshBtn?.addEventListener('click', loadEngagementStats);
     const exportBtn = document.getElementById('eng-export-csv');
     exportBtn?.addEventListener('click', () => exportEngagementToCsv());
+
+    // Modal de destaque do gráfico — fechar
+    const chartModal = document.getElementById('eng-chart-modal');
+    if (chartModal) {
+      chartModal.querySelectorAll('[data-close-chart-modal]').forEach((el) => {
+        el.addEventListener('click', closeChartModal);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !chartModal.classList.contains('hidden')) {
+          closeChartModal();
+        }
+      });
+    }
 
     // Carrinho - botões de remover/alterar quantidade/fechar
     document.querySelectorAll<HTMLButtonElement>('[data-cart-remove]').forEach((btn) => {
