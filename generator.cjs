@@ -41,18 +41,71 @@ function brl(value) {
   });
 }
 
-function loadData() {
-  const raw = fs.readFileSync(DATA_FILE, 'utf8');
-  let data;
+async function loadData() {
+  // Base local (fornece store/config e fallback)
+  let baseData = null;
   try {
-    data = JSON.parse(raw);
+    const raw = fs.readFileSync(DATA_FILE, 'utf8');
+    baseData = JSON.parse(raw);
   } catch (err) {
-    throw new Error('catalog-data.json não é um JSON válido: ' + err.message);
+    if (!supabaseGenEnabled) {
+      throw new Error('catalog-data.json não é um JSON válido: ' + err.message);
+    }
+    console.warn('[Generator] catalog-data.json inválido/ausente - usando apenas Supabase.');
   }
-  if (!data || !Array.isArray(data.categories) || data.categories.length === 0) {
+
+  // Se Supabase estiver configurado, sincroniza categorias e produtos do banco
+  if (supabaseGenEnabled && supabaseGen) {
+    try {
+      const { data: cats, error: catErr } = await supabaseGen
+        .from('categories')
+        .select('*')
+        .order('sort_order', { ascending: true });
+      if (catErr) throw catErr;
+
+      const { data: prods, error: prodErr } = await supabaseGen
+        .from('products')
+        .select('*');
+      if (prodErr) throw prodErr;
+
+      const categories = (cats || []).map((c) => ({
+        id: c.id,
+        name: c.name,
+        icon: c.icon || '📦',
+        products: (prods || [])
+          .filter((p) => p.category_id === c.id)
+          .map((p) => ({
+            id: p.id,
+            code: p.code,
+            name: p.name,
+            cost: Number(p.cost) || 0,
+            price: Number(p.price) || 0,
+            price_max: p.price_max != null ? Number(p.price_max) : undefined,
+            highlights: Array.isArray(p.highlights) ? p.highlights : [],
+            tags: Array.isArray(p.tags) ? p.tags : [],
+            image: p.image_url || undefined,
+            enabled: p.status === 'active' && p.visible_to_client !== false,
+          })),
+      }));
+
+      const data = {
+        store: (baseData && baseData.store) || { name: '', city: '', delivery: '', warranty: '', payment: '', whatsapp: '' },
+        categories,
+      };
+      if (!data.categories || data.categories.length === 0) {
+        throw new Error('Supabase retornou 0 categorias.');
+      }
+      console.log(`[Generator] Dados carregados do Supabase: ${data.categories.length} categorias, ${data.categories.reduce((n, c) => n + c.products.length, 0)} produtos.`);
+      return data;
+    } catch (err) {
+      console.warn('[Generator] Falha ao carregar do Supabase, usando catalog-data.json local:', err.message);
+    }
+  }
+
+  if (!baseData || !Array.isArray(baseData.categories) || baseData.categories.length === 0) {
     throw new Error('catalog-data.json precisa ter ao menos uma categoria em "categories".');
   }
-  return data;
+  return baseData;
 }
 
 function validate(data) {
@@ -329,7 +382,7 @@ async function buildPdf(html) {
 }
 
 async function main() {
-  const data = loadData();
+  const data = await loadData();
   validate(data);
 
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });

@@ -28,6 +28,19 @@ try {
     supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     supabaseEnabled = true;
     console.log('[Supabase] Conectado para rastreamento de engajamento');
+    // Garante que o bucket pedidos existe (público, para URLs de PDF)
+    (async () => {
+      try {
+        const { data, error } = await supabase.storage.createBucket('pedidos', { public: true });
+        if (error && !error.message.includes('already exists')) {
+          console.error('[Supabase] Erro ao criar bucket pedidos:', error.message);
+        } else {
+          console.log('[Supabase] Bucket pedidos pronto');
+        }
+      } catch (e) {
+        console.error('[Supabase] Erro ao verificar bucket pedidos:', e.message);
+      }
+    })();
   } else {
     console.log('[Supabase] Credenciais não encontradas — usando fallback JSON local');
   }
@@ -539,8 +552,20 @@ app.get('/lojista', (req, res) => {
   res.status(503).send('Área do lojista não encontrada. Execute: npm run build');
 });
 
+app.get('/prestador', (req, res) => {
+  if (!getSessionUser(req)) return res.redirect('/entrar');
+  const file = path.join(DIST_DIR, 'lojista.html');
+  if (fs.existsSync(file)) return res.sendFile(file);
+  res.status(503).send('Área do prestador não encontrada. Execute: npm run build');
+});
+
 app.get('/entrar', (req, res) => {
-  if (getSessionUser(req)) return res.redirect('/lojista');
+  const user = getSessionUser(req);
+  if (user) {
+    const prestadorUser = process.env.PRESTADOR_USER || parseEnvFile().PRESTADOR_USER || 'prestador';
+    const redirect = (user === prestadorUser) ? '/prestador' : '/lojista';
+    return res.redirect(redirect);
+  }
   res.type('html').send(loginPage());
 });
 
@@ -565,7 +590,9 @@ app.post('/api/login', (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
-    return res.redirect('/lojista');
+    const prestadorUser = process.env.PRESTADOR_USER || parseEnvFile().PRESTADOR_USER || 'prestador';
+    const redirectTo = (authenticatedUser === prestadorUser) ? '/prestador' : '/lojista';
+    return res.redirect(redirectTo);
   }
   res.status(401).type('html').send(loginPage('Usuário ou senha inválidos.'));
 });
@@ -648,11 +675,20 @@ app.get('/api/markdown', (req, res) => {
   res.status(404).send('Markdown catalog not found');
 });
 
+const { execSync } = require('child_process');
+
 app.post('/api/regenerate', async (req, res) => {
   try {
     const result = await runGenerator();
-    res.json({ success: true, message: 'Catálogo gerado com sucesso!', total: result.total });
+    // Rebuild do bundle para que a página cliente reflita as alterações do lojista
+    try {
+      execSync('npm run build', { cwd: ROOT, stdio: 'pipe' });
+    } catch (buildErr) {
+      console.error('[Regenerate] build falhou:', buildErr.message);
+    }
+    res.json({ success: true, message: 'Catálogo gerado e publicado com sucesso!', total: result?.total });
   } catch (err) {
+    console.error('[Regenerate] erro:', err.message);
     res.status(500).json({ success: false, error: err.message });
   }
 });
@@ -903,6 +939,26 @@ app.delete('/api/admin/products/:id', requireAuth, async (req, res) => {
     return res.json({ ok: true, product: data });
   } catch (err) {
     console.error('[Admin] DELETE product:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/temp-pdf - recebe PDF e faz upload para Supabase Storage, retorna URL pública
+app.post('/api/temp-pdf', express.raw({ type: 'application/pdf', limit: '10mb' }), async (req, res) => {
+  try {
+    if (!supabaseEnabled || !supabase) return res.status(503).json({ error: 'Supabase não configurado' });
+    const orderNo = req.query.orderNo || 'pedido-' + Date.now();
+    const fileName = `pedidos/pedido-${orderNo}.pdf`;
+    const buffer = Buffer.from(req.body);
+    const { error: uploadErr } = await supabase.storage.from('pedidos').upload(fileName, buffer, {
+      contentType: 'application/pdf',
+      upsert: true,
+    });
+    if (uploadErr) throw uploadErr;
+    const { data: urlData } = supabase.storage.from('pedidos').getPublicUrl(fileName);
+    return res.json({ ok: true, url: urlData.publicUrl, fileName });
+  } catch (err) {
+    console.error('[Temp PDF] erro:', err.message);
     return res.status(500).json({ error: err.message });
   }
 });

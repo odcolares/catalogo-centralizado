@@ -104,6 +104,8 @@ main[data-reveal] article {
 }
 
 /* ── Impressão: relatório do pedido em A4 (Salvar como PDF) ── */
+/* A impressão agora ocorre em uma janela dedicada (window.open), mantendo esta
+   regra apenas como fallback para impressão direta da página principal. */
 @media print {
   @page {
     size: A4;
@@ -113,6 +115,29 @@ main[data-reveal] article {
   html,
   body {
     overflow: visible !important;
+    background: #fff !important;
+  }
+
+  /* Oculta tudo exceto o relatório do pedido */
+  body > * {
+    display: none !important;
+  }
+
+  #app,
+  #order-report,
+  #order-report * {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  #app > *:not(#order-report) {
+    display: none !important;
+  }
+
+  #order-report {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
     background: #fff !important;
   }
 
